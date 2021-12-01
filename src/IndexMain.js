@@ -10,8 +10,8 @@ const indexMain = () => {
                 <h1>{welcomeMessage}</h1>
             </div>
             <ButtonList/>
-            <div className = "faqIcon">
-                <FaQuestion/>
+            <div className = "faqButton">
+                <a href="#"><FaQuestion/></a>
             </div>
         </div>
      );
