@@ -1,16 +1,23 @@
 import './App.css';
-import IndexMain from './IndexMain';
-import MenuBar from './MenuBar';
 import './Sidebar.css';
+import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
+import WebPage from './WebPage';
+import LoginPage from './LoginPage';
 
 function App() {
 
   return (
     <div className="App" id = "app">
-      <MenuBar/>
-      <div id = "content">
-        <IndexMain />
-      </div>
+      <Router>
+        <Switch>
+          <Route exact path="/home">
+            <WebPage/>
+          </Route>
+          <Route exact path="/">
+            <LoginPage/>
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
