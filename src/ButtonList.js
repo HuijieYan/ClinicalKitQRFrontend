@@ -1,9 +1,10 @@
+import "./ButtonList.css";
+
 const ButtonList = () => {
-    //Please remove bullet points of li
     return ( 
-        <ul className="buttonList">
+        <ul className = "buttonList">
             <li>
-                <a href="#">Equiment</a>
+                <a href="#">Equipment</a>
             </li>
             <li>
                 <a href="#">User Groups</a>

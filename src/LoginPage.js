@@ -1,4 +1,5 @@
 import { useHistory } from "react-router";
+import './LoginPage.css';
 
 const LoginPage = () => {
     const history = useHistory();
@@ -24,7 +25,7 @@ const LoginPage = () => {
                 name = "password"
                 />
             </div>
-            <button type="submit" onClick={()=>login(history)}>Log in</button>
+            <button id = "loginButton" type="submit" onClick={()=>login(history)}>Log in</button>
         </div>
      );
 }

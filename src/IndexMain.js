@@ -1,6 +1,7 @@
 import ButtonList from "./ButtonList";
 import {FaQuestion} from "react-icons/fa";
 
+
 const indexMain = () => {
     const welcomeMessage = "Welcome";
 
@@ -9,9 +10,11 @@ const indexMain = () => {
             <div className = "message">
                 <h1>{welcomeMessage}</h1>
             </div>
-            <ButtonList/>
-            <div className = "faqButton">
+            <div id = "faqButton">
                 <a href="#"><FaQuestion/></a>
+            </div>
+            <div>
+            <ButtonList/>
             </div>
         </div>
      );
