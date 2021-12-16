@@ -1,9 +1,18 @@
 .inputField{
+    height: fit-content;
+    width: fit-content;
+    margin: auto;
     font-size: 120%;
 }
   
 #loginButton{
-    margin-top: 3%;
-    width: 5%;
-    color: brown;
+    margin-top: 30%;
+}
+
+#username{
+    margin-top: 20%;
+}
+
+#password{
+    margin-top: 10%;
 }

@@ -1,31 +1,34 @@
 import { useHistory } from "react-router";
 import './LoginPage.css';
+import { Button, Form } from "react-bootstrap";
 
 const LoginPage = () => {
     const history = useHistory();
+    const loginFail = false;
     const login = (history) =>{
-        history.push("/home");
+        if(loginFail){
+            history.push("/loginFail");
+        }else{
+            history.push("/home");
+        } 
     }
+
     return ( 
-        <div>
-            <h2>Website Name</h2>
-            <div className = "inputField">
-                <p>Departmental Username</p>
-                <input 
-                type = "text"
-                placeholder = "Enter Departmental Username"
-                name = "username"
-                />
-            </div>
-            <div className = "inputField">
-                <p>Password</p>
-                <input 
-                type = "text"
-                placeholder = "Enter Password"
-                name = "password"
-                />
-            </div>
-            <button id = "loginButton" type="submit" onClick={()=>login(history)}>Log in</button>
+        <div className = "inputField">
+            <h1>Website</h1>
+            <Form>
+                <Form.Group id="username">
+                    <Form.Label>Departmental Username</Form.Label>
+                    <Form.Control type="username" placeholder="Enter Departmental Username"></Form.Control>
+                </Form.Group>
+            </Form>
+            <Form>
+                <Form.Group id="password">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="password" placeholder="Department Password"></Form.Control>
+                </Form.Group>
+            </Form>
+            <Button id="loginButton" type="submit" onClick={()=>login(history)}>Log in</Button>
         </div>
      );
 }
