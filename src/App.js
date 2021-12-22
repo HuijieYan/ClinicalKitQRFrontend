@@ -4,6 +4,7 @@ import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 import WebPage from './WebPage';
 import LoginPage from './LoginPage';
 import LoginFail from './LoginFail';
+import UsergroupEditPage from './UsergroupEditPage';
 
 function App() {
 
@@ -19,6 +20,9 @@ function App() {
           </Route>
           <Route exact path="/">
             <LoginPage/>
+          </Route>
+          <Route exact path="/editUserGroup">
+            <UsergroupEditPage/>
           </Route>
         </Switch>
       </Router>

@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 const LoginPage = () => {
     const history = useHistory();
-    const loginFail = false;
     const hospitalID = 1;
     const loginpageURL = "http://localhost:8080/login";
     const [username,setUsername] = useState("");
