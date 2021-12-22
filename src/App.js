@@ -1,9 +1,8 @@
 import './App.css';
-import './Sidebar.css';
+import './Component/Sidebar.css';
 import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
-import WebPage from './WebPage';
-import LoginPage from './LoginPage';
-import LoginFail from './LoginFail';
+import WebPage from './Pages/WebPage';
+import LoginPage from './Pages/LoginPage';
 
 function App() {
 
@@ -13,9 +12,6 @@ function App() {
         <Switch>
           <Route exact path="/home">
             <WebPage/>
-          </Route>
-          <Route exact path="/loginFail">
-            <LoginFail/>
           </Route>
           <Route exact path="/">
             <LoginPage/>
