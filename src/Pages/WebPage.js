@@ -1,12 +1,11 @@
 import IndexMain from './IndexMain';
-import MenuBar from './MenuBar';
+import MenuBar from '../Component/MenuBar';
+
 const WebPage = () => {
     return ( 
         <div>
             <MenuBar/>
-            <div id = "content">
-                <IndexMain />
-            </div>
+            <IndexMain/>
         </div>
      );
 }

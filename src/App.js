@@ -1,10 +1,15 @@
 import './App.css';
-import './Sidebar.css';
+import './Component/Sidebar.css';
 import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
+<<<<<<< HEAD
 import WebPage from './WebPage';
 import LoginPage from './LoginPage';
 import LoginFail from './LoginFail';
 import UsergroupEditPage from './UsergroupEditPage';
+=======
+import WebPage from './Pages/WebPage';
+import LoginPage from './Pages/LoginPage';
+>>>>>>> aea5a237e88dba4b94c588d24f2866487991b5b5
 
 function App() {
 
@@ -14,9 +19,6 @@ function App() {
         <Switch>
           <Route exact path="/home">
             <WebPage/>
-          </Route>
-          <Route exact path="/loginFail">
-            <LoginFail/>
           </Route>
           <Route exact path="/">
             <LoginPage/>
