@@ -3,32 +3,28 @@ import './LoginPage.css';
 import { Button, Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const LoginPage = () => {
     const history = useHistory();
     const hospitalID = 1;
-    const loginPageURL = "http://localhost:8080/login";
+    const loginPageURL = "http://localhost:8080/usergroup/login";
     const [username,setUsername] = useState("");
     const [password,setPassword] = useState("");
-    const [result,setResult] = useState(false);
     const [failMessage,setMessage] = useState("");
 
-    const login = () =>{
-        if (result) {
-            history.push("/home");
-        } else {
-            setMessage("fail!!");
-            setPassword("");
-        }
-    }
-
-    useEffect(()=>{
-        const url = loginPageURL + "/hospitalID=" + hospitalID + " username=" + username + " password=" + password;
+    async function login(){
+        var url = loginPageURL + "/hospitalID=" + hospitalID + " username=" + username + " password=" + password;
         axios.get(url).then((response)=>{
-            setResult(response.data);
+            var result = response.data;
+            if (result) {
+                history.push("/home");
+            } else {
+                setMessage("fail!!");
+                setPassword("");
+            }
         });
-    })
+    }
 
     return (
         <div className = "inputField">

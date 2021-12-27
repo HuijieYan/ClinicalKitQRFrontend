@@ -2,15 +2,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button,Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import GetData from "../Functions/GetData";
 
 const UsergroupEditPage = () => {
     const history = useHistory();
     const [groupName, setGroupname] = useState("");
     const [groupUsername, setGroupUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [trusts,setTrusts] = useState([]);
     const [trustId,setTrustId] = useState("-1");
     const [hospitalId,setHospitalId] = useState("-1");
-    const url = "http://localhost:8080/addUsergroup/";
+    const [hospitals,setHospitals] = useState([]);
+    const url = "http://localhost:8080/usergroup/register/";
     
     async function submit (history){
         var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password;
@@ -27,7 +30,13 @@ const UsergroupEditPage = () => {
             }
         });
     }
-
+    
+    useEffect(()=>{
+        GetData.getAllTrusts().then((data)=>{setTrusts(data)});
+        //set trusts' selection option
+        GetData.getAllHospitals().then((data)=>{setHospitals(data)});
+    },[]);
+    //renders only once for fetching selection options
 
     const isEmpty = (str) =>{
         return str === "";
@@ -38,15 +47,19 @@ const UsergroupEditPage = () => {
             <Form>
                 <Form.Label>Trust</Form.Label>
                 <select value={trustId} onChange={(e)=>setTrustId(e.target.value)}>
-                    <option value="-1">Select Trust</option>
-                    <option value="1">MyTrust</option>
+                    <option value="-1" label="Select Trust"/>
+                    {trusts.map(trust=>(
+                        <option key={trust.trustId} value={trust.trustId} label={trust.trustName}/>
+                    ))}
                 </select>
             </Form>
             <Form>
                 <Form.Label>Hostpital</Form.Label>
                 <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
-                    <option value="-1">Select Hospital</option>
-                    <option value="1">MyHospital</option>
+                    <option value="-1" label="Select Hospital"/>
+                    {hospitals.map(hospital=>(
+                        <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
+                    ))}
                 </select>
             </Form>
             <Form>
