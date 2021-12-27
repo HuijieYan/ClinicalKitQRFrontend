@@ -5,6 +5,7 @@ import WebPage from './Pages/WebPage';
 import LoginPage from './Pages/LoginPage';
 import UsergroupEditPage from './Pages/UsergroupEditPage';
 import HospitalCreationPage from './Pages/HospitalCreationPage';
+import TrustCreationPage from './Pages/TrustCreationPage';
 
 function App() {
 
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route exact path="/hospitalCreation">
             <HospitalCreationPage/>
+          </Route>
+          <Route exact path="/trustCreation">
+            <TrustCreationPage/>
           </Route>
         </Switch>
       </Router>
