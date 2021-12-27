@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button,Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
 const UsergroupEditPage = () => {
@@ -16,10 +17,10 @@ const UsergroupEditPage = () => {
     const url = "http://localhost:8080/usergroup/register/";
     
     async function submit (history){
-        var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password;
-        if (trustId === "-1"||hospitalId === "-1" || isEmpty(groupName)|| isEmpty(groupUsername)||isEmpty(password)){
+        if (trustId === "-1"||hospitalId === "-1" || Auxiliary.isEmpty(groupName)|| Auxiliary.isEmpty(groupUsername)||Auxiliary.isEmpty(password)){
             return;
         }
+        var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password;
         axios.post(postUrl).then((response)=>{
             const successful = response.data;
             if (successful){
@@ -37,10 +38,6 @@ const UsergroupEditPage = () => {
         GetData.getAllHospitals().then((data)=>{setHospitals(data)});
     },[]);
     //renders only once for fetching selection options
-
-    const isEmpty = (str) =>{
-        return str === "";
-    }
 
     return (  
         <div>
