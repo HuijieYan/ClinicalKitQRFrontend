@@ -13,8 +13,8 @@ const MenuBar = () => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/">Home</Nav.Link>
-                        <Nav.Link href="/">Link</Nav.Link>
+                        <Nav.Link href="/home">Home</Nav.Link>
+                        <Nav.Link href="/equipmentTable">Equipments</Nav.Link>
                         <NavDropdown title="Link" id="navbarScrollingDropdown">
                             <NavDropdown.Item href="/">Action</NavDropdown.Item>
                             <NavDropdown.Item href="/">Another action</NavDropdown.Item>

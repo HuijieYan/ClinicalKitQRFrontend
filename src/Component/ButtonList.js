@@ -1,6 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import { useHistory } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 const ButtonList = () => {
+    const history = useHistory();
+
     return (
         <section className="p-5">
             <div className="container">
@@ -16,7 +20,7 @@ const ButtonList = () => {
                                     This is description!This is description!This is description!
                                     This is description!This is description!This is description!
                                 </p>
-                                <a href="/" className="btn btn-primary">Check</a>
+                                <Button onClick={()=>history.push("/equipmentTable")}>Check</Button>
                             </div>
                         </div>
                     </div>

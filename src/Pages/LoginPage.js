@@ -1,4 +1,4 @@
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import './LoginPage.css';
 import { Button, Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -14,9 +14,9 @@ const LoginPage = () => {
     const [failMessage,setMessage] = useState("");
 
     async function login(){
-        var url = loginPageURL + "/hospitalID=" + hospitalID + " username=" + username + " password=" + password;
+        const url = loginPageURL + "/hospitalID=" + hospitalID + " username=" + username + " password=" + password;
         axios.get(url).then((response)=>{
-            var result = response.data;
+            const result = response.data;
             if (result) {
                 history.push("/home");
             } else {

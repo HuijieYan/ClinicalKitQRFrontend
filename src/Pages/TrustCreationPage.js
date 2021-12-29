@@ -9,7 +9,7 @@ const TrustCreationPage = () => {
     const url = "http://localhost:8080/trusts/register/";
 
     async function submit(history){
-        var postUrl = url+"name="+trustName;
+        const postUrl = url + "name=" + trustName;
         axios.post(postUrl).then((response)=>{
             const successful = response.data;
             if (successful){
@@ -26,7 +26,7 @@ const TrustCreationPage = () => {
             <Form>
                 <Form.Group id="trustName">
                     <Form.Label>Trust Name</Form.Label>
-                    <Form.Control type="trustName" placeholder="Enter trust's name" value={trustName} onChange={(e)=>setTrustName(e.target.value)}></Form.Control>
+                    <Form.Control type="trustName" placeholder="Enter trust's name" value={trustName} onChange={(e) => setTrustName(e.target.value)}/>
                 </Form.Group>
             </Form>
             <Button id="submitButton" type="submit" onClick={()=>submit(history)}>Submit</Button>
