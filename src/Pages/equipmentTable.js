@@ -22,7 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { useState } from "react";
-import LoginPage from "./LoginPage";
+import { Button } from "react-bootstrap";
 
 function createData(equipmentName, equipmentID, hospital, QRCode) {
     return {
@@ -103,7 +103,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { headCells, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -149,6 +149,7 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
+    headCells: PropTypes.array.isRequired,
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -158,7 +159,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-    const { numSelected } = props;
+    const { numSelected, tableTitle } = props;
 
     return (
         <Toolbar
@@ -171,6 +172,7 @@ const EnhancedTableToolbar = (props) => {
                 }),
             }}
         >
+            <Button size={"size"}>+Add</Button>
             {numSelected > 0 ? (
                 <Typography
                     sx={{ flex: '1 1 100%' }}
@@ -187,7 +189,7 @@ const EnhancedTableToolbar = (props) => {
                     id="tableTitle"
                     component="div"
                 >
-                    Equipments
+                    {tableTitle}
                 </Typography>
             )}
 
@@ -210,6 +212,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
+    tableTitle: PropTypes.string.isRequired,
 };
 
 const EnhancedTable = () => {
@@ -276,7 +279,7 @@ const EnhancedTable = () => {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} tableTitle={'Equipments'} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 400 }}
@@ -284,6 +287,7 @@ const EnhancedTable = () => {
                         size={dense ? 'small' : 'medium'}
                     >
                         <EnhancedTableHead
+                            headCells={headCells}
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
