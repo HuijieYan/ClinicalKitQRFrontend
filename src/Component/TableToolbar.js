@@ -48,7 +48,7 @@ const EnhancedTableToolbar = (props) => {
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton onClick={(e)=>handleDelete(e,rows,setRows, selected,setSelected)}>
+                   <IconButton onClick={(e)=>handleDelete(e,rows,setRows, selected,setSelected)}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -67,7 +67,6 @@ EnhancedTableToolbar.propTypes = {
     selected: PropTypes.array.isRequired,
     tableTitle: PropTypes.string.isRequired,
     rows : PropTypes.array.isRequired,
-
 };
 
 export default EnhancedTableToolbar;
