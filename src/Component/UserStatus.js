@@ -1,4 +1,4 @@
-class UserSatus{
+class UserStatus{
     constructor(){
         this.name = "";
         this.level = -1;
@@ -10,6 +10,14 @@ class UserSatus{
 
     setLevel(level){
         this.level = level;
+    }
+
+    getLevel(){
+        return this.level;
+    }
+
+    getName(){
+        return this.name;
     }
     
 }

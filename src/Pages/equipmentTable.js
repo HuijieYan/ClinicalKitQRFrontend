@@ -15,6 +15,8 @@ import EnhancedTableHead from "../Component/TableHead";
 import EnhancedTableToolbar from "../Component/TableToolbar";
 import GetData from '../Functions/GetData';
 import axios from 'axios';
+import UserStatus from '../Component/UserStatus';
+import { display } from '@mui/system';
 
 const URL = "http://localhost:3000/equipment/qrcode/id=";
 function createData(equipmentName, equipmentID, hospital, QRCode) {
@@ -25,23 +27,6 @@ function createData(equipmentName, equipmentID, hospital, QRCode) {
         QRCode,
     };
 }
-
-const rows = [
-    createData('Cupcake', 305, 3.7, 67),
-    createData('Donut', 452, 25.0, 51),
-    createData('Eclair', 262, 16.0, 24),
-    createData('Frozen yoghurt', 159, 6.0, 24),
-    createData('Gingerbread', 356, 16.0, 49),
-    createData('Honeycomb', 408, 3.2, 87),
-    createData('Ice cream sandwich', 237, 9.0, 37),
-    createData('Jelly Bean', 375, 0.0, 94),
-    createData('KitKat', 518, 26.0, 65),
-    createData('Lollipop', 392, 0.2, 98),
-    createData('Marshmallow', 318, 0, 81),
-    createData('Nougat', 360, 19.0, 9),
-    createData('Oreo', 437, 18.0, 63),
-];
-
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -73,29 +58,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-    {
-        id: 'equipmentName',
-        disablePadding: true,
-        label: 'Equipment Name',
-    },
-    {
-        id: 'equipmentID',
-        disablePadding: false,
-        label: 'Equipment ID',
-    },
-    {
-        id: 'hospital',
-        disablePadding: false,
-        label: 'Hospital',
-    },
-    {
-        id: 'QRCode',
-        disablePadding: false,
-        label: 'QR Code',
-    },
-];
-
 
 const EnhancedTable = () => {
     const [order, setOrder] = useState('asc');
@@ -106,6 +68,30 @@ const EnhancedTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [rows,setRows] = useState([]);
     const [changedData,setChangedData] = useState(false);
+    const [displayHospital,setDisplayHospital] = useState(false);
+    const [headCells,setHeadCells] = useState([
+        {
+            id: 'equipmentName',
+            disablePadding: true,
+            label: 'Equipment Name',
+        },
+        {
+            id: 'equipmentID',
+            disablePadding: false,
+            label: 'Equipment ID',
+        },
+        {
+            id: 'hospital',
+            disablePadding: false,
+            label: 'Hospital',
+            hidden: true
+        },
+        {
+            id: 'QRCode',
+            disablePadding: false,
+            label: 'QR Code',
+        },
+    ]);
 
     useEffect(()=>{
         GetData.getAllEquipment().then((data)=>{
@@ -113,11 +99,41 @@ const EnhancedTable = () => {
             for (let i = 0;i<data.length;i++){
                 var equipment = data[i];
                 console.log(equipment.name);
-                rowsData.push(createData(equipment.name,equipment.equipmentId,"waiting",URL+equipment.equipmentId));
+                rowsData.push(createData(equipment.name,equipment.equipmentId,"waiting",<a href={URL+equipment.equipmentId}>QR code</a>));
             }
             setRows(rowsData);
+            console.log(UserStatus.getLevel());
         })
         //set trusts' selection option
+        var level = UserStatus.getLevel();
+        var display = true;
+        if (level === 3){
+            display = false;
+        }
+        setHeadCells([
+                {
+                    id: 'equipmentName',
+                    disablePadding: true,
+                    label: 'Equipment Name',
+                },
+                {
+                    id: 'equipmentID',
+                    disablePadding: false,
+                    label: 'Equipment ID',
+                },
+                {
+                    id: 'hospital',
+                    disablePadding: false,
+                    label: 'Hospital',
+                    hidden: display
+                },
+                {
+                    id: 'QRCode',
+                    disablePadding: false,
+                    label: 'QR Code',
+                },
+            ]);
+        
     },[changedData]);
     //renders only once for fetching selection options
 

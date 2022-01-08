@@ -8,6 +8,7 @@ import HospitalCreationPage from './Pages/HospitalCreationPage';
 import TrustCreationPage from './Pages/TrustCreationPage';
 import EquipmentTable from './Pages/equipmentTable';
 import MenuBar from './Component/MenuBar';
+import EquipmentQrCodePage from './Pages/EquipmentQrCodePage';
 
 function App() {
 
@@ -37,6 +38,9 @@ function App() {
               <Route exact path="/equipmentTable">
                 <EquipmentTable/>
               </Route>
+              <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
+                return (<EquipmentQrCodePage id={props.match.params.id}/>)
+              }}/>
             </Switch>
           </div>
 
