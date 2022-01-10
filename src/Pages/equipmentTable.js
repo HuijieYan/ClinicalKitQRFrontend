@@ -81,12 +81,6 @@ const EnhancedTable = () => {
             label: 'Equipment ID',
         },
         {
-            id: 'hospital',
-            disablePadding: false,
-            label: 'Hospital',
-            hidden: true
-        },
-        {
             id: 'QRCode',
             disablePadding: false,
             label: 'QR Code',
@@ -94,23 +88,9 @@ const EnhancedTable = () => {
     ]);
 
     useEffect(()=>{
-        GetData.getAllEquipment().then((data)=>{
-            var rowsData = [];
-            for (let i = 0;i<data.length;i++){
-                var equipment = data[i];
-                console.log(equipment.name);
-                rowsData.push(createData(equipment.name,equipment.equipmentId,"waiting",<a href={URL+equipment.equipmentId}>QR code</a>));
-            }
-            setRows(rowsData);
-            console.log(UserStatus.getLevel());
-        })
-        //set trusts' selection option
         var level = UserStatus.getLevel();
-        var display = true;
         if (level === 3){
-            display = false;
-        }
-        setHeadCells([
+            setHeadCells([
                 {
                     id: 'equipmentName',
                     disablePadding: true,
@@ -125,7 +105,6 @@ const EnhancedTable = () => {
                     id: 'hospital',
                     disablePadding: false,
                     label: 'Hospital',
-                    hidden: display
                 },
                 {
                     id: 'QRCode',
@@ -133,7 +112,28 @@ const EnhancedTable = () => {
                     label: 'QR Code',
                 },
             ]);
-        
+            console.log(UserStatus.getTrustId());
+            console.log(UserStatus.getHospitalId());
+            GetData.getAllEquipmentByTrust(UserStatus.getTrustId()).then((data)=>{
+                var rowsData = [];
+                for (let i = 0;i<data.length;i++){
+                    var equipment = data[i];
+                    rowsData.push(createData(equipment.name,equipment.equipmentId,equipment.hospitalId.hospitalId,<a href={URL+equipment.equipmentId}>QR code</a>));
+                }
+                setRows(rowsData);
+            })
+        }
+        if (level === 2){
+            GetData.getAllEquipmentByHospital(UserStatus.getHospitalId()).then((data)=>{
+                var rowsData = [];
+                for (let i = 0;i<data.length;i++){
+                    var equipment = data[i];
+                    rowsData.push(createData(equipment.name,equipment.equipmentId,<a href={URL+equipment.equipmentId}>QR code</a>));
+                }
+                setRows(rowsData);
+            })
+        }
+        //set trusts' selection option
     },[changedData]);
     //renders only once for fetching selection options
 

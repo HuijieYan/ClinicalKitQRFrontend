@@ -24,8 +24,15 @@ class GetData{
         });
     }
 
-    getAllEquipment(){
-        var url = "http://localhost:8080/equipment/all";
+    getAllEquipmentByHospital(id){
+        var url = "http://localhost:8080/equipment/HospitalId="+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
+
+    getAllEquipmentByTrust(id){
+        var url = "http://localhost:8080/equipment/TrustId="+id;
         return axios.get(url).then((response)=>{
             return response.data;
         });

@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 
 const indexMain = () => {
+
+    
     return (
         <div className = "indexMain" id = "mainContent">
             <section className="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">

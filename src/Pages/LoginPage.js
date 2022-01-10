@@ -33,11 +33,11 @@ const LoginPage = () => {
         const url = loginPageURL + "/hospitalID=" + hospitalId + " username=" + username + " password=" + password;
         axios.get(url).then((response)=>{
             var resultArray = response.data;
-            var result = resultArray[0];
-            console.log(result);
-            if (result===1) {
+            if (resultArray.length > 0) {
                 history.push("/home");
-                UserStatus.setLevel(resultArray[1]);
+                UserStatus.setLevel(resultArray[0]);
+                UserStatus.setHospitalID(resultArray[1]);
+                UserStatus.setTrustID(resultArray[2]);
             } else {
                 setMessage("fail!!");
                 setPassword("");
