@@ -25,14 +25,28 @@ class GetData{
     }
 
     getAllEquipmentByHospital(id){
-        var url = "http://localhost:8080/equipment/HospitalId="+id;
+        var url = "http://localhost:8080/equipment/hospitalId="+id;
         return axios.get(url).then((response)=>{
             return response.data;
         });
     }
 
     getAllEquipmentByTrust(id){
-        var url = "http://localhost:8080/equipment/TrustId="+id;
+        var url = "http://localhost:8080/equipment/trustId="+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
+
+    getAllGroupsByTrust(id){
+        var url = "http://localhost:8080/usergroup/trustId="+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
+
+    getAllGroupsByHospital(id){
+        var url = "http://localhost:8080/usergroup/hospitalId="+id;
         return axios.get(url).then((response)=>{
             return response.data;
         });

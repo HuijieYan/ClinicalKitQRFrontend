@@ -9,6 +9,7 @@ import TrustCreationPage from './Pages/TrustCreationPage';
 import EquipmentTable from './Pages/equipmentTable';
 import MenuBar from './Component/MenuBar';
 import EquipmentQrCodePage from './Pages/EquipmentQrCodePage';
+import UserGroupTable from './Pages/usergroupTable';
 
 function App() {
 
@@ -37,6 +38,9 @@ function App() {
               </Route>
               <Route exact path="/equipmentTable">
                 <EquipmentTable/>
+              </Route>
+              <Route exact path="/usergroupTable">
+                <UserGroupTable/>
               </Route>
               <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
                 return (<EquipmentQrCodePage id={props.match.params.id}/>)
