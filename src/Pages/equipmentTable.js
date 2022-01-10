@@ -16,7 +16,7 @@ import EnhancedTableToolbar from "../Component/TableToolbar";
 import GetData from '../Functions/GetData';
 import axios from 'axios';
 import UserStatus from '../Component/UserStatus';
-import { display } from '@mui/system';
+
 
 const URL = "http://localhost:3000/equipment/qrcode/id=";
 function createData(equipmentName, equipmentID, hospital, QRCode) {
@@ -24,6 +24,14 @@ function createData(equipmentName, equipmentID, hospital, QRCode) {
         equipmentName,
         equipmentID,
         hospital,
+        QRCode,
+    };
+}
+
+function createDataThree(equipmentName, equipmentID, QRCode) {
+    return {
+        equipmentName,
+        equipmentID,
         QRCode,
     };
 }
@@ -59,7 +67,7 @@ function stableSort(array, comparator) {
 }
 
 
-const EnhancedTable = () => {
+const EquipmentTable = () => {
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('');
     const [selected, setSelected] = useState([]);
@@ -68,7 +76,6 @@ const EnhancedTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [rows,setRows] = useState([]);
     const [changedData,setChangedData] = useState(false);
-    const [displayHospital,setDisplayHospital] = useState(false);
     const [headCells,setHeadCells] = useState([
         {
             id: 'equipmentName',
@@ -128,7 +135,7 @@ const EnhancedTable = () => {
                 var rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     var equipment = data[i];
-                    rowsData.push(createData(equipment.name,equipment.equipmentId,<a href={URL+equipment.equipmentId}>QR code</a>));
+                    rowsData.push(createDataThree(equipment.name,equipment.equipmentId,<a href={URL+equipment.equipmentId}>QR code</a>));
                 }
                 setRows(rowsData);
             })
@@ -294,4 +301,4 @@ const EnhancedTable = () => {
     );
 }
 
-export default EnhancedTable;
+export default EquipmentTable;
