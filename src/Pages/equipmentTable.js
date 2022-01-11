@@ -125,7 +125,7 @@ const EquipmentTable = () => {
                 var rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     var equipment = data[i];
-                    rowsData.push(createData(equipment.name,equipment.equipmentId,equipment.hospitalId.hospitalId,<a href={URL+equipment.equipmentId}>QR code</a>));
+                    rowsData.push(createData(equipment.name,equipment.equipmentId,equipment.hospitalId.hospitalName,<a href={URL+equipment.equipmentId}>QR code</a>));
                 }
                 setRows(rowsData);
             })
@@ -144,6 +144,12 @@ const EquipmentTable = () => {
     },[changedData]);
     //renders only once for fetching selection options
 
+    const hospitalTag = (row) =>{
+        if (UserStatus.getLevel()===3){
+            return (<TableCell align="center">{row.hospital}</TableCell>);
+        }
+        return;
+    }
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -266,7 +272,7 @@ const EquipmentTable = () => {
                                                 {row.equipmentName}
                                             </TableCell>
                                             <TableCell align="center">{row.equipmentID}</TableCell>
-                                            <TableCell align="center">{row.hospital}</TableCell>
+                                            {hospitalTag(row)}
                                             <TableCell align="center">{row.QRCode}</TableCell>
                                         </TableRow>
                                     );

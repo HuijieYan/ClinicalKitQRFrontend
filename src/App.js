@@ -6,10 +6,10 @@ import LoginPage from './Pages/LoginPage';
 import UsergroupEditPage from './Pages/UsergroupEditPage';
 import HospitalCreationPage from './Pages/HospitalCreationPage';
 import TrustCreationPage from './Pages/TrustCreationPage';
-import EquipmentTable from './Pages/muiTable';
+import EquipmentTable from './Pages/equipmentTable';
 import MenuBar from './Component/MenuBar';
 import EquipmentQrCodePage from './Pages/EquipmentQrCodePage';
-import EditEquipment from "./Pages/EditEquipment";
+import UserGroupTable from './Pages/usergroupTable';
 
 function App() {
 
@@ -36,11 +36,11 @@ function App() {
               <Route exact path="/trustCreation">
                 <TrustCreationPage/>
               </Route>
-              <Route exact path="/editEquipment">
-                <EditEquipment/>
-              </Route>
               <Route exact path="/equipmentTable">
                 <EquipmentTable/>
+              </Route>
+              <Route exact path="/usergroupTable">
+                <UserGroupTable/>
               </Route>
               <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
                 return (<EquipmentQrCodePage id={props.match.params.id}/>)
