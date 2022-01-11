@@ -6,9 +6,10 @@ import LoginPage from './Pages/LoginPage';
 import UsergroupEditPage from './Pages/UsergroupEditPage';
 import HospitalCreationPage from './Pages/HospitalCreationPage';
 import TrustCreationPage from './Pages/TrustCreationPage';
-import EquipmentTable from './Pages/equipmentTable';
+import EquipmentTable from './Pages/muiTable';
 import MenuBar from './Component/MenuBar';
 import EquipmentQrCodePage from './Pages/EquipmentQrCodePage';
+import EditEquipment from "./Pages/EditEquipment";
 
 function App() {
 
@@ -34,6 +35,9 @@ function App() {
               </Route>
               <Route exact path="/trustCreation">
                 <TrustCreationPage/>
+              </Route>
+              <Route exact path="/editEquipment">
+                <EditEquipment/>
               </Route>
               <Route exact path="/equipmentTable">
                 <EquipmentTable/>
