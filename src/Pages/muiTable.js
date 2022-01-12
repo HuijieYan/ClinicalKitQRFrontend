@@ -10,22 +10,13 @@ const EquipmentTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
     const URL = "http://localhost:3000/equipment/qrcode/id=";
     const [rows,setRows] = useState([]);
+    //rows of data
     const [selected, setSelected] = useState([]);
 
     useEffect(()=>{
         var level = UserStatus.getLevel();
         console.log(UserStatus.getTrustId());
         console.log(UserStatus.getHospitalId());
-        if (level === 3){
-            GetData.getAllEquipmentByTrust(UserStatus.getTrustId()).then((data)=>{
-                var rowsData = [];
-                for (let i = 0;i<data.length;i++){
-                    var equipment = data[i];
-                    rowsData.push({name:equipment.name,id:equipment.equipmentId,hospital:equipment.hospitalId.hospitalName,qr:<a href={URL+equipment.equipmentId}>QR code</a>});
-                }
-                setRows(rowsData);
-            })
-        }
         if (level === 2){
             setColumns([
                 { name: "name",
@@ -57,15 +48,15 @@ const EquipmentTable = () => {
                     }
                 },
             ])
-            GetData.getAllEquipmentByHospital(UserStatus.getHospitalId()).then((data)=>{
-                var rowsData = [];
-                for (let i = 0;i<data.length;i++){
-                    var equipment = data[i];
-                    rowsData.push([equipment.name,equipment.equipmentId,equipment.hospitalId.hospitalName,<a href={URL+equipment.equipmentId}>QR code</a>]);
-                }
-                setRows(rowsData);
-            })
         }
+        GetData.getAllEquipmentByTrust(UserStatus.getTrustId()).then((data)=>{
+            var rowsData = [];
+            for (let i = 0;i<data.length;i++){
+                var equipment = data[i];
+                rowsData.push({name:equipment.name,id:equipment.equipmentId,hospital:equipment.hospitalId.hospitalName,qr:<a href={URL+equipment.equipmentId}>QR code</a>});
+            }
+            setRows(rowsData);
+        })
         //set trusts' selection option
     },[]);
     //renders only once for fetching selection options
