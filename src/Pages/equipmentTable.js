@@ -1,309 +1,138 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import { useState,useEffect } from "react";
-import EnhancedTableHead from "../Component/TableHead";
-import EnhancedTableToolbar from "../Component/TableToolbar";
-import GetData from '../Functions/GetData';
-import axios from 'axios';
-import UserStatus from '../Component/UserStatus';
-
-
-const URL = "http://localhost:3000/equipment/qrcode/id=";
-function createData(equipmentName, equipmentID, hospital, QRCode) {
-    return {
-        equipmentName,
-        equipmentID,
-        hospital,
-        QRCode,
-    };
-}
-
-function createDataThree(equipmentName, equipmentID, QRCode) {
-    return {
-        equipmentName,
-        equipmentID,
-        QRCode,
-    };
-}
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
+import MUIDataTable, { TableToolbar } from "mui-datatables";
+import { useEffect, useState } from "react";
+import { ThemeProvider } from "@mui/styles";
+import { createTheme } from "@mui/material/styles";
+import axios from "axios";
+import UserStatus from "../Component/UserStatus";
+import GetData from "../Functions/GetData";
 
 const EquipmentTable = () => {
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('');
-    const [selected, setSelected] = useState([]);
-    const [page, setPage] = useState(0);
-    const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState(25);
+    const [tableBodyHeight, setTableBodyHeight] = useState("100%");
+    const URL = "http://localhost:3000/equipment/qrcode/id=";
     const [rows,setRows] = useState([]);
-    const [changedData,setChangedData] = useState(false);
-    const [headCells,setHeadCells] = useState([
-        {
-            id: 'equipmentName',
-            disablePadding: true,
-            label: 'Equipment Name',
-        },
-        {
-            id: 'equipmentID',
-            disablePadding: false,
-            label: 'Equipment ID',
-        },
-        {
-            id: 'QRCode',
-            disablePadding: false,
-            label: 'QR Code',
-        },
-    ]);
+    //rows of data
+    const [selected, setSelected] = useState([]);
+    //array of indexes of selected rows
 
     useEffect(()=>{
         var level = UserStatus.getLevel();
-        if (level === 3){
-            setHeadCells([
-                {
-                    id: 'equipmentName',
-                    disablePadding: true,
-                    label: 'Equipment Name',
+        console.log(UserStatus.getTrustId());
+        console.log(UserStatus.getHospitalId());
+        if (level === 2){
+            setColumns([
+                { name: "name",
+                    label: "Equipment Name",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
                 },
-                {
-                    id: 'equipmentID',
-                    disablePadding: false,
-                    label: 'Equipment ID',
+                { name: "id",
+                    label: "Equipment ID",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
                 },
-                {
-                    id: 'hospital',
-                    disablePadding: false,
-                    label: 'Hospital',
+                { name: "hospital",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        display: false,
+                        viewColumns: false
+                    }
                 },
-                {
-                    id: 'QRCode',
-                    disablePadding: false,
-                    label: 'QR Code',
+                { name: "qr",
+                    label: "QR Code",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
                 },
             ]);
-            console.log(UserStatus.getTrustId());
-            console.log(UserStatus.getHospitalId());
-            GetData.getAllEquipmentByTrust(UserStatus.getTrustId()).then((data)=>{
-                var rowsData = [];
-                for (let i = 0;i<data.length;i++){
-                    var equipment = data[i];
-                    rowsData.push(createData(equipment.name,equipment.equipmentId,equipment.hospitalId.hospitalName,<a href={URL+equipment.equipmentId}>QR code</a>));
-                }
-                setRows(rowsData);
-            })
-        }
-        if (level === 2){
             GetData.getAllEquipmentByHospital(UserStatus.getHospitalId()).then((data)=>{
                 var rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     var equipment = data[i];
-                    rowsData.push(createDataThree(equipment.name,equipment.equipmentId,<a href={URL+equipment.equipmentId}>QR code</a>));
+                    rowsData.push({name:equipment.name,id:equipment.equipmentId,hospital:equipment.hospitalId.hospitalName,qr:<a href={URL+equipment.equipmentId}>QR code</a>});
                 }
                 setRows(rowsData);
-            })
+            });
+        }else if(level === 3){
+            GetData.getAllEquipmentByTrust(UserStatus.getTrustId()).then((data)=>{
+                var rowsData = [];
+                for (let i = 0;i<data.length;i++){
+                    var equipment = data[i];
+                    rowsData.push({name:equipment.name,id:equipment.equipmentId,hospital:equipment.hospitalId.hospitalName,qr:<a href={URL+equipment.equipmentId}>QR code</a>});
+                }
+                setRows(rowsData);
+            });
         }
+        
         //set trusts' selection option
-    },[changedData]);
+    },[]);
     //renders only once for fetching selection options
 
-    const hospitalTag = (row) =>{
-        if (UserStatus.getLevel()===3){
-            return (<TableCell align="center">{row.hospital}</TableCell>);
-        }
-        return;
-    }
+    const [columns,setColumns] = useState([
+        { name: "name",
+                    label: "Equipment Name",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
+                },
+                { name: "id",
+                    label: "Equipment ID",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
+                },
+                { name: "hospital",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
+                },
+                { name: "qr",
+                    label: "QR Code",
+                    options: {
+                        filterOptions: { fullWidth: true },
+                        viewColumns: false
+                    }
+                },
+    ]);
 
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
+    const options = {
+        filterType: "multiselect",
+        tableBodyHeight,
+        jumpToPage: true,
+        onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
+            setSelected(rowsSelected);
+        },
+        onRowsDelete:function(){
+            var rowLs = rows;
+            for (let i = 0;i<selected.length;i++){
+                var index = selected[i];
+                console.log("http://localhost:8080/equipment/delete/id="+rowLs[index].id)
+                axios.delete("http://localhost:8080/equipment/delete/id="+rowLs[index].id);
+                rowLs.splice(index,1);
+            }
+            setRows(rowLs);
+            setSelected([]);
+            return true;
+        },
     };
 
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.equipmentName);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, equipmentName) => {
-        const selectedIndex = selected.indexOf(equipmentName);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, equipmentName);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-
-        setSelected(newSelected);
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const handleChangeDense = (event) => {
-        setDense(event.target.checked);
-    };
-
-    const handleDelete = (event,rows,setRows, selected,setSelected) =>{
-        var rowLs = rows;
-        for (let i = 0;i<selected.length;i++){
-            var index = rowLs.indexOf(selected[i]);
-            axios.delete("http://localhost:8080/equipment/delete/id="+rowLs[i].equipmentID);
-            rowLs.splice(index,1);
-        }
-        setRows(rowLs);
-        setSelected([]);
-    }
-
-    const isSelected = (equipmentName) => selected.indexOf(equipmentName) !== -1;
-
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar handleDelete={handleDelete} setSelected={setSelected} setRows ={setRows} rows={rows} selected={selected} tableTitle={'Equipments'} />
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 400 }}
-                        aria-labelledby="tableTitle"
-                        size={dense ? 'small' : 'medium'}
-                    >
-                        <EnhancedTableHead
-                            headCells={headCells}
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                        />
-                        <TableBody>
-                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
-                            {stableSort(rows, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    const isItemSelected = isSelected(row.equipmentName);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-
-                                    return (
-                                        <TableRow
-                                            hover
-                                            onClick={(event) => handleClick(event, row.equipmentName)}
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row.equipmentName}
-                                            selected={isItemSelected}
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        'aria-labelledby': labelId,
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
-                                                align="center"
-                                            >
-                                                {row.equipmentName}
-                                            </TableCell>
-                                            <TableCell align="center">{row.equipmentID}</TableCell>
-                                            {hospitalTag(row)}
-                                            <TableCell align="center">{row.QRCode}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-            <FormControlLabel
-                control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Dense padding"
+        <ThemeProvider theme={createTheme()}>
+            <MUIDataTable
+                title={"Equipments"}
+                data={rows}
+                columns={columns}
+                options={options}
             />
-        </Box>
+        </ThemeProvider>
     );
 }
 
