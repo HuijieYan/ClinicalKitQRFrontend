@@ -103,8 +103,8 @@ const EquipmentTable = () => {
             var rowLs = rows;
             for (let i = 0;i<selected.length;i++){
                 var index = selected[i];
-                console.log("http://localhost:8080/equipment/delete/id="+rowLs[i].id)
-                axios.delete("http://localhost:8080/equipment/delete/id="+rowLs[i].id);
+                console.log("http://localhost:8080/equipment/delete/id="+rowLs[index].id)
+                axios.delete("http://localhost:8080/equipment/delete/id="+rowLs[index].id);
                 rowLs.splice(index,1);
             }
             setRows(rowLs);
