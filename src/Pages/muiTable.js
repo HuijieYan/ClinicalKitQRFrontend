@@ -12,6 +12,7 @@ const EquipmentTable = () => {
     const [rows,setRows] = useState([]);
     //rows of data
     const [selected, setSelected] = useState([]);
+    //array of indexes of selected rows
 
     useEffect(()=>{
         var level = UserStatus.getLevel();
@@ -101,7 +102,7 @@ const EquipmentTable = () => {
         onRowsDelete:function(){
             var rowLs = rows;
             for (let i = 0;i<selected.length;i++){
-                var index = rowLs[selected[i]];
+                var index = selected[i];
                 console.log("http://localhost:8080/equipment/delete/id="+rowLs[i].id)
                 axios.delete("http://localhost:8080/equipment/delete/id="+rowLs[i].id);
                 rowLs.splice(index,1);
