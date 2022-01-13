@@ -8,9 +8,10 @@ import HospitalCreationPage from './Pages/HospitalCreationPage';
 import TrustCreationPage from './Pages/TrustCreationPage';
 import MenuBar from './Component/MenuBar';
 import EquipmentQrCodePage from './Pages/EquipmentQrCodePage';
-import UserGroupTable from './Pages/UsergroupTable';
+import UsergroupTable from './Pages/UsergroupTable';
 import EquipmentTable from './Pages/EquipmentTable';
 import IssueTable from './Pages/IssueTable';
+import EditEquipment from "./Pages/EditEquipment";
 
 function App() {
 
@@ -41,10 +42,13 @@ function App() {
                 <EquipmentTable/>
               </Route>
               <Route exact path="/usergroupTable">
-                <UserGroupTable/>
+                <UsergroupTable/>
               </Route>
               <Route exact path="/issueTable">
                 <IssueTable/>
+              </Route>
+              <Route exact path="/editEquipment">
+                <EditEquipment/>
               </Route>
               <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
                 return (<EquipmentQrCodePage id={props.match.params.id}/>)
