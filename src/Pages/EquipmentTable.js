@@ -123,7 +123,7 @@ const EquipmentTable = () => {
 
     const customToolbar = () => {
         return(
-            <Tooltip title={"custom icon"}>
+            <Tooltip title={"Add New Equipment"}>
                 <IconButton onClick={addEquipment}>
                     <AddIcon/>
                 </IconButton>
