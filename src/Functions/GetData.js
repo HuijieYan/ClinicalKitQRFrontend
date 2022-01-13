@@ -51,7 +51,33 @@ class GetData{
             return response.data;
         });
     }
+
+    getAllGroupsByHospital(id){
+        var url = URL+"usergroup/hospitalId="+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
     
+    getAllIssuesByHospital(id){
+        var url = URL+"issues/hospitalId="+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
+
+    getAllIssuesByTrust(id){
+        var url = URL+"issues/trustId="+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
+
+    setIssueSolved(id,solved){
+        var url = URL+"issues/issueId="+id+" solved="+solved;
+        console.log(url);
+        return axios.post(url);
+    }
 }
  
 export default new GetData();

@@ -53,7 +53,7 @@ const ButtonList = () => {
                                     This is description!This is description!This is description!
                                     This is description!This is description!This is description!
                                 </p>
-                                <a href="/" className="btn btn-primary">Check</a>
+                                <Button onClick={()=>history.push("/issueTable")}>Check</Button>
                             </div>
                         </div>
                     </div>
