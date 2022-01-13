@@ -6,6 +6,10 @@ import axios from "axios";
 import UserStatus from "../Component/UserStatus";
 import GetData from "../Functions/GetData";
 import { Checkbox } from "@mui/material";
+import {useHistory} from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
 
 const IssueTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -16,8 +20,8 @@ const IssueTable = () => {
     const[solvedLs,setSolvedLs] = useState([]);
 
     useEffect(()=>{
-        var level = UserStatus.getLevel();
-        var solved = [];
+        const level = UserStatus.getLevel();
+        const solved = [];
         console.log(UserStatus.getTrustId());
         console.log(UserStatus.getHospitalId());
         if (level === 2){
@@ -74,9 +78,9 @@ const IssueTable = () => {
                 },
             ]);
             GetData.getAllIssuesByHospital(UserStatus.getHospitalId()).then((data)=>{
-                var rowsData = [];
+                const rowsData = [];
                 for (let i = 0;i<data.length;i++){
-                    var issue = data[i];
+                    const issue = data[i];
                     solved.push(issue.solved);
                     setSolvedLs(solved);
                     rowsData.push({id:issue.issueId,date:issue.date,description:issue.description,equipment:issue.equipmentId.name,
@@ -89,7 +93,7 @@ const IssueTable = () => {
             });
         }else if(level === 3){
             GetData.getAllIssuesByTrust(UserStatus.getTrustId()).then((data)=>{
-                var rowsData = [];
+                const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     var issue = data[i];
                     console.log(issue);
@@ -165,6 +169,21 @@ const IssueTable = () => {
     },
     ]);
 
+    const history = useHistory();
+    const addIssue = () => {
+        history.push("")
+    }
+
+    const customToolbar = () => {
+        return(
+            <Tooltip title={"Add New Issue"}>
+                <IconButton onClick={addIssue}>
+                    <AddIcon/>
+                </IconButton>
+            </Tooltip>
+        );
+    }
+
     const options = {
         filterType: "multiselect",
         tableBodyHeight,
@@ -173,9 +192,9 @@ const IssueTable = () => {
             setSelected(rowsSelected);
         },
         onRowsDelete:function(){
-            var rowLs = rows;
+            const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
-                var index = selected[i];
+                const index = selected[i];
                 console.log("http://localhost:8080/issues/delete/issueId="+rowLs[index]);
                 axios.delete("http://localhost:8080/issues/delete/issueId="+rowLs[index]);
                 rowLs.splice(index,1);
@@ -186,6 +205,7 @@ const IssueTable = () => {
             setSolvedLs(solvedLs);
             return true;
         },
+        customToolbar: customToolbar,
     };
 
     return (

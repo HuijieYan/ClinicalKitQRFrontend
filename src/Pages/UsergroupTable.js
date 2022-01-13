@@ -5,8 +5,12 @@ import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 import UserStatus from "../Component/UserStatus";
 import GetData from "../Functions/GetData";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import {useHistory} from "react-router-dom";
 
-const UserGroupTable = () => {
+const UsergroupTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
     const [rows,setRows] = useState([]);
     //rows of data
@@ -14,7 +18,7 @@ const UserGroupTable = () => {
     //array of indexes of selected rows
 
     useEffect(()=>{
-        var level = UserStatus.getLevel();
+        const level = UserStatus.getLevel();
         console.log(UserStatus.getTrustId());
         console.log(UserStatus.getHospitalId());
         if (level === 2){
@@ -56,18 +60,18 @@ const UserGroupTable = () => {
                 },
             ]);
             GetData.getAllGroupsByHospital(UserStatus.getHospitalId()).then((data)=>{
-                var rowsData = [];
+                const rowsData = [];
                 for (let i = 0;i<data.length;i++){
-                    var group = data[i];
+                    const group = data[i];
                     rowsData.push({name:group[0],username:group[1],role:group[2],hospital:group[3],hospitalId:group[4]});
                 }
                 setRows(rowsData);
             });
         }else if(level === 3){
             GetData.getAllGroupsByTrust(UserStatus.getTrustId()).then((data)=>{
-                var rowsData = [];
+                const rowsData = [];
                 for (let i = 0;i<data.length;i++){
-                    var group = data[i];
+                    const group = data[i];
                     console.log(group);
                     rowsData.push({name:group[0],username:group[1],role:group[2],hospital:group[3],hospitalId:group[4]});
                 }
@@ -114,6 +118,21 @@ const UserGroupTable = () => {
         },
     ]);
 
+    const history = useHistory();
+    const addUserGroup = () => {
+        history.push("")
+    }
+
+    const customToolbar = () => {
+        return(
+            <Tooltip title={"Add User Group"}>
+                <IconButton onClick={addUserGroup}>
+                    <AddIcon/>
+                </IconButton>
+            </Tooltip>
+        );
+    }
+
     const options = {
         filterType: "multiselect",
         tableBodyHeight,
@@ -122,9 +141,9 @@ const UserGroupTable = () => {
             setSelected(rowsSelected);
         },
         onRowsDelete:function(){
-            var rowLs = rows;
+            const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
-                var index = selected[i];
+                const index = selected[i];
                 console.log("http://localhost:8080/usergroup/delete/hospitalId="+rowLs[index].hospitalId+" username="+rowLs[index].username);
                 axios.delete("http://localhost:8080/usergroup/delete/hospitalId="+rowLs[index].hospitalId+" username="+rowLs[index].username);
                 rowLs.splice(index,1);
@@ -133,6 +152,7 @@ const UserGroupTable = () => {
             setSelected([]);
             return true;
         },
+        customToolbar: customToolbar,
     };
 
     return (
@@ -147,4 +167,4 @@ const UserGroupTable = () => {
     );
 }
 
-export default UserGroupTable;
+export default UsergroupTable;
