@@ -1,7 +1,9 @@
+import { Checkbox, FormControlLabel } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button,Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import UserStatus from "../Component/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
@@ -10,21 +12,21 @@ const UsergroupEditPage = () => {
     const [groupName, setGroupname] = useState("");
     const [groupUsername, setGroupUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [trusts,setTrusts] = useState([]);
-    const [trustId,setTrustId] = useState("-1");
     const [hospitalId,setHospitalId] = useState("-1");
     const [hospitals,setHospitals] = useState([]);
+    const [isAdmin,setIsAdmin] = useState(false);
+    const trustId = UserStatus.getTrustId();
     const url = "http://localhost:8080/usergroup/register/";
     
     async function submit (history){
-        if (trustId === "-1"||hospitalId === "-1" || Auxiliary.isEmpty(groupName)|| Auxiliary.isEmpty(groupUsername)||Auxiliary.isEmpty(password)){
+        if (hospitalId === "-1" || Auxiliary.isEmpty(groupName)|| Auxiliary.isEmpty(groupUsername)||Auxiliary.isEmpty(password)){
             return;
         }
-        var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password;
+        var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password+" isAdmin="+isAdmin;
         axios.post(postUrl).then((response)=>{
             const successful = response.data;
             if (successful){
-                history.push("/home");
+                history.push("/usergroupTable");
             }else{
                 history.push("/loginFail");
                 //waiting for invalid page to be wrote
@@ -32,32 +34,40 @@ const UsergroupEditPage = () => {
         });
     }
     
+    
+
     useEffect(()=>{
-        GetData.getAllTrusts().then((data)=>{setTrusts(data)});
-        //set trusts' selection option
-        GetData.getAllHospitals().then((data)=>{setHospitals(data)});
+        GetData.getAllHospitalsByTrust(trustId).then((data)=>{setHospitals(data)});
     },[]);
     //renders only once for fetching selection options
+
+    const getOptions = ()=>{
+        var level = UserStatus.getLevel();
+        if (level === 3){
+            return (
+            <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
+                <option value="-1" label="Select Hospital"/>
+                {hospitals.map(hospital=>(
+                    <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
+                ))}
+            </select>
+            )
+        }
+        else if (level === 2){
+            var hospital = GetData.getHospitalById(UserStatus.getHospitalId());
+            return (
+            <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
+                <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
+            </select>
+                )
+        }
+    }
 
     return (  
         <div>
             <Form>
-                <Form.Label>Trust</Form.Label>
-                <select value={trustId} onChange={(e)=>setTrustId(e.target.value)}>
-                    <option value="-1" label="Select Trust"/>
-                    {trusts.map(trust=>(
-                        <option key={trust.trustId} value={trust.trustId} label={trust.trustName}/>
-                    ))}
-                </select>
-            </Form>
-            <Form>
                 <Form.Label>Hostpital</Form.Label>
-                <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
-                    <option value="-1" label="Select Hospital"/>
-                    {hospitals.map(hospital=>(
-                        <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
-                    ))}
-                </select>
+                {getOptions()}   
             </Form>
             <Form>
                 <Form.Group id="groupName">
@@ -77,6 +87,7 @@ const UsergroupEditPage = () => {
                     <Form.Control type="password" placeholder="Enter Password" value={password} onChange={(e)=>setPassword(e.target.value)}></Form.Control>
                 </Form.Group>
             </Form>
+            <FormControlLabel control={<Checkbox value={isAdmin} onChange={(e)=>{setIsAdmin(e.target.checked)}}/>} label="Is Administrator"/>
             <Button id="submitButton" type="submit" onClick={()=>submit(history)}>Submit</Button>
         </div>
     );

@@ -8,6 +8,7 @@ import GetData from "../Functions/GetData";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import {useHistory} from "react-router-dom";
 
 const UsergroupTable = () => {
@@ -120,16 +121,23 @@ const UsergroupTable = () => {
 
     const history = useHistory();
     const addUserGroup = () => {
-        history.push("")
+        history.push("/editUserGroup");
     }
 
     const customToolbar = () => {
         return(
+            <div>
             <Tooltip title={"Add User Group"}>
                 <IconButton onClick={addUserGroup}>
                     <AddIcon/>
                 </IconButton>
             </Tooltip>
+            <Tooltip title={"Add Hospital"}>
+            <IconButton onClick={addUserGroup}>
+                <AddBusinessIcon/>
+            </IconButton>
+            </Tooltip>
+        </div>
         );
     }
 

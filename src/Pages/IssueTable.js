@@ -170,19 +170,6 @@ const IssueTable = () => {
     ]);
 
     const history = useHistory();
-    const addIssue = () => {
-        history.push("")
-    }
-
-    const customToolbar = () => {
-        return(
-            <Tooltip title={"Add New Issue"}>
-                <IconButton onClick={addIssue}>
-                    <AddIcon/>
-                </IconButton>
-            </Tooltip>
-        );
-    }
 
     const options = {
         filterType: "multiselect",
@@ -205,7 +192,6 @@ const IssueTable = () => {
             setSolvedLs(solvedLs);
             return true;
         },
-        customToolbar: customToolbar,
     };
 
     return (

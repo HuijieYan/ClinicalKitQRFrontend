@@ -78,6 +78,11 @@ class GetData{
         console.log(url);
         return axios.post(url);
     }
+
+    getHospitalById(id){
+        var url = URL+"hospitals/hospitalId="+id;
+        return axios.get(url);
+    }
 }
  
 export default new GetData();
