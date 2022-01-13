@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import {useHistory} from "react-router-dom";
+import {Button} from "@mui/material";
 
 const UsergroupTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -126,18 +127,18 @@ const UsergroupTable = () => {
 
     const customToolbar = () => {
         return(
-            <div>
-            <Tooltip title={"Add User Group"}>
-                <IconButton onClick={addUserGroup}>
-                    <AddIcon/>
-                </IconButton>
-            </Tooltip>
-            <Tooltip title={"Add Hospital"}>
-            <IconButton onClick={addUserGroup}>
-                <AddBusinessIcon/>
-            </IconButton>
-            </Tooltip>
-        </div>
+            <>
+                <Tooltip title={"Add User Group"}>
+                    <IconButton onClick={addUserGroup}>
+                        <AddIcon/>
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={"Add Hospital"}>
+                    <IconButton onClick={addUserGroup}>
+                        <AddBusinessIcon/>
+                    </IconButton>
+                </Tooltip>
+            </>
         );
     }
 
