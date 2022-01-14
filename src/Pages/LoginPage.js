@@ -4,7 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
-import UserStatus from "../Component/UserStatus";
+import { setLevel, setTrustID,setHospitalID } from "../Component/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
@@ -35,9 +35,9 @@ const LoginPage = () => {
             var resultArray = response.data;
             if (resultArray.length > 0) {
                 history.push("/home");
-                UserStatus.setLevel(resultArray[0]);
-                UserStatus.setHospitalID(resultArray[1]);
-                UserStatus.setTrustID(resultArray[2]);
+                setLevel(resultArray[0]);
+                setHospitalID(resultArray[1]);
+                setTrustID(resultArray[2]);
             } else {
                 setMessage("fail!!");
                 setPassword("");

@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 import axios from "axios";
-import UserStatus from "../Component/UserStatus";
 import GetData from "../Functions/GetData";
 import { Checkbox } from "@mui/material";
 import {useHistory} from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
+import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
 
 const IssueTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -20,10 +20,10 @@ const IssueTable = () => {
     const[solvedLs,setSolvedLs] = useState([]);
 
     useEffect(()=>{
-        const level = UserStatus.getLevel();
+        const level = getLevel();
         const solved = [];
-        console.log(UserStatus.getTrustId());
-        console.log(UserStatus.getHospitalId());
+        console.log(getTrustId());
+        console.log(getHospitalId());
         if (level === 2){
             setColumns([
                 { name: "id",
@@ -77,7 +77,7 @@ const IssueTable = () => {
                     }
                 },
             ]);
-            GetData.getAllIssuesByHospital(UserStatus.getHospitalId()).then((data)=>{
+            GetData.getAllIssuesByHospital(getHospitalId()).then((data)=>{
                 const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     const issue = data[i];
@@ -92,7 +92,7 @@ const IssueTable = () => {
                 
             });
         }else if(level === 3){
-            GetData.getAllIssuesByTrust(UserStatus.getTrustId()).then((data)=>{
+            GetData.getAllIssuesByTrust(getTrustId()).then((data)=>{
                 const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     var issue = data[i];

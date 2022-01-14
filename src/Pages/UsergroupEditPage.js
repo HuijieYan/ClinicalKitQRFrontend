@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button,Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import UserStatus from "../Component/UserStatus";
+import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
@@ -15,7 +15,7 @@ const UsergroupEditPage = () => {
     const [hospitalId,setHospitalId] = useState("-1");
     const [hospitals,setHospitals] = useState([]);
     const [isAdmin,setIsAdmin] = useState(false);
-    const trustId = UserStatus.getTrustId();
+    const trustId = getTrustId();
     const url = "http://localhost:8080/usergroup/register/";
     
     async function submit (history){
@@ -42,7 +42,7 @@ const UsergroupEditPage = () => {
     //renders only once for fetching selection options
 
     const getOptions = ()=>{
-        var level = UserStatus.getLevel();
+        var level = getLevel();
         if (level === 3){
             return (
             <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
@@ -54,7 +54,7 @@ const UsergroupEditPage = () => {
             )
         }
         else if (level === 2){
-            var hospital = GetData.getHospitalById(UserStatus.getHospitalId());
+            var hospital = GetData.getHospitalById(getHospitalId());
             return (
             <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
                 <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>

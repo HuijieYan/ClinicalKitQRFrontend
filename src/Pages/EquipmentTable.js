@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 import axios from "axios";
-import UserStatus from "../Component/UserStatus";
+import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
 import GetData from "../Functions/GetData";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
@@ -19,9 +19,9 @@ const EquipmentTable = () => {
     //array of indexes of selected rows
 
     useEffect(()=>{
-        const level = UserStatus.getLevel();
-        console.log(UserStatus.getTrustId());
-        console.log(UserStatus.getHospitalId());
+        const level = getLevel();
+        console.log(getTrustId());
+        console.log(getHospitalId());
         if (level === 2){
             setColumns([
                 { name: "name",
@@ -53,7 +53,7 @@ const EquipmentTable = () => {
                     }
                 },
             ]);
-            GetData.getAllEquipmentByHospital(UserStatus.getHospitalId()).then((data)=>{
+            GetData.getAllEquipmentByHospital(getHospitalId()).then((data)=>{
                 const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     const equipment = data[i];
@@ -67,7 +67,7 @@ const EquipmentTable = () => {
                 setRows(rowsData);
             });
         }else if(level === 3){
-            GetData.getAllEquipmentByTrust(UserStatus.getTrustId()).then((data)=>{
+            GetData.getAllEquipmentByTrust(getTrustId()).then((data)=>{
                 const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     const equipment = data[i];

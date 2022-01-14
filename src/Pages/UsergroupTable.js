@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 import axios from "axios";
-import UserStatus from "../Component/UserStatus";
 import GetData from "../Functions/GetData";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
@@ -11,6 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import {useHistory} from "react-router-dom";
 import {Button} from "@mui/material";
+import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
 
 const UsergroupTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -20,9 +20,9 @@ const UsergroupTable = () => {
     //array of indexes of selected rows
 
     useEffect(()=>{
-        const level = UserStatus.getLevel();
-        console.log(UserStatus.getTrustId());
-        console.log(UserStatus.getHospitalId());
+        const level = getLevel();
+        console.log(getTrustId());
+        console.log(getHospitalId());
         if (level === 2){
             setColumns([
                 { name: "name",
@@ -61,7 +61,7 @@ const UsergroupTable = () => {
                     }
                 },
             ]);
-            GetData.getAllGroupsByHospital(UserStatus.getHospitalId()).then((data)=>{
+            GetData.getAllGroupsByHospital(getHospitalId()).then((data)=>{
                 const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     const group = data[i];
@@ -70,7 +70,7 @@ const UsergroupTable = () => {
                 setRows(rowsData);
             });
         }else if(level === 3){
-            GetData.getAllGroupsByTrust(UserStatus.getTrustId()).then((data)=>{
+            GetData.getAllGroupsByTrust(getTrustId()).then((data)=>{
                 const rowsData = [];
                 for (let i = 0;i<data.length;i++){
                     const group = data[i];
