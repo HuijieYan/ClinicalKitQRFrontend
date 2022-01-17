@@ -6,9 +6,6 @@ import axios from "axios";
 import GetData from "../Functions/GetData";
 import { Checkbox } from "@mui/material";
 import {useHistory} from "react-router-dom";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
 import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
 
 const IssueTable = () => {

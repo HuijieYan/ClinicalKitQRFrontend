@@ -83,6 +83,13 @@ class GetData{
         var url = URL+"hospitals/hospitalId="+id;
         return axios.get(url);
     }
+
+    getAllAdmins(){
+        var url = URL+"usergroup/all/admins";
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
 export default new GetData();

@@ -15,6 +15,7 @@ import EditEquipment from "./Pages/EditEquipment";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './Storage/storeConfiguration';
+import ContactBook from './Pages/contactBook';
 
 function App() {
   
@@ -55,6 +56,9 @@ function App() {
                   </Route>
                   <Route exact path="/editEquipment">
                     <EditEquipment/>
+                  </Route>
+                  <Route exact path="/contactBook">
+                    <ContactBook/>
                   </Route>
                   <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
                     return (<EquipmentQrCodePage id={props.match.params.id}/>)

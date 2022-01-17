@@ -72,6 +72,7 @@ const UsergroupTable = () => {
         }else if(level === 3){
             GetData.getAllGroupsByTrust(getTrustId()).then((data)=>{
                 const rowsData = [];
+                console.log(data);
                 for (let i = 0;i<data.length;i++){
                     const group = data[i];
                     console.log(group);
