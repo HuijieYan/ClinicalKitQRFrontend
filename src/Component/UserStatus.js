@@ -1,10 +1,13 @@
-import { storeHospitalId, storeLevel, storeName, storeTrustId } from "../Storage/Actions/actions";
+import { storeHospitalId, storeLevel, storeName, storeTrustId, storeUsername } from "../Storage/Actions/actions";
 import { store } from "../Storage/storeConfiguration";
 
 
 
+export function setUserName(name){
+    store.dispatch(storeUsername(name));
+}
+
 export function setName(name){
-    console.log(name);
     store.dispatch(storeName(name));
 }
 
@@ -28,6 +31,10 @@ export function getLevel(){
 
 export function getName(){
     return store.getState().name;
+}
+
+export function getUserName(){
+    return store.getState().username;
 }
 
 export function getTrustId(){

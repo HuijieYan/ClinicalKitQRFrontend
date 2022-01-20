@@ -90,6 +90,13 @@ class GetData{
             return response.data;
         });
     }
+
+    getReceivedSharings(id,username){
+        var url = URL+"mail/hospitalId="+id+" username="+username;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
 export default new GetData();

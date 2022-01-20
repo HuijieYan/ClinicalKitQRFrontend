@@ -1,3 +1,16 @@
+export const storeUsername = (name) => {
+    return{
+        type: 'SET_USERNAME',
+        data: name
+    }
+}
+
+export const getUsername = () => {
+    return{
+        type: 'GET_USERNAME'
+    }
+}
+
 export const storeName = (name) => {
     return{
         type: 'SET_NAME',

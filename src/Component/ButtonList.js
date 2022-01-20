@@ -63,6 +63,38 @@ const ButtonList = () => {
                                 <div className="h1 mb-3">
                                     <HiOutlineDocumentReport />
                                 </div>
+                                <h3 className="card-title mb-3">Conatct Book</h3>
+                                <p className="card-text">
+                                    This is description!This is description!This is description!
+                                    This is description!This is description!This is description!
+                                </p>
+                                <Button onClick={()=>history.push("/contactbook")}>Check</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md">
+                        <div className="card bg-dark text-light">
+                            <div className="card-body text-center">
+                                <div className="h1 mb-3">
+                                    <HiOutlineDocumentReport />
+                                </div>
+                                <h3 className="card-title mb-3">Inbox</h3>
+                                <p className="card-text">
+                                    This is description!This is description!This is description!
+                                    This is description!This is description!This is description!
+                                </p>
+                                <Button onClick={()=>history.push("/inbox")}>Check</Button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md">
+                        <div className="card bg-dark text-light">
+                            <div className="card-body text-center">
+                                <div className="h1 mb-3">
+                                    <HiOutlineDocumentReport />
+                                </div>
                                 <h3 className="card-title mb-3">Produce Report</h3>
                                 <p className="card-text">
                                     This is description!This is description!This is description!
@@ -72,7 +104,6 @@ const ButtonList = () => {
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </section>
      );

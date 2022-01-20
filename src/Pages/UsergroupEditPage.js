@@ -15,6 +15,7 @@ const UsergroupEditPage = () => {
     const [hospitalId,setHospitalId] = useState("-1");
     const [hospitals,setHospitals] = useState([]);
     const [email,setEmail] = useState("");
+    const [speciality,setSpeciality] = useState("");
     const [isAdmin,setIsAdmin] = useState(false);
     const trustId = getTrustId();
     const url = "http://localhost:8080/usergroup/register/";
@@ -23,7 +24,7 @@ const UsergroupEditPage = () => {
         if (hospitalId === "-1" || Auxiliary.isEmpty(groupName)|| Auxiliary.isEmpty(groupUsername)||Auxiliary.isEmpty(password)){
             return;
         }
-        var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password+" isAdmin="+isAdmin+" email="+email;
+        var postUrl = url+"trustID="+trustId+" hospitalID="+hospitalId+" name="+groupName+" username="+groupUsername+" password="+password+" isAdmin="+isAdmin+" email="+email+" speciality="+speciality;
         axios.post(postUrl).then((response)=>{
             const successful = response.data;
             if (successful){
@@ -80,6 +81,12 @@ const UsergroupEditPage = () => {
                 <Form.Group id="email">
                     <Form.Label>Email Address(optional)</Form.Label>
                     <Form.Control type="email" placeholder="Enter Email Address" value={email} onChange={(e)=>setEmail(e.target.value)}></Form.Control>
+                </Form.Group>
+            </Form>
+            <Form>
+                <Form.Group id="speciality">
+                    <Form.Label>Speciality(optional)</Form.Label>
+                    <Form.Control type="speciality" placeholder="Enter speciality" value={speciality} onChange={(e)=>setSpeciality(e.target.value)}></Form.Control>
                 </Form.Group>
             </Form>
             <Form>

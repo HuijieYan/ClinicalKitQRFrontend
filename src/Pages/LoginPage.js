@@ -4,7 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { setLevel, setTrustID,setHospitalID } from "../Component/UserStatus";
+import { setLevel, setTrustID,setHospitalID, setUserName, setName } from "../Component/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
@@ -38,6 +38,8 @@ const LoginPage = () => {
                 setLevel(resultArray[0]);
                 setHospitalID(resultArray[1]);
                 setTrustID(resultArray[2]);
+                setUserName(username);
+                setName(resultArray[3]);
             } else {
                 setMessage("fail!!");
                 setPassword("");
