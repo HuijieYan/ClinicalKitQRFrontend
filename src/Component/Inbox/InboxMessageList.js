@@ -6,42 +6,39 @@ import { Fragment, useState } from "react";
 
 const InboxMessageList = ({data}) => {
     const [displayMailList,setDisplayMailList] = useState([]);
+    const [equipments,SetEquipments] = useState([]);
     const [vacant,setVacant] = useState(true);
     const [currentMailId,setCurrentMailId] = useState(-1);
     const [description,setDescription] = useState("Select An Sharing");
     const [title,setTitle] = useState("");
-
+    
     const handleOpenMail = useCallback((id)=>{
         //console.log(data);
         //console.log(id);
         
         var mailData = data[id];
-        if (vacant){
-            console.log("vacant is true");
+        if (vacant || currentMailId !== id){
             var mail = mailData[0];
             setCurrentMailId(id);
             setTitle(mail.title);
             setDescription(mail.description);
             setVacant(false);
+            SetEquipments(mail.equipments);
+        //if vacant, display clicked message
         }else{
-            console.log("vacant is false");
-            if (currentMailId === id){
-                setTitle("");
-                setDescription("Select a Sharing");
-                setCurrentMailId(-1);
-                setVacant(true);
-                //the mail details disappears and this section becomes vacant
-            }else{
-                setCurrentMailId(id);
-                setTitle(mailData[0].title);
-                setDescription(mailData[0].description);
-            }
+            setTitle("");
+            setDescription("Select a Sharing");
+            setCurrentMailId(-1);
+            setVacant(true);
+            SetEquipments([]);
+            //the mail details disappears and this section becomes vacant
         }
         console.log(currentMailId);
     },[vacant,currentMailId,data]);
-    //usecallbacks rerenders when vacanr and currentMailId changes by set states 
+    //usecallbacks rerenders when vacant and currentMailId changes 
     
     useEffect(()=>{
+        //setting the list of sharings
         var rows = [];
 
         if (data.length === 0){
@@ -53,8 +50,8 @@ const InboxMessageList = ({data}) => {
             var sender = data[i][1];
             var senderinfo = sender.name;
             var descriptionSlice = String(mail.description).substring(0,48);
-            if (String(sender.specialty).length > 0){
-                senderinfo = sender.name + "-"+sender.specialty;
+            if (String(sender.specialty.specialty).length > 0){
+                senderinfo = sender.name + "-"+sender.specialty.specialty;
             }
             rows.push(
                 <ListItem alignItems="flex-start" key={i}>
@@ -93,7 +90,7 @@ const InboxMessageList = ({data}) => {
                     {displayMailList}
                 </List> 
             </Box>
-            <InboxDetailedMessage title={title} description={description} vacant={vacant}/>
+            <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments}/>
         </div>
      );
 }

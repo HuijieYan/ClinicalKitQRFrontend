@@ -51,13 +51,6 @@ class GetData{
             return response.data;
         });
     }
-
-    getAllGroupsByHospital(id){
-        var url = URL+"usergroup/hospitalId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
-    }
     
     getAllIssuesByHospital(id){
         var url = URL+"issues/hospitalId="+id;
@@ -92,7 +85,7 @@ class GetData{
     }
 
     getReceivedSharings(id,username){
-        var url = URL+"mail/hospitalId="+id+" username="+username;
+        var url = URL+"mail/receiver/hospitalId="+id+" username="+username;
         return axios.get(url).then((response)=>{
             return response.data;
         });
