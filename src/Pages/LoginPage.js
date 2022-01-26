@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
 import './LoginPage.css';
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, FloatingLabel } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -48,49 +48,59 @@ const LoginPage = () => {
     }
 
     return (
-        <div className = "inputField">
-            <h1>Website</h1>
-            <Form>
-                <Form.Label>Trust</Form.Label>
-                <select value={trustId} onChange={(e)=>setTrustId(e.target.value)}>
-                    <option value="-1" label="Select Trust"/>
-                    {trusts.map(trust=>(
-                        <option key={trust.trustId} value={trust.trustId} label={trust.trustName}/>
-                    ))}
-                </select>
-            </Form>
-            <Form>
-                <Form.Label>Hostpital</Form.Label>
-                <select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
-                    <option value="-1" label="Select Hospital"/>
-                    {hospitals.map(hospital=>(
-                        <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
-                    ))}
-                </select>
-            </Form>
-            <Form>
-                <Form.Group id="username">
-                    <Form.Label>Departmental Username</Form.Label>
-                    <Form.Control type="username"
-                                  placeholder="Enter Departmental Username"
-                                  value={username}
-                                  onChange={(e) => setUsername(e.target.value)}/>
-                </Form.Group>
-            </Form>
-            <Form>
-                <Form.Group id="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password"
-                                  placeholder="Department Password"
-                                  value={password}
-                                  onChange={(e) => setPassword(e.target.value)}/>
-                </Form.Group>
-            </Form>
-            <Button id="loginButton" type="submit" onClick={()=>login()}>Log in</Button>
-            <Form>
-                <Form.Label>{failMessage}</Form.Label>
-            </Form>
-        </div>
+        <Container fluid="md">
+            <Row className="mb-3">
+                <h1>Sign In</h1>
+            </Row>
+            <div className = "inputField">
+                <Form>
+                    <Row className="mb-3">
+                        <Form.Group>
+                            <Form.Label>Trust: </Form.Label>
+                            <Form.Select aria-label="Select Trust" value={trustId} onChange={(e)=>setTrustId(e.target.value)}>
+                            <option defaultValue="-1" disabled>Select Trust</option>   
+                            {trusts.map(trust=>(
+                                    <option key={trust.trustId} value={trust.trustId} label={trust.trustName}/>
+                                ))}
+
+                            </Form.Select>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group>
+                            <Form.Label>Hospital: </Form.Label>
+                            <Form.Select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
+                            <option defaultValue="-1" disabled>Select Hospital</option>  
+                                {hospitals.map(hospital=>(
+                                    <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+                    </Row>
+                <Row className="mb-3">
+                    <Form.Group as={Col} id="username">
+                        <FloatingLabel controlId="floatingUsername" label="Department Username">
+                        <Form.Control type="username"
+                                    placeholder="Enter Departmental Username"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}/>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group as={Col} id="password">
+                        <FloatingLabel controlId="floatingPassword" label="Department Password">
+                            <Form.Control type="password"
+                                        placeholder="Department Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}/>
+                        </FloatingLabel>
+                    </Form.Group>
+                </Row>
+                    
+                <Button id="loginButton" type="submit" onClick={()=>login()}>Log in</Button>
+                    <Form.Label>{failMessage}</Form.Label>
+                </Form>
+            </div>
+        </Container>
     );
 }
 
