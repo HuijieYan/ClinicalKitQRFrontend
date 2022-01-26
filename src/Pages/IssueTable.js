@@ -17,7 +17,7 @@ const IssueTable = () => {
     const[solvedLs,setSolvedLs] = useState([]);
 
     useEffect(()=>{
-        const level = getLevel();
+        var level = parseInt(getLevel());
         const solved = [];
         console.log(getTrustId());
         console.log(getHospitalId());

@@ -20,7 +20,7 @@ const UsergroupTable = () => {
     //array of indexes of selected rows
 
     useEffect(()=>{
-        const level = getLevel();
+        var level = parseInt(getLevel());
         console.log(getTrustId());
         console.log(getHospitalId());
         if (level === 2){

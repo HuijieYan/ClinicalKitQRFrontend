@@ -68,7 +68,7 @@ const UsergroupEditPage = () => {
     return (  
         <div>
             <Form>
-                <Form.Label>Hospital</Form.Label>
+                <Form.Label>Hostpital</Form.Label>
                 {getOptions()}   
             </Form>
             <Form>
