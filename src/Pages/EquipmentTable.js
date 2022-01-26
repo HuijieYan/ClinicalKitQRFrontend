@@ -52,6 +52,16 @@ const EquipmentTable = () => {
                         viewColumns: false
                     }
                 },
+                { name: "Operation",
+                    options: {
+                        filter: false,
+                        customBodyRender: (value, tableMeta, updateValue) => {
+                            return (
+                                <a href={value} style={{textDecoration: "none"}}>Edit</a>
+                            );
+                        }
+                    }
+                },
             ]);
             GetData.getAllEquipmentByHospital(getHospitalId()).then((data)=>{
                 const rowsData = [];
@@ -114,6 +124,18 @@ const EquipmentTable = () => {
                         viewColumns: false
                     }
                 },
+                { name: "Operation",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        customBodyRender: (value, tableMeta, updateValue) => {
+                            return (
+                                <a href={value} style={{textDecoration: "none"}}>Edit</a>
+                            );
+                        }
+                    }
+                },
+
     ]);
 
     const history = useHistory();

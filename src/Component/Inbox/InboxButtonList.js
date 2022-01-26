@@ -25,54 +25,52 @@ const InboxButtonList = ({options}) => {
         setOpen(false);
       };
 
-    return ( 
-    <div>
-        <ButtonGroup ref={anchorRef}>
-                    <Button>{options[index]}</Button>
-                    <Button
-                    size="small"
-                    aria-label="select merge strategy"
-                    aria-haspopup="menu"
-                    onClick={handleOpenList()}
+    return (
+        <>
+            <ButtonGroup ref={anchorRef}>
+                <Button>{options[index]}</Button>
+                <Button size="small" onClick={handleOpenList()}>
+                    <ArrowDropDownIcon/>
+                </Button>
+            </ButtonGroup>
+            <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            role={undefined}
+            transition
+            disablePortal
+            >
+
+            {
+                ({ TransitionProps, placement }) => (
+                    <Grow
+                        {...TransitionProps}
+                        style={{
+                        transformOrigin:
+                            placement === 'bottom' ? 'center top' : 'center bottom',
+                        }}
                     >
-                        <ArrowDropDownIcon />
-                    </Button>
-                </ButtonGroup>
-                <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-                >
-                {({ TransitionProps, placement }) => (
-                <Grow
-                    {...TransitionProps}
-                    style={{
-                    transformOrigin:
-                        placement === 'bottom' ? 'center top' : 'center bottom',
-                    }}
-                >
-                    <Paper>
-                    <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList id="split-button-menu">
-                        {options.map((option, clickIndex) => (
-                            <MenuItem
-                            key={option}
-                            selected={clickIndex === index}
-                            onClick={(event) => handleClick(event, clickIndex)}
-                            >
-                            {option}
-                            </MenuItem>
-                        ))}
-                        </MenuList>
-                    </ClickAwayListener>
-                    </Paper>
-                </Grow>
-                )}
-                </Popper>
-        </div>
-     );
+                        <Paper>
+                            <ClickAwayListener onClickAway={handleClose}>
+                                <MenuList>
+                                {options.map((option, clickIndex) => (
+                                    <MenuItem
+                                    key={option}
+                                    selected={clickIndex === index}
+                                    onClick={(event) => handleClick(event, clickIndex)}
+                                    >
+                                    {option}
+                                    </MenuItem>
+                                ))}
+                                </MenuList>
+                            </ClickAwayListener>
+                        </Paper>
+                    </Grow>
+                )
+            }
+            </Popper>
+        </>
+    );
 }
  
 export default InboxButtonList;

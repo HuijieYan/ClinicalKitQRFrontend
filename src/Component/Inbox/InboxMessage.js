@@ -15,10 +15,8 @@ const InboxMessage = () => {
     },[]);
 
 
-    return ( 
-        <div>
-            <InboxMessageList data={data}/>
-        </div>
+    return (
+        <InboxMessageList data={data}/>
     );
 }
  

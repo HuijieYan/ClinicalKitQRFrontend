@@ -15,10 +15,10 @@ const InboxMessageList = ({data}) => {
     const handleOpenMail = useCallback((id)=>{
         //console.log(data);
         //console.log(id);
-        
-        var mailData = data[id];
+
+        const mailData = data[id];
         if (vacant || currentMailId !== id){
-            var mail = mailData[0];
+            const mail = mailData[0];
             setCurrentMailId(id);
             setTitle(mail.title);
             setDescription(mail.description);
@@ -39,23 +39,23 @@ const InboxMessageList = ({data}) => {
     
     useEffect(()=>{
         //setting the list of sharings
-        var rows = [];
+        const rows = [];
 
         if (data.length === 0){
             rows.push(<ListItem alignItems="flex-start" key={0}><Typography>No sharings received yet</Typography></ListItem>);
         }
             
         for (let i = 0;i<data.length;i++){
-            var mail = data[i][0];
-            var sender = data[i][1];
-            var senderinfo = sender.name;
-            var descriptionSlice = String(mail.description).substring(0,48);
+            const mail = data[i][0];
+            const sender = data[i][1];
+            let senderinfo = sender.name;
+            const descriptionSlice = String(mail.description).substring(0, 48);
             if (String(sender.specialty.specialty).length > 0){
                 senderinfo = sender.name + "-"+sender.specialty.specialty;
             }
             rows.push(
                 <ListItem alignItems="flex-start" key={i}>
-                <ListItemButton key={i} onClick={(e)=>{handleOpenMail(i)}}>
+                <ListItemButton key={i} onClick={()=>{handleOpenMail(i)}}>
                     <ListItemText
                     primary={mail.title}
                     secondary={
@@ -85,10 +85,11 @@ const InboxMessageList = ({data}) => {
     
     return (
         <div>
-            <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            <Box sx={{maxWidth: "30%"}}>
+                <List>
                     {displayMailList}
-                </List> 
+                </List>
+                <Divider/>
             </Box>
             <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments}/>
         </div>

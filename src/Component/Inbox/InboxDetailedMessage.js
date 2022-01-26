@@ -43,43 +43,43 @@ const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
 
 
     return ( 
-        <Box sx={{ width: '100%', maxWidth: 500 }}>
+        <Box sx={{maxWidth: "30%", marginTop: '2%'}}>
             <Typography>{title}</Typography>
-            {divider}
-            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
 
-            {equipments.map((equipment)=>{
+            <List>
+            {
+                equipments.map((equipment)=>{
                 return(
-                    <ListItem key={equipment.equipmentId} secondaryAction={
-                        <Button edge="end">OPEN</Button>
-                    }>
-                        <ListItemButton onClick={handleSelected(equipment.equipmentId)}>
+                    <ListItem key={equipment.equipmentId}>
+                        <ListItemButton>
                             <ListItemIcon>
                                 <Checkbox
                                     checked={selected.indexOf(equipment.equipmentId) !== -1}
                                     edge="start"
                                     tabIndex={-1}
                                     disableRipple
+                                    onClick={handleSelected(equipment.equipmentId)}
                                 />
                             </ListItemIcon>
                             <ListItemIcon>
                                 <ArticleIcon/>
                             </ListItemIcon>
                             <ListItemText primary={equipment.name}/>
-                            
+                            <Button edge="end" onClick={()=> {console.log("open detail content")}}>OPEN</Button>
                         </ListItemButton>
                     </ListItem>
                 );
             })}
-                
             </List>
+
             {divider}
-            <Typography>{description}</Typography>
+            <Typography style={{margin:'3%'}}>{description}</Typography>
             {divider}
             {buttons && (
-                <div>
-                    <InboxButtonList options={saveOptions} />
-                    <InboxButtonList options={declineOptions} />
+                <div style={{margin: '2%'}}>
+                    <InboxButtonList options={saveOptions}/>
+                    <span style={{marginLeft: '3%', marginRight: '3%'}}/>
+                    <InboxButtonList options={declineOptions}/>
                 </div>
             )}
         </Box>
