@@ -8,6 +8,7 @@ const EditEquipment = (props) => {
     const [content,setContent] = useState("");
 
     function example_image_upload_handler (blobInfo, success, failure, progress) {
+
     }
 
     const editorRef = useRef(null);
