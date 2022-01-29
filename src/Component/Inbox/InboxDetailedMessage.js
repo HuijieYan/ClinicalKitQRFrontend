@@ -50,22 +50,23 @@ const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
             {
                 equipments.map((equipment)=>{
                 return(
-                    <ListItem key={equipment.equipmentId}>
-                        <ListItemButton>
+                    <ListItem key={equipment.equipmentId} secondaryAction={
+                        <Button edge="end">OPEN</Button>
+                    }>
+                        <ListItemButton onClick={handleSelected(equipment.equipmentId)}>
                             <ListItemIcon>
                                 <Checkbox
                                     checked={selected.indexOf(equipment.equipmentId) !== -1}
                                     edge="start"
                                     tabIndex={-1}
                                     disableRipple
-                                    onClick={handleSelected(equipment.equipmentId)}
                                 />
                             </ListItemIcon>
                             <ListItemIcon>
                                 <ArticleIcon/>
                             </ListItemIcon>
                             <ListItemText primary={equipment.name}/>
-                            <Button edge="end" onClick={()=> {console.log("open detail content")}}>OPEN</Button>
+                            
                         </ListItemButton>
                     </ListItem>
                 );

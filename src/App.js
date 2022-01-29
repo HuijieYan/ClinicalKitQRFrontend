@@ -17,6 +17,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './Storage/storeConfiguration';
 import ContactBook from './Pages/contactBook';
 import Inbox from './Pages/inbox';
+import UploadedFiles from './Pages/UploadedFiles';
 
 function App() {
   
@@ -30,6 +31,9 @@ function App() {
               <Route exact path="/">
                 <LoginPage/>
               </Route>
+              <Route exact path="/uploadedFiles/:id" render={(props)=>{
+                    return (<UploadedFiles id={props.match.params.id}/>)
+                  }}/>
 
               <div>
                 <MenuBar/>
@@ -67,6 +71,7 @@ function App() {
                   <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
                     return (<EquipmentQrCodePage id={props.match.params.id}/>)
                   }}/>
+                  
                 </Switch>
               </div>
 

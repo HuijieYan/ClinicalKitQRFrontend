@@ -90,6 +90,13 @@ class GetData{
             return response.data;
         });
     }
+
+    getFile(id){
+        var url = URL +"file/download/"+id;
+        return axios.get(url).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
 export default new GetData();

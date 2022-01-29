@@ -2,13 +2,21 @@ import {Form, Container, Button, Row, Col, FormControl, FormGroup} from "react-b
 import { Editor } from '@tinymce/tinymce-react';
 import React, {useRef, useState} from "react";
 import $ from 'jquery';
+import FileUploader from "../Functions/FileUploader";
 
 const EditEquipment = (props) => {
     const {equipmentName, id} = props;
     const [content,setContent] = useState("");
 
     function example_image_upload_handler (blobInfo, success, failure, progress) {
-
+        console.log("ih");
+        console.log(blobInfo.filename());
+        return FileUploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
+            console.log(responese);
+            return success(responese.location);
+        });
+        
+        
     }
 
     const editorRef = useRef(null);
