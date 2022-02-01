@@ -9,6 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import {useHistory} from "react-router-dom";
+import DeleteData from "../Functions/DeleteData";
 
 const EquipmentTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -164,8 +165,7 @@ const EquipmentTable = () => {
             const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
                 const index = selected[i];
-                console.log("http://localhost:8080/equipment/delete/id="+rowLs[index].id)
-                axios.delete("http://localhost:8080/equipment/delete/id="+rowLs[index].id);
+                DeleteData.deleteEquipment(rowLs[index].id);
                 rowLs.splice(index,1);
             }
             setRows(rowLs);

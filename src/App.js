@@ -18,6 +18,8 @@ import { persistor, store } from './Storage/storeConfiguration';
 import ContactBook from './Pages/contactBook';
 import Inbox from './Pages/inbox';
 import UploadedFiles from './Pages/UploadedFiles';
+import { checkLogIn } from './Functions/LoginFunctions';
+import GaurdedRoute from './Component/GuardedRoute';
 
 function App() {
   
@@ -28,49 +30,40 @@ function App() {
         <div className="App" id = "app">
           <Router>
             <Switch>
-              <Route exact path="/">
+              <Route exact path="/login">
                 <LoginPage/>
               </Route>
-              <Route exact path="/uploadedFiles/:id" render={(props)=>{
+
+              <GaurdedRoute render={(props)=>{
                     return (<UploadedFiles id={props.match.params.id}/>)
-                  }}/>
+                  }} path="/uploadedFiles/:id"/>
 
               <div>
                 <MenuBar/>
                 <Switch>
-                  <Route exact path="/home">
-                    <IndexMain/>
-                  </Route>
-                  <Route exact path="/editUserGroup">
-                    <UsergroupEditPage/>
-                  </Route>
-                  <Route exact path="/hospitalCreation">
-                    <HospitalCreationPage/>
-                  </Route>
-                  <Route exact path="/trustCreation">
-                    <TrustCreationPage/>
-                  </Route>
-                  <Route exact path="/equipmentTable">
-                    <EquipmentTable/>
-                  </Route>
-                  <Route exact path="/usergroupTable">
-                    <UsergroupTable/>
-                  </Route>
-                  <Route exact path="/issueTable">
-                    <IssueTable/>
-                  </Route>
-                  <Route exact path="/editEquipment">
-                    <EditEquipment/>
-                  </Route>
-                  <Route exact path="/contactBook">
-                    <ContactBook/>
-                  </Route>
-                  <Route exact path="/inbox">
-                    <Inbox/>
-                  </Route>
-                  <Route exact path="/equipment/qrcode/id=:id" render={(props)=>{
+                  <GaurdedRoute component={<IndexMain/>} path="/home"/>
+
+                  <GaurdedRoute component={<UsergroupEditPage/>} path="/editUserGroup"/>
+
+                  <GaurdedRoute component={<HospitalCreationPage/>} path="/hospitalCreation"/>
+
+                  <GaurdedRoute component={<TrustCreationPage/>} path="/trustCreation"/>
+
+                  <GaurdedRoute component={<EquipmentTable/>} path="/equipmentTable"/>
+
+                  <GaurdedRoute component={<UsergroupTable/>} path="/usergroupTable"/>
+
+                  <GaurdedRoute component={<IssueTable/>} path="/issueTable"/>
+
+                  <GaurdedRoute component={<EditEquipment/>} path="/editEquipment"/>
+
+                  <GaurdedRoute component={<ContactBook/>} path="/contactBook"/>
+
+                  <GaurdedRoute component={<Inbox/>} path="/inbox"/>
+
+                  <GaurdedRoute render={(props)=>{
                     return (<EquipmentQrCodePage id={props.match.params.id}/>)
-                  }}/>
+                  }} path="/equipment/qrcode/id=:id"/>
                   
                 </Switch>
               </div>

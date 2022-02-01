@@ -7,6 +7,7 @@ import GetData from "../Functions/GetData";
 import { Checkbox } from "@mui/material";
 import {useHistory} from "react-router-dom";
 import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import DeleteData from "../Functions/DeleteData";
 
 const IssueTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -82,7 +83,7 @@ const IssueTable = () => {
                     setSolvedLs(solved);
                     rowsData.push({id:issue.issueId,date:issue.date,description:issue.description,equipment:issue.equipmentId.name,
                         hospital:issue.userGroupName.hospitalId.hospitalName,usergroup:issue.userGroupName.name,
-                        solved:<Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={issue.issueId}/>});
+                        solved:<Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>});
                     //decoding issue's json
                 }
                 setRows(rowsData);
@@ -99,7 +100,7 @@ const IssueTable = () => {
                     setSolvedLs(solved);
                     rowsData.push({id:issue.issueId,date:issue.date,description:issue.description,equipment:issue.equipmentId.name,
                         hospital:issue.userGroupName.hospitalId.hospitalName,usergroup:issue.userGroupName.name,
-                        solved:<Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={issue.issueId}/>});
+                        solved:<Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>});
                     //decoding issue's json
                 }
                 setRows(rowsData);
@@ -179,8 +180,7 @@ const IssueTable = () => {
             const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
                 const index = selected[i];
-                console.log("http://localhost:8080/issues/delete/issueId="+rowLs[index]);
-                axios.delete("http://localhost:8080/issues/delete/issueId="+rowLs[index]);
+                DeleteData.deleteIssue(rowLs[index]);
                 rowLs.splice(index,1);
                 solvedLs.splice(index,1);
             }

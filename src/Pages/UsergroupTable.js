@@ -11,6 +11,7 @@ import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import {useHistory} from "react-router-dom";
 import {Button} from "@mui/material";
 import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import DeleteData from "../Functions/DeleteData";
 
 const UsergroupTable = () => {
     const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -154,8 +155,7 @@ const UsergroupTable = () => {
             const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
                 const index = selected[i];
-                console.log("http://localhost:8080/usergroup/delete/hospitalId="+rowLs[index].hospitalId+" username="+rowLs[index].username);
-                axios.delete("http://localhost:8080/usergroup/delete/hospitalId="+rowLs[index].hospitalId+" username="+rowLs[index].username);
+                DeleteData(rowLs[index].hospitalId,rowLs[index].username);
                 rowLs.splice(index,1);
             }
             setRows(rowLs);

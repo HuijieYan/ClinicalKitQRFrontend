@@ -4,7 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { setLevel, setTrustID,setHospitalID, setUserName, setName } from "../Component/UserStatus";
+import { setLevel, setTrustID,setHospitalID, setUserName, setName,setPassword, setExpireTime  } from "../Component/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
@@ -16,7 +16,7 @@ const LoginPage = () => {
     const [hospitalId,setHospitalId] = useState("-1");
     const [hospitals,setHospitals] = useState([]);
     const [username,setUsername] = useState("");
-    const [password,setPassword] = useState("");
+    const [password,setPwd] = useState("");
     const [failMessage,setMessage] = useState("");
 
     useEffect(()=>{
@@ -30,21 +30,25 @@ const LoginPage = () => {
         if (trustId === "-1"||hospitalId === "-1" || Auxiliary.isEmpty(username)|| Auxiliary.isEmpty(password)){
             return;
         }
-        const url = loginPageURL + "/hospitalID=" + hospitalId + " username=" + username + " password=" + password;
-        axios.get(url).then((response)=>{
-            var resultArray = response.data;
+        GetData.login(hospitalId,username,password).then((resultArray)=>{
             if (resultArray.length > 0) {
+                var expireTime = new Date().setUTCHours(new Date().getUTCHours()+3); 
+                console.log(expireTime.valueOf());
+                //3 hours session
                 history.push("/home");
                 setLevel(resultArray[0]);
                 setHospitalID(resultArray[1]);
                 setTrustID(resultArray[2]);
                 setUserName(username);
                 setName(resultArray[3]);
+                setExpireTime(expireTime.valueOf());
+                setPassword(password);
             } else {
                 setMessage("fail!!");
-                setPassword("");
+                setPwd("");
             }
         });
+        
     }
 
     return (
@@ -83,7 +87,7 @@ const LoginPage = () => {
                     <Form.Control type="password"
                                   placeholder="Department Password"
                                   value={password}
-                                  onChange={(e) => setPassword(e.target.value)}/>
+                                  onChange={(e) => setPwd(e.target.value)}/>
                 </Form.Group>
             </Form>
             <Button id="loginButton" type="submit" onClick={()=>login()}>Log in</Button>

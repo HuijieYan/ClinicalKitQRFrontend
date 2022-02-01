@@ -6,7 +6,7 @@ import axios from "axios";
 import GetData from "../Functions/GetData";
 import { Checkbox, IconButton, Tooltip } from "@mui/material";
 import {useHistory} from "react-router-dom";
-import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import { getUserName } from "../Component/UserStatus";
 import {ImShare} from 'react-icons/im';
 
 const ContactBook = () => {
@@ -20,16 +20,17 @@ const ContactBook = () => {
     useEffect(()=>{
         GetData.getAllAdmins().then((data)=>{
             const rowsData = [];
+            var username = getUserName();
             console.log(data.length);
             for (let i = 0;i<data.length;i++){
-                console.log(getLevel());
                 var group = data[i];
-                console.log(group);
-                rowsData.push({name:group[0],hospital:group[1],role:group[2],hospitalId:group[3],email:group[4],share:<Tooltip title={"Share Equipment"}>
+                if(group[5] !== username){
+                    rowsData.push({name:group[0],hospital:group[1],role:group[2],hospitalId:group[3],email:group[4],share:<Tooltip title={"Share Equipment"}>
                 <IconButton>
                     <ImShare/>
                 </IconButton>
             </Tooltip>});
+                }
                 //decoding issue's json
             }
             setRows(rowsData);

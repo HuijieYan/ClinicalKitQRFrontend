@@ -62,3 +62,29 @@ export const getTrustId = () => {
         type: 'GET_TRUSTID'
     }
 }
+
+export const storeExpireTime = (time) => {
+    return{
+        type: 'SET_EXPIRETIME',
+        data: time
+    }
+}
+
+export const getExpireTime = () => {
+    return{
+        type: 'GET_EXPIRETIME'
+    }
+}
+
+export const storePassword = (pwd) => {
+    return{
+        type: 'SET_PASSWORD',
+        data: pwd
+    }
+}
+
+export const getPassword = () => {
+    return{
+        type: 'GET_PASSWORD'
+    }
+}

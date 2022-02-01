@@ -1,7 +1,5 @@
-import { storeHospitalId, storeLevel, storeName, storeTrustId, storeUsername } from "../Storage/Actions/actions";
+import { storeExpireTime, storeHospitalId, storeLevel, storeName, storePassword, storeTrustId, storeUsername } from "../Storage/Actions/actions";
 import { store } from "../Storage/storeConfiguration";
-
-
 
 export function setUserName(name){
     store.dispatch(storeUsername(name));
@@ -25,6 +23,14 @@ export function setHospitalID(id){
     store.dispatch(storeHospitalId(id));
 }
 
+export function setExpireTime(time){
+    store.dispatch(storeExpireTime(time));
+}
+
+export function setPassword(pwd){
+    store.dispatch(storePassword(pwd));
+}
+
 export function getLevel(){
     return store.getState().level;
 }
@@ -43,4 +49,12 @@ export function getTrustId(){
 
 export function getHospitalId(){
     return store.getState().hospitalId;
+}
+
+export function getExpireTime(){
+    return store.getState().expireTime;
+}
+
+export function getPassword(){
+    return store.getState().password;
 }

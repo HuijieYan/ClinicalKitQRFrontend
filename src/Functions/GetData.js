@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getHospitalId, getUserName } from "../Component/UserStatus";
 
 const URL = "http://localhost:8080/"; 
 class GetData{
@@ -18,7 +19,7 @@ class GetData{
     }
 
     getAllHospitalsByTrust(id){
-        var url = URL+"hospitals/all/trustID="+id;
+        var url = URL+"hospitals/all/trustId="+id;
         return axios.get(url).then((response)=>{
             return response.data;
         });
@@ -67,9 +68,10 @@ class GetData{
     }
 
     setIssueSolved(id,solved){
-        var url = URL+"issues/issueId="+id+" solved="+solved;
-        console.log(url);
-        return axios.post(url);
+        var url = URL+"issues/issueId="+id;
+        var data = new FormData();
+        data.append("solved",solved);
+        return axios.post(url,data);
     }
 
     getHospitalById(id){
@@ -93,7 +95,25 @@ class GetData{
 
     getFile(id){
         var url = URL +"file/download/"+id;
-        return axios.get(url).then((response)=>{
+        var data = new FormData();
+        data.append("username",getUserName());
+        data.append("hospitalId",getHospitalId())
+        return axios.get(url,data).then((response)=>{
+            return response.data;
+        });
+    }
+
+    login(hospitalId,username,password){
+        var url = URL+"usergroup/login";
+        var data = new FormData();
+        var id = String(hospitalId);
+        console.log(id);
+        data.append("hospitalId",id);
+        data.append("username",username);
+        data.append("password",password);
+
+        return axios.post(url,data).then((response)=>{
+            console.log(response.data);
             return response.data;
         });
     }
