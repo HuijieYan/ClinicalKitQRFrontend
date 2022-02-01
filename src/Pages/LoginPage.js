@@ -63,7 +63,7 @@ const LoginPage = () => {
                 <Row className="mb-3">
                     <Form.Label>Trust</Form.Label>
                     <Form.Select aria-label="Select Trust" value={trustId} onChange={(e)=>setTrustId(e.target.value)}>
-                        <option defaultValue="-1" disabled>Select Trust</option>   
+                        <option value="-1" disabled>Select Trust</option>   
                         {trusts.map(trust=>(
                         <option key={trust.trustId} value={trust.trustId} label={trust.trustName}/>
                         ))}
@@ -73,9 +73,9 @@ const LoginPage = () => {
             </Form>
             <Form>
                 <Row className="mb-3">
-                    <Form.Label>Hospital: </Form.Label>
+                    <Form.Label>Hospital</Form.Label>
                         <Form.Select value={hospitalId} onChange={(e)=>setHospitalId(e.target.value)}>
-                            <option defaultValue="-1" disabled>Select Hospital</option>  
+                            <option value="-1" disabled>Select Hospital</option>  
                             {hospitals.map(hospital=>(
                             <option key={hospital.hospitalId} value={hospital.hospitalId} label={hospital.hospitalName}/>
                             ))}
