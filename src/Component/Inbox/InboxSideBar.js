@@ -16,8 +16,7 @@ const InboxSideBar = () => {
     };
 
     return (
-
-        <Box sx={{maxWidth: '30%', marginTop: '1%'}}>
+        <Box sx={{width: '15%', padding: '1%', borderRight: 'solid', borderWidth: '1px', minWidth: '150px'}}>
             <div style={{textAlign: "left"}}>
                 <Button style={{margin: '2%'}}>
                     <CreateNewFolderIcon/> New Share

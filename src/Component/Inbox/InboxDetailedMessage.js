@@ -15,9 +15,9 @@ const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
 
     const handleSelected = (id) => () =>{
         console.log(id);
-        var index = selected.indexOf(id);
-        var list = [...selected];
-        
+        const index = selected.indexOf(id);
+        const list = [...selected];
+
         if (index === -1){
             list.push(id);    
         }else{
@@ -43,16 +43,16 @@ const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
 
 
     return ( 
-        <Box sx={{maxWidth: "30%", marginTop: '2%'}}>
-            <Typography>{title}</Typography>
-
+        <Box sx={{width: '1', padding: '1%', overflow: 'scroll', paddingTop: '2%'}}>
+            <Typography style={{marginBottom: '1%'}}>{title}</Typography>
+            {divider}
             <List>
             {
                 equipments.map((equipment)=>{
                 return(
                     <ListItem key={equipment.equipmentId} secondaryAction={
                         <Button edge="end">OPEN</Button>
-                    }>
+                    } disablePadding>
                         <ListItemButton onClick={handleSelected(equipment.equipmentId)}>
                             <ListItemIcon>
                                 <Checkbox

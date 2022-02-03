@@ -15,8 +15,8 @@ const EditEquipment = (props) => {
             console.log(responese);
             return success(responese.location);
         });
-        
-        
+
+
     }
 
     const editorRef = useRef(null);

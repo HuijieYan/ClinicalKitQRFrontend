@@ -84,15 +84,15 @@ const InboxMessageList = ({data}) => {
     },[data,handleOpenMail]);
     
     return (
-        <div>
-            <Box sx={{maxWidth: "30%"}}>
+        <>
+            <Box sx={{width: '20%', padding: '1%', overflow: 'scroll', borderRight: 'solid', borderWidth: '1px',  minWidth: '200px'}}>
                 <List>
                     {displayMailList}
                 </List>
                 <Divider/>
             </Box>
             <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments}/>
-        </div>
+        </>
      );
 }
  
