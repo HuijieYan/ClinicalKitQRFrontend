@@ -31,7 +31,7 @@ const LoginPage = () => {
             console.log("ih");
             return;
         }
-        
+        console.log("called login");
         GetData.login(hospitalId,username,password).then((resultArray)=>{
             if (resultArray.length > 0) {
                 var expireTime = new Date().setUTCHours(new Date().getUTCHours()+3); 

@@ -8,7 +8,7 @@ export function checkLogIn(){
     var password = getPassword();
     //console.log(hospitalId);
     //console.log(username);
-    console.log(password);
+    console.log("called login");
 
     if (GetData.login(hospitalId,username,password).length===0){
         console.log("Not Authorised");

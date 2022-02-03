@@ -2,14 +2,18 @@ import { Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
 import { checkLogIn } from "../Functions/LoginFunctions";
 
-const GaurdedRoute = ({path, component,render}) => {
-    const checked = checkLogIn();
+const GuardedRoute = ({path, component,render}) => {
 
-    if (checked){
-        return(<Route exact path={path} render={render}>{component}</Route>);
+    if (checkLogIn()){
+        if (component === null){
+            return(<Route exact path={path} render={render}>{console.log("In route")}</Route>);
+        }else{
+            return(<Route exact path={path}>{console.log("In route")}{component}</Route>);
+        }
+        
     }else{
         return (<Redirect to="/login"/>);
     }
 }
  
-export default GaurdedRoute;
+export default GuardedRoute;

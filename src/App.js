@@ -18,8 +18,9 @@ import { persistor, store } from './Storage/storeConfiguration';
 import ContactBook from './Pages/contactBook';
 import Inbox from './Pages/inbox';
 import UploadedFiles from './Pages/UploadedFiles';
-import { checkLogIn } from './Functions/LoginFunctions';
-import GaurdedRoute from './Component/GuardedRoute';
+import GuardedRoute from './Component/GuardedRoute';
+import SearchPage from './Pages/SearchPage';
+import SearchResult from './Pages/SearchResult';
 
 function App() {
   
@@ -34,37 +35,43 @@ function App() {
                 <LoginPage/>
               </Route>
 
-              <GaurdedRoute render={(props)=>{
+              <GuardedRoute render={(props)=>{
                     return (<UploadedFiles id={props.match.params.id}/>)
-                  }} path="/uploadedFiles/:id"/>
+                  }} path="/uploadedFiles/:id" component={null}/>
 
               <div>
                 <MenuBar/>
                 <Switch>
-                  <GaurdedRoute component={<IndexMain/>} path="/home"/>
+                  <GuardedRoute component={<IndexMain/>} path="/home"/>
 
-                  <GaurdedRoute component={<UsergroupEditPage/>} path="/editUserGroup"/>
+                  <GuardedRoute component={<UsergroupEditPage/>} path="/editUserGroup"/>
 
-                  <GaurdedRoute component={<HospitalCreationPage/>} path="/hospitalCreation"/>
+                  <GuardedRoute component={<HospitalCreationPage/>} path="/hospitalCreation"/>
 
-                  <GaurdedRoute component={<TrustCreationPage/>} path="/trustCreation"/>
+                  <GuardedRoute component={<TrustCreationPage/>} path="/trustCreation"/>
 
-                  <GaurdedRoute component={<EquipmentTable/>} path="/equipmentTable"/>
+                  <GuardedRoute component={<EquipmentTable/>} path="/equipmentTable"/>
 
-                  <GaurdedRoute component={<UsergroupTable/>} path="/usergroupTable"/>
+                  <GuardedRoute component={<UsergroupTable/>} path="/usergroupTable"/>
 
-                  <GaurdedRoute component={<IssueTable/>} path="/issueTable"/>
+                  <GuardedRoute component={<IssueTable/>} path="/issueTable"/>
 
-                  <GaurdedRoute component={<EditEquipment/>} path="/editEquipment"/>
+                  <GuardedRoute component={<EditEquipment/>} path="/editEquipment"/>
 
-                  <GaurdedRoute component={<ContactBook/>} path="/contactBook"/>
+                  <GuardedRoute component={<ContactBook/>} path="/contactBook"/>
 
-                  <GaurdedRoute component={<Inbox/>} path="/inbox"/>
+                  <GuardedRoute component={<Inbox/>} path="/inbox"/>
 
-                  <GaurdedRoute render={(props)=>{
+                  <GuardedRoute render={(props)=>{
                     return (<EquipmentQrCodePage id={props.match.params.id}/>)
-                  }} path="/equipment/qrcode/id=:id"/>
+                  }} path="/equipment/qrcode/id=:id" component={null}/>
                   
+                  <GuardedRoute component={<SearchPage/>} path="/search"/>
+
+                  <GuardedRoute render={(props)=>{
+                    return (<SearchResult name={props.match.params.name} category={props.match.params.category} type={props.match.params.type}/>)
+                  }} path={"/result/name=:name/category=:category/type=:type"} component={null}/>
+
                 </Switch>
               </div>
 

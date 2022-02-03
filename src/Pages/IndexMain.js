@@ -48,6 +48,8 @@ const IndexMain = () => {
             <ButtonList/>
 
             <Button onClick={(e)=>{handleLogout()}}>Log Out</Button>
+
+            <img className="images" src={"http://localhost:8080/file/download/bb5fa948-db14-4543-a8aa-fc4198d81747.png"} alt={""}/>
         </div>
      );
 }

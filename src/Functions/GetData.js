@@ -103,19 +103,54 @@ class GetData{
         });
     }
 
-    login(hospitalId,username,password){
+    async login(hospitalId,username,password){
         var url = URL+"usergroup/login";
         var data = new FormData();
         var id = String(hospitalId);
-        console.log(id);
         data.append("hospitalId",id);
         data.append("username",username);
         data.append("password",password);
+        console.log("In login");
 
-        return axios.post(url,data).then((response)=>{
+        return await axios.post(url,data).then((response)=>{
             console.log(response.data);
             return response.data;
         });
+    }
+
+    getTypes(){
+        var url = URL+"equipment/types";
+        return axios.get(url).then((response)=>{
+            return response.data;
+        })
+    }
+
+    getCategories(){
+        var url = URL+"equipment/categories";
+        return axios.get(url).then((response)=>{
+            return response.data;
+        })
+    }
+
+    searchByName(name,category,type){
+        var url = URL+"equipment/search";
+        var data = new FormData();
+        console.log(name);
+        if (category === "None"){
+            category = "";
+        }
+        if(type === "None"){
+            type="";
+        }
+        data.append("hospitalId",getHospitalId());
+        data.append("username",getUserName());
+        data.append("category",category);
+        data.append("type",type);
+        data.append("name",name);
+        return axios.post(url,data).then((response)=>{
+            console.log(response.data);
+            return response.data;
+        })
     }
 }
  
