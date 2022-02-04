@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 
@@ -8,6 +9,8 @@ const InboxNewSharingComponent = ({display}) => {
     if(display){
         return (  
             <div>
+            <Button>Add Admin</Button>
+            <Button>Add Equipment</Button>
             <Form>
                 <Form.Group id="title">
                     <Form.Control type="title"
@@ -21,8 +24,7 @@ const InboxNewSharingComponent = ({display}) => {
                     <Form.Control type="description"
                                 placeholder="description"
                                 value={description}
-                                onChange={(e)=>setDescription(e.target.value)}
-                                rows={20}/>
+                                onChange={(e)=>setDescription(e.target.value)}/>
                 </Form.Group>
             </Form>
             </div>

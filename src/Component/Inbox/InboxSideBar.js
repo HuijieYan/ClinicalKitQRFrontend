@@ -52,7 +52,6 @@ const InboxSideBar = () => {
             <Divider/>
         </Box>
         <InboxMessage selected={selected} clicked={clickedNewShare} />
-        {console.log(selected)}
         </>
      );
 }

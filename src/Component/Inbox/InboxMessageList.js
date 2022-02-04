@@ -12,11 +12,13 @@ const InboxMessageList = ({data,selected,clicked}) => {
     const [currentMailId,setCurrentMailId] = useState(-1);
     const [description,setDescription] = useState("Select An Sharing");
     const [title,setTitle] = useState("");
-    const [displayDetailedMessage,setDisplayDetailedMessage] = useState(true);
-    
+    const [displayState,setDisplayState] = useState(0);
+ 
     const handleOpenMail = useCallback((id)=>{
         const mailData = data[id];
-        setDisplayDetailedMessage(true);
+        setDisplayState(0);
+        console.log(currentMailId);
+        console.log(id);
         //if displaying new share editor, change to display detailed message section
         if (vacant || currentMailId !== id){
             const mail = mailData[0];
@@ -34,7 +36,6 @@ const InboxMessageList = ({data,selected,clicked}) => {
             SetEquipments([]);
             //the mail details disappears and this section becomes vacant
         }
-        console.log(currentMailId);
     },[vacant,currentMailId,data]);
     //usecallbacks rerenders when vacant and currentMailId changes 
     
@@ -95,9 +96,19 @@ const InboxMessageList = ({data,selected,clicked}) => {
         setCurrentMailId(-1);
         setVacant(true);
         SetEquipments([]);
-        setDisplayDetailedMessage(false);
+        setDisplayState(1);
         //when clicked new share, hide the detailed message component
     },[clicked]);
+
+    useEffect(()=>{
+        setTitle("");
+        setDescription("Select a Sharing");
+        setCurrentMailId(-1);
+        setVacant(true);
+        SetEquipments([]);
+        setDisplayState(0);
+        //when clicked a button on the side bar, hide the detailed message component
+    },[selected])
     
     return (
         <>
@@ -107,8 +118,8 @@ const InboxMessageList = ({data,selected,clicked}) => {
                 </List>
                 <Divider/>
             </Box>
-            <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments} display={displayDetailedMessage}/>
-            <InboxNewSharingComponent display={!displayDetailedMessage} />
+            <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments} display={displayState===0}/>
+            <InboxNewSharingComponent display={displayState===1} />
         </>
      );
 }
