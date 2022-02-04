@@ -24,7 +24,7 @@ const InboxMessage = ({selected}) => {
 
     return (
         <>
-        <InboxMessageList data={data}/>
+        <InboxMessageList data={data} selected={selected}/>
         </>
     );
 }

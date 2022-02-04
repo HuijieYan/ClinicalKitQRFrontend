@@ -15,7 +15,7 @@ const UploadedFiles = ({id}) => {
     }else if (videoExtensions.indexOf(extension)!==-1){
         return ( 
             <video controls>
-            <source src={"http://localhost:8080/file/download/"+id} alt={""}/>
+            <source src={"http://localhost:8080/file/download/"+id}/>
             </video> 
             );
     }else if(audioExtensions.indexOf(extension)!==-1){

@@ -4,14 +4,13 @@ import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } fro
 import { Box, typography } from "@mui/system";
 import { Fragment, useState } from "react";
 
-const InboxMessageList = ({data}) => {
+const InboxMessageList = ({data,selected}) => {
     const [displayMailList,setDisplayMailList] = useState([]);
     const [equipments,SetEquipments] = useState([]);
     const [vacant,setVacant] = useState(true);
     const [currentMailId,setCurrentMailId] = useState(-1);
     const [description,setDescription] = useState("Select An Sharing");
     const [title,setTitle] = useState("");
-    const [storedData,setStoredData] = useState([]);
     
     const handleOpenMail = useCallback((id)=>{
         const mailData = data[id];
@@ -81,25 +80,30 @@ const InboxMessageList = ({data}) => {
         setDisplayMailList(rows);
        }
        
-        
-       
         rendering();
-        setStoredData(data);
-        
         //console.log(data);
         
     },[data,handleOpenMail]);
+
+    useEffect(()=>{
+        setTitle("");
+        setDescription("Select a Sharing");
+        setCurrentMailId(-1);
+        setVacant(true);
+        SetEquipments([]);
+        //initialise detailed message component when selected side bar changes
+    },[selected]);
     
     return (
-        <div>
-            <Box sx={{maxWidth: "30%"}}>
+        <>
+            <Box sx={{width: '20%', padding: '1%', overflow: 'scroll', borderRight: 'solid', borderWidth: '1px',  minWidth: '200px'}}>
                 <List>
                     {displayMailList}
                 </List>
                 <Divider/>
             </Box>
             <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments}/>
-        </div>
+        </>
      );
 }
  
