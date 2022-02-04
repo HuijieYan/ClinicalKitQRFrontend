@@ -28,7 +28,7 @@ const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
     }
 
     useEffect(()=>{
-        console.log("rerendered");
+        //console.log("rerendered");
         if(vacant){
             setDivider(null);
             setEquipmentSection([]);

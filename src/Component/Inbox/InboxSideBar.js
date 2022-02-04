@@ -4,19 +4,18 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import SendIcon from '@mui/icons-material/Send';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import {Button} from "react-bootstrap";
-import AddIcon from "@mui/icons-material/Add";
+import InboxMessage from "./InboxMessage";
 
 //list of buttons a the side of inbox
 const InboxSideBar = () => {
     const [selected, setSelected] = useState(0);
 
     const handleSelect = (event, index) => {
-        console.log(index);
         setSelected(index);
     };
 
     return (
-
+        <>
         <Box sx={{maxWidth: '30%', marginTop: '1%'}}>
             <div style={{textAlign: "left"}}>
                 <Button style={{margin: '2%'}}>
@@ -47,6 +46,9 @@ const InboxSideBar = () => {
             </List>
             <Divider/>
         </Box>
+        <InboxMessage selected={selected} />
+        {console.log(selected)}
+        </>
      );
 }
  

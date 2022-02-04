@@ -76,7 +76,6 @@ const UsergroupTable = () => {
                 console.log(data);
                 for (let i = 0;i<data.length;i++){
                     const group = data[i];
-                    console.log(group);
                     rowsData.push({name:group[0],username:group[1],role:group[2],hospital:group[3],hospitalId:group[4]});
                 }
                 setRows(rowsData);

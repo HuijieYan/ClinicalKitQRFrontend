@@ -11,11 +11,9 @@ const InboxMessageList = ({data}) => {
     const [currentMailId,setCurrentMailId] = useState(-1);
     const [description,setDescription] = useState("Select An Sharing");
     const [title,setTitle] = useState("");
+    const [storedData,setStoredData] = useState([]);
     
     const handleOpenMail = useCallback((id)=>{
-        //console.log(data);
-        //console.log(id);
-
         const mailData = data[id];
         if (vacant || currentMailId !== id){
             const mail = mailData[0];
@@ -39,12 +37,13 @@ const InboxMessageList = ({data}) => {
     
     useEffect(()=>{
         //setting the list of sharings
-        const rows = [];
-
+       function rendering(){
+        var rows = [];
+        console.log("rerendered");
         if (data.length === 0){
             rows.push(<ListItem alignItems="flex-start" key={0}><Typography>No sharings received yet</Typography></ListItem>);
         }
-            
+        
         for (let i = 0;i<data.length;i++){
             const mail = data[i][0];
             const sender = data[i][1];
@@ -79,8 +78,16 @@ const InboxMessageList = ({data}) => {
                 rows.push(<Divider key={-1}/>);
             }
         }
-        //console.log(data);
         setDisplayMailList(rows);
+       }
+       
+        
+       
+        rendering();
+        setStoredData(data);
+        
+        //console.log(data);
+        
     },[data,handleOpenMail]);
     
     return (

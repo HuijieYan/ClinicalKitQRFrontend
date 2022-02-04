@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getHospitalId, getUserName } from "../Component/UserStatus";
+import { getHospitalId, getUserName, getLevel, getTrustId } from "../Component/UserStatus";
 
 const URL = "http://localhost:8080/"; 
 class GetData{
@@ -25,6 +25,20 @@ class GetData{
         });
     }
 
+    getEquipment(){
+        var level = getLevel();
+        if (level === 2){
+            return this.getAllEquipmentByHospital(getHospitalId()).then((data)=>{
+                return data;
+            });
+        }else if(level === 3){
+            return this.getAllEquipmentByTrust(getTrustId()).then((data)=>{
+                console.log(data);
+                return data;
+            });
+        }
+    }
+
     getAllEquipmentByHospital(id){
         var url = URL+"equipment/hospitalId="+id;
         return axios.get(url).then((response)=>{
@@ -39,6 +53,19 @@ class GetData{
         });
     }
 
+    getGroups(){
+        var level = getLevel();
+        if (level === 2){
+            return this.getAllGroupsByHospital(getHospitalId()).then((data)=>{
+                return data;
+            });
+        }else if(level === 3){
+            return this.getAllGroupsByTrust(getTrustId()).then((data)=>{
+                return data;
+            });
+        }
+    }
+
     getAllGroupsByTrust(id){
         var url = URL+"usergroup/trustId="+id;
         return axios.get(url).then((response)=>{
@@ -51,6 +78,19 @@ class GetData{
         return axios.get(url).then((response)=>{
             return response.data;
         });
+    }
+
+    getIssues(){
+        var level = getLevel();
+        if (level === 2){
+            return this.getAllIssuesByHospital(getHospitalId()).then((data)=>{
+                return data;
+            });
+        }else if(level === 3){
+            return this.getAllIssuesByTrust(getTrustId()).then((data)=>{
+                return data;
+            });
+        }
     }
     
     getAllIssuesByHospital(id){
@@ -87,8 +127,21 @@ class GetData{
     }
 
     getReceivedSharings(id,username){
-        var url = URL+"mail/receiver/hospitalId="+id+" username="+username;
-        return axios.get(url).then((response)=>{
+        var url = URL+"mail/receiver";
+        var data = new FormData();
+        data.append("hospitalId",id);
+        data.append("username",username);
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
+
+    getSentSharings(id,username){
+        var url = URL+"mail/sender";
+        var data = new FormData();
+        data.append("hospitalId",id);
+        data.append("username",username);
+        return axios.post(url,data).then((response)=>{
             return response.data;
         });
     }
