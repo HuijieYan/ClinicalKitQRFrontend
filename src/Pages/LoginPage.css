@@ -1,18 +1,11 @@
-.inputField{
-    height: fit-content;
-    width: fit-content;
-    margin: auto;
-    font-size: 120%;
-}
-  
-#loginButton{
-    margin-top: 10%;
+.inputField {
+  height: fit-content;
+  width: fit-content;
+  margin: auto;
+  font-size: 120%;
 }
 
-#username{
-    margin-top: 10%;
-}
-
-#password{
-    margin-top: 10%;
+#loginButton {
+  background-color: #185cbc;
+  outline-color: #185cbc;
 }
