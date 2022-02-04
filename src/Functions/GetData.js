@@ -4,107 +4,92 @@ import { getHospitalId, getUserName, getLevel, getTrustId } from "../Component/U
 const URL = "http://localhost:8080/"; 
 class GetData{
 
-    getAllTrusts(){
+    async getAllTrusts(){
         var url = URL+"trusts/all";
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getAllHospitals(){
+    async getAllHospitals(){
         var url = URL+"hospitals/all";
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getAllHospitalsByTrust(id){
+    async getAllHospitalsByTrust(id){
         var url = URL+"hospitals/all/trustId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getEquipment(){
+    async getEquipment(){
         var level = getLevel();
         if (level === 2){
-            return this.getAllEquipmentByHospital(getHospitalId()).then((data)=>{
-                return data;
-            });
+            const data = await this.getAllEquipmentByHospital(getHospitalId());
+            return data;
         }else if(level === 3){
-            return this.getAllEquipmentByTrust(getTrustId()).then((data)=>{
-                console.log(data);
-                return data;
-            });
+            const data_1 = await this.getAllEquipmentByTrust(getTrustId());
+            console.log(data_1);
+            return data_1;
         }
     }
 
-    getAllEquipmentByHospital(id){
+    async getAllEquipmentByHospital(id){
         var url = URL+"equipment/hospitalId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getAllEquipmentByTrust(id){
+    async getAllEquipmentByTrust(id){
         var url = URL+"equipment/trustId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getGroups(){
+    async getGroups(){
         var level = getLevel();
         if (level === 2){
-            return this.getAllGroupsByHospital(getHospitalId()).then((data)=>{
-                return data;
-            });
+            const data = await this.getAllGroupsByHospital(getHospitalId());
+            return data;
         }else if(level === 3){
-            return this.getAllGroupsByTrust(getTrustId()).then((data)=>{
-                return data;
-            });
+            const data_1 = await this.getAllGroupsByTrust(getTrustId());
+            return data_1;
         }
     }
 
-    getAllGroupsByTrust(id){
+    async getAllGroupsByTrust(id){
         var url = URL+"usergroup/trustId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getAllGroupsByHospital(id){
+    async getAllGroupsByHospital(id){
         var url = URL+"usergroup/hospitalId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getIssues(){
+    async getIssues(){
         var level = getLevel();
         if (level === 2){
-            return this.getAllIssuesByHospital(getHospitalId()).then((data)=>{
-                return data;
-            });
+            const data = await this.getAllIssuesByHospital(getHospitalId());
+            return data;
         }else if(level === 3){
-            return this.getAllIssuesByTrust(getTrustId()).then((data)=>{
-                return data;
-            });
+            const data_1 = await this.getAllIssuesByTrust(getTrustId());
+            return data_1;
         }
     }
     
-    getAllIssuesByHospital(id){
+    async getAllIssuesByHospital(id){
         var url = URL+"issues/hospitalId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getAllIssuesByTrust(id){
+    async getAllIssuesByTrust(id){
         var url = URL+"issues/trustId="+id;
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
     setIssueSolved(id,solved){
@@ -119,41 +104,37 @@ class GetData{
         return axios.get(url);
     }
 
-    getAllAdmins(){
+    async getAllAdmins(){
         var url = URL+"usergroup/all/admins";
-        return axios.get(url).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getReceivedSharings(id,username){
+    async getReceivedSharings(id,username){
         var url = URL+"mail/receiver";
         var data = new FormData();
         data.append("hospitalId",id);
         data.append("username",username);
-        return axios.post(url,data).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.post(url, data);
+        return response.data;
     }
 
-    getSentSharings(id,username){
+    async getSentSharings(id,username){
         var url = URL+"mail/sender";
         var data = new FormData();
         data.append("hospitalId",id);
         data.append("username",username);
-        return axios.post(url,data).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.post(url, data);
+        return response.data;
     }
 
-    getFile(id){
+    async getFile(id){
         var url = URL +"file/download/"+id;
         var data = new FormData();
         data.append("username",getUserName());
         data.append("hospitalId",getHospitalId())
-        return axios.get(url,data).then((response)=>{
-            return response.data;
-        });
+        const response = await axios.get(url, data);
+        return response.data;
     }
 
     async login(hospitalId,username,password){
@@ -171,21 +152,19 @@ class GetData{
         });
     }
 
-    getTypes(){
+    async getTypes(){
         var url = URL+"equipment/types";
-        return axios.get(url).then((response)=>{
-            return response.data;
-        })
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    getCategories(){
+    async getCategories(){
         var url = URL+"equipment/categories";
-        return axios.get(url).then((response)=>{
-            return response.data;
-        })
+        const response = await axios.get(url);
+        return response.data;
     }
 
-    searchByName(name,category,type){
+    async searchByName(name,category,type){
         var url = URL+"equipment/search";
         var data = new FormData();
         console.log(name);
@@ -200,10 +179,9 @@ class GetData{
         data.append("category",category);
         data.append("type",type);
         data.append("name",name);
-        return axios.post(url,data).then((response)=>{
-            console.log(response.data);
-            return response.data;
-        })
+        const response = await axios.post(url, data);
+        console.log(response.data);
+        return response.data;
     }
 }
  
