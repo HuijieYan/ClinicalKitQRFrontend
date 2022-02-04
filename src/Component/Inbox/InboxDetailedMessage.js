@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ArticleIcon from '@mui/icons-material/Article';
 import InboxButtonList from "./InboxButtonList";
 
-const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
+const InboxDetailedMessage = ({title,description,equipments,vacant,display}) => {
     const saveOptions = ["SAVE","SAVE ALL"];
     const declineOptions = ["DECLINE","DECLINE ALL"];
 
@@ -41,50 +41,54 @@ const InboxDetailedMessage = ({title,description,equipments,vacant}) => {
         }
     },[vacant]);
 
-
-    return ( 
-        <Box sx={{width: '1', padding: '1%', overflow: 'scroll', paddingTop: '2%'}}>
-            <Typography style={{marginBottom: '1%'}}>{title}</Typography>
-            {divider}
-            <List>
-            {
-                equipments.map((equipment)=>{
-                return(
-                    <ListItem key={equipment.equipmentId} secondaryAction={
-                        <Button edge="end">OPEN</Button>
-                    } disablePadding>
-                        <ListItemButton onClick={handleSelected(equipment.equipmentId)}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    checked={selected.indexOf(equipment.equipmentId) !== -1}
-                                    edge="start"
-                                    tabIndex={-1}
-                                    disableRipple
-                                />
-                            </ListItemIcon>
-                            <ListItemIcon>
-                                <ArticleIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={equipment.name}/>
-                            
-                        </ListItemButton>
-                    </ListItem>
-                );
-            })}
-            </List>
-
-            {divider}
-            <Typography style={{margin:'3%'}}>{description}</Typography>
-            {divider}
-            {buttons && (
-                <div style={{margin: '2%'}}>
-                    <InboxButtonList options={saveOptions}/>
-                    <span style={{marginLeft: '3%', marginRight: '3%'}}/>
-                    <InboxButtonList options={declineOptions}/>
-                </div>
-            )}
-        </Box>
-     );
+    if (display){
+        return ( 
+            <Box sx={{width: '1', padding: '1%', overflow: 'scroll', paddingTop: '2%'}}>
+                <Typography style={{marginBottom: '1%'}}>{title}</Typography>
+                {divider}
+                <List>
+                {
+                    equipments.map((equipment)=>{
+                    return(
+                        <ListItem key={equipment.equipmentId} secondaryAction={
+                            <Button edge="end">OPEN</Button>
+                        } disablePadding>
+                            <ListItemButton onClick={handleSelected(equipment.equipmentId)}>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        checked={selected.indexOf(equipment.equipmentId) !== -1}
+                                        edge="start"
+                                        tabIndex={-1}
+                                        disableRipple
+                                    />
+                                </ListItemIcon>
+                                <ListItemIcon>
+                                    <ArticleIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary={equipment.name}/>
+                                
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+                </List>
+    
+                {divider}
+                <Typography style={{margin:'3%'}}>{description}</Typography>
+                {divider}
+                {buttons && (
+                    <div style={{margin: '2%'}}>
+                        <InboxButtonList options={saveOptions}/>
+                        <span style={{marginLeft: '3%', marginRight: '3%'}}/>
+                        <InboxButtonList options={declineOptions}/>
+                    </div>
+                )}
+            </Box>
+         );
+    }else{
+        return null;
+    }
+    
 }
  
 export default InboxDetailedMessage;

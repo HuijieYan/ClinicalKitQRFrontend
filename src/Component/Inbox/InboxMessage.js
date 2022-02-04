@@ -5,7 +5,7 @@ import { getHospitalId, getUserName } from "../UserStatus";
 import InboxMessageList from "./InboxMessageList";
 import InboxSideBar from "./InboxSideBar";
 
-const InboxMessage = ({selected}) => {
+const InboxMessage = ({selected,clicked}) => {
     const [data,setData] = useState([]);
     
 
@@ -24,7 +24,7 @@ const InboxMessage = ({selected}) => {
 
     return (
         <>
-        <InboxMessageList data={data} selected={selected}/>
+        <InboxMessageList data={data} selected={selected} clicked={clicked}/>
         </>
     );
 }

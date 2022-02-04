@@ -9,16 +9,21 @@ import InboxMessage from "./InboxMessage";
 //list of buttons a the side of inbox
 const InboxSideBar = () => {
     const [selected, setSelected] = useState(0);
+    const [clickedNewShare,setClickedNewShare] = useState(false);
 
     const handleSelect = (event, index) => {
         setSelected(index);
     };
 
+    const handleClick = ()=>{
+        setClickedNewShare(!clickedNewShare);
+    }
+
     return (
         <>
         <Box sx={{width: '15%', padding: '1%', borderRight: 'solid', borderWidth: '1px', minWidth: '150px'}}>
             <div style={{textAlign: "left"}}>
-                <Button style={{margin: '2%'}}>
+                <Button style={{margin: '2%'}} onClick={(e)=>{handleClick()}}>
                     <CreateNewFolderIcon/> New Share
                 </Button>
             </div>
@@ -46,7 +51,7 @@ const InboxSideBar = () => {
             </List>
             <Divider/>
         </Box>
-        <InboxMessage selected={selected} />
+        <InboxMessage selected={selected} clicked={clickedNewShare} />
         {console.log(selected)}
         </>
      );

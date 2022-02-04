@@ -3,17 +3,21 @@ import InboxDetailedMessage from "./InboxDetailedMessage";
 import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Box, typography } from "@mui/system";
 import { Fragment, useState } from "react";
+import InboxNewSharingComponent from "./InboxNewSharingComponent";
 
-const InboxMessageList = ({data,selected}) => {
+const InboxMessageList = ({data,selected,clicked}) => {
     const [displayMailList,setDisplayMailList] = useState([]);
     const [equipments,SetEquipments] = useState([]);
     const [vacant,setVacant] = useState(true);
     const [currentMailId,setCurrentMailId] = useState(-1);
     const [description,setDescription] = useState("Select An Sharing");
     const [title,setTitle] = useState("");
+    const [displayDetailedMessage,setDisplayDetailedMessage] = useState(true);
     
     const handleOpenMail = useCallback((id)=>{
         const mailData = data[id];
+        setDisplayDetailedMessage(true);
+        //if displaying new share editor, change to display detailed message section
         if (vacant || currentMailId !== id){
             const mail = mailData[0];
             setCurrentMailId(id);
@@ -91,8 +95,9 @@ const InboxMessageList = ({data,selected}) => {
         setCurrentMailId(-1);
         setVacant(true);
         SetEquipments([]);
-        //initialise detailed message component when selected side bar changes
-    },[selected]);
+        setDisplayDetailedMessage(false);
+        //when clicked new share, hide the detailed message component
+    },[clicked]);
     
     return (
         <>
@@ -102,7 +107,8 @@ const InboxMessageList = ({data,selected}) => {
                 </List>
                 <Divider/>
             </Box>
-            <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments}/>
+            <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments} display={displayDetailedMessage}/>
+            <InboxNewSharingComponent display={!displayDetailedMessage} />
         </>
      );
 }
