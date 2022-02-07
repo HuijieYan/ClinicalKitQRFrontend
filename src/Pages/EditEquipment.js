@@ -1,12 +1,14 @@
-import {Form, Container, Button, Row, Col, Accordion} from "react-bootstrap";
+import {Form, Container, Button, Row, Col, Accordion, Card} from "react-bootstrap";
 import { Editor } from '@tinymce/tinymce-react';
 import React, {useRef, useState} from "react";
 import $ from 'jquery';
 import FileUploader from "../Functions/FileUploader";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const EditEquipment = (props) => {
     const {equipmentName, id} = props;
     const [content,setContent] = useState("");
+    const [tabNum, setTabNum] = useState(0);
 
     function image_upload_handler (blobInfo, success, failure, progress) {
         /*console.log("ih");
@@ -20,13 +22,15 @@ const EditEquipment = (props) => {
     const editorRef = useRef(null);
     const log = () => {
         /*setContent(editorRef.current.getContent());*/
-        editorRef.current.setContent('<Accordion><Accordion.Item eventKey=\"0\"><Accordion.Header>Accordion Item #1</Accordion.Header><Accordion.Body>First block</Accordion.Body></Accordion.Item><Accordion.Item eventKey=\"1\"><Accordion.Header>Accordion Item #2</Accordion.Header><Accordion.Body>Second block</Accordion.Body></Accordion.Item></Accordion>');
+
+        //save this to database
+        editorRef.current.getContent();
 
         /*$("#dataContainer").html(editorRef.current.getContent());*/
     };
 
     return (
-        <Container style={{borderStyle: "solid", marginTop: "1%", borderColor: "grey"}}>
+        <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
                 <Row>
                     <Col xl={2}>
@@ -92,26 +96,26 @@ const EditEquipment = (props) => {
                         'undo redo | formatselect | bold italic | \
                         alignleft aligncenter alignright | \
                         bullist numlist outdent indent | table | \
-                        link image media fileUploader | insertAnnouncement insertNewTab | \
+                        link image media fileUploader | insertNewTab | \
                         preview | print | help',
 
                     images_upload_handler: image_upload_handler,
 
-                    video_template_callback: function(data) {
+                    /*video_template_callback: function(data) {
                         return "<iframe src=\"" + data.source + "\" width=\"" + data.width + "\" height=\"" + data.height + "\" allowfullscreen=\"allowfullscreen\"></iframe>";
-                    },
+                    },*/
 
                     file_picker_callback: function(callback, value, meta) {
                         const input = document.createElement('input');
                         input.setAttribute('type', 'file');
 
                         input.onchange = function() {
-                            const file = this.files[0];
+                            const file = this.files;
                             const reader = new FileReader();
 
-                            const data = new FormData();
+                            /*const data = new FormData();
                             data.append('filetype',meta.filetype);
-                            data.append("file",file);
+                            data.append("file",file);*/
                             reader.onload = function (e) {
                                 /*const id = 'blobid' + (new Date()).getTime();
                                 const blobCache = editorRef.current.editorUpload.blobCache;
@@ -123,63 +127,21 @@ const EditEquipment = (props) => {
                                 callback(blobInfo.blobUri(), { title: file.name });*/
 
                                 //location
-                                callback();
+                                return FileUploader.uploadFiles(file).then((responese)=>{
+                                    console.log(responese);
+                                    callback(responese.location);
+                                });
                             };
-                            reader.readAsDataURL(file);
+                            reader.readAsDataURL(this.files[0]);
                         };
 
                         input.click();
                     },
 
                     setup: function (editor) {
-                        editor.ui.registry.addButton("insertAnnouncement", {
-                            tooltip: "Add Announcement",
-                            icon: "comment-add",
-                            onAction: function() {
-                                editor.windowManager.open({
-                                    title: 'Announcement',
-                                    body: {
-                                        type: 'panel',
-                                        items: [
-                                            {
-                                                type: 'input',
-                                                name: 'header',
-                                                label: 'Header',
-                                            },
-                                            {
-                                                type: 'textarea',
-                                                name: 'content',
-                                                label: 'Content',
-                                            }
-                                        ]
-                                    },
-                                    buttons: [
-                                        {
-                                            text: 'Close',
-                                            type: 'cancel',
-                                            onclick: 'close'
-                                        },
-                                        {
-                                            text: 'Insert',
-                                            type: 'submit',
-                                            primary: true,
-                                            enabled: false
-                                        }
-                                    ],
-                                    onSubmit: function (api) {
-                                        const data = api.getData();
-                                        editor.insertContent('<div style="margin: 1%; background-color: lightgray; border-style: solid; border-width: 1px"><h2 style="color: lightskyblue">' + data.header + '</h2><p>' + data.content + '</p></div><p></p>');
-                                        /*editor.insertContent('<p>' + data.header + data.content + '</p>');*/
-                                        // close the dialog
-                                        api.close();
-                                    },
-                                });
-                            },
-                        });
-
                         editor.ui.registry.addButton("insertNewTab", {
                             tooltip: "Add Tab",
-                            icon: "new-tab",
+                            icon: "comment-add",
                             onAction: function() {
                                 editor.windowManager.open({
                                     title: 'Add Tab',
@@ -188,8 +150,13 @@ const EditEquipment = (props) => {
                                         items: [
                                             {
                                                 type: 'input',
-                                                name: 'tabHeader',
-                                                label: 'Tab Header',
+                                                name: 'tabTitle',
+                                                label: 'Tab Title',
+                                            },
+                                            {
+                                                type: 'input',
+                                                name: 'tabContent',
+                                                label: 'Tab Content',
                                             },
 
                                         ]
@@ -210,6 +177,7 @@ const EditEquipment = (props) => {
                                     onSubmit: function (api) {
                                         const data = api.getData();
                                         // close the dialog
+                                        editor.insertContent('<div style="background-color: #d1d1d1"><h2>' + data.tabTitle + '</h2><p>' + data.tabContent + '</p></div><p></p>');
                                         api.close();
                                     },
                                 });
@@ -226,9 +194,10 @@ const EditEquipment = (props) => {
                                         type: 'panel',
                                         items: [
                                             {
-                                                type: 'dropzone',
-                                                name: 'file uploader',
-                                                label: 'file uploader',
+                                                type: 'urlinput',
+                                                name: 'fileUploader',
+                                                label: 'File Uploader',
+                                                filetype: 'file',
                                             },
                                         ]
                                     },
@@ -245,9 +214,16 @@ const EditEquipment = (props) => {
                                             enabled: false
                                         }
                                     ],
+
+                                    onChange: function (api, changeData) {
+                                        const data = api.getData();
+                                        console.log("onchange");
+                                        console.log(data);
+                                    },
+
                                     onSubmit: function (api) {
                                         const data = api.getData();
-                                        // close the dialog
+                                        editor.insertContent('<p><img src="https://i.ibb.co/8rfqJw1/icons8-file-16.png" alt="file"/><a href="'+ data.fileUploader.value +'">file</a></p>');
                                         api.close();
                                     },
                                 });
@@ -259,13 +235,40 @@ const EditEquipment = (props) => {
                 }}
             />
 
-            <Button style={{marginTop: "5%"}} onClick={log}>Save</Button>
+            <Button style={{marginTop: "3%", marginBottom: "1%"}} onClick={log}>Save</Button>
 
-            <div>
-                <Form.Label id="dataContainer" style={{}}>{content}</Form.Label>
-            </div>
+            {/*<div>
+                <Form.Label id="dataContainer">{content}</Form.Label>
+            </div>*/}
 
-            <Accordion><Accordion.Item eventKey="0"><Accordion.Header>Accordion Item #1</Accordion.Header><Accordion.Body>First block</Accordion.Body></Accordion.Item><Accordion.Item eventKey="1"><Accordion.Header>Accordion Item #2</Accordion.Header><Accordion.Body>Second block</Accordion.Body></Accordion.Item></Accordion>
+
+            {/*<Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>Accordion Item #1</Accordion.Header>
+                    <Accordion.Body>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+                        est laborum.
+                    </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1">
+                    <Accordion.Header>Accordion Item #2</Accordion.Header>
+                    <Accordion.Body>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+                        est laborum.
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>*/}
+
         </Container>
     );
 }

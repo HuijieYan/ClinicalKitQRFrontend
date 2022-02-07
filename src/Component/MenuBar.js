@@ -1,5 +1,3 @@
-/*import Sidebar from "./Sidebar";
-import {FaSearch} from "react-icons/fa";*/
 import './MenuBar.css';
 import defaultProfile from "../Picture/defaultProfile.png";
 import 'bootstrap/dist/css/bootstrap.min.css';
