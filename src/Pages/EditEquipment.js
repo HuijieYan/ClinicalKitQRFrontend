@@ -1,14 +1,16 @@
 import {Form, Container, Button, Row, Col, Accordion} from "react-bootstrap";
 import { Editor } from '@tinymce/tinymce-react';
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import $ from 'jquery';
 import FileUploader from "../Functions/FileUploader";
 import "bootstrap/dist/css/bootstrap.min.css";
+import GetData from "../Functions/GetData";
 
 const EditEquipment = (props) => {
     const {equipmentName, id} = props;
     const [content,setContent] = useState([]);
-    const parser = require('html-react-parser');
+    const [type,setType] = useState("Select Type");
+    const [types,setTypes] = useState([]);
 
     function image_upload_handler (blobInfo, success, failure, progress) {
         return FileUploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
@@ -17,9 +19,23 @@ const EditEquipment = (props) => {
         });
     }
 
+    useEffect(() => {
+        GetData.getTypes().then((data) => {
+            setTypes(data)
+        });
+
+    }, []);
+
     const editorRef = useRef(null);
     const log = () => {
-        const tmp = document.createElement("DIV");
+        //save these variable, all of them are string
+        //in useEffect and view page we need getEquipmentById to set the name, type and description placeholder
+        const saveName = equipmentName;
+        const saveType = type;
+        const saveDescription = editorRef.current.getContent();
+
+
+        /*const tmp = document.createElement("DIV");
         tmp.innerHTML = editorRef.current.getContent().slice();
         const tabs = tmp.getElementsByClassName('tab');
 
@@ -27,18 +43,21 @@ const EditEquipment = (props) => {
         const tabNum = tabs.length;
         const parse = require('html-react-parser');
 
-        for (let i = 0; i < tabs.length; i++) {
-            const tabHeader = tabs[i].getElementsByClassName('tabHeader');
+        for (let i = 0; i < tabNum; i++) {
+            console.log(i);
+            const tabHeader = tabs[0].getElementsByClassName('tabHeader');
             let headerTag = [];
 
-            headerTag.push(<Accordion.Header>{parse(tabHeader[0].innerHTML)}</Accordion.Header>);
-            tabs[i].removeChild(tabHeader[0]);
+            headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
+            tabs[0].removeChild(tabHeader[0]);
+            tabs[0].removeChild(tabHeader[0]);
+            tabs[0].removeChild(tabHeader[0]);
 
             let bodyTag = [];
-            bodyTag.push(<Accordion.Body>{parse(tabs[i].innerHTML)}</Accordion.Body>);
+            bodyTag.push(<Accordion.Body>{parse(tabs[0].innerHTML)}</Accordion.Body>);
 
             content.push(<Accordion.Item eventKey={i}>{headerTag}{bodyTag}</Accordion.Item>);
-            tmp.removeChild(tabs[i]);
+            tmp.removeChild(tabs[0]);
         }
 
         content.push(
@@ -48,7 +67,7 @@ const EditEquipment = (props) => {
             </Accordion.Item>);
         console.log(tmp.innerHTML);
 
-        setContent(content);
+        setContent(content);*/
 
         /*setContent(editorRef.current.getContent());*/
         //save this to database
@@ -70,32 +89,21 @@ const EditEquipment = (props) => {
                     </Col>
                 </Row>
 
-                <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
-                    <Col xl={2}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>User Group:</Form.Label>
-                    </Col>
-                    <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}}>
-                            <option value="-1" label="Select Trust"/>
-                            <option value="0" label="User Group 1"/>
-                            <option value="1" label="User Group 2"/>
-                            <option value="2" label="User Group 3"/>
-                            <option value="3" label="User Group 4"/>
-                        </select>
-                    </Col>
-                </Row>
-
 
                 <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
                     <Col xl={2}>
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Type:</Form.Label>
                     </Col>
                     <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}}>
-                            <option value="-1" label="Select Type"/>
-                            <option value="0" label="Type 1"/>
-                            <option value="1" label="Type 2"/>
-                            <option value="2" label="Type 3"/>
+                        <select style={{fontSize: 'x-large'}} onChange={(e) => setType(e.target.value)} defaultValue={type}>
+                            <option key="Select Type" value="Select Type" label="Select Type"/>
+                            {types.map((type) => (
+                                <option
+                                    key={type}
+                                    value={type}
+                                    label={type}
+                                />
+                            ))}
                         </select>
                     </Col>
                 </Row>
@@ -116,7 +124,7 @@ const EditEquipment = (props) => {
                     menubar: false,
                     plugins: [
                         'advlist autolink lists link image charmap print preview anchor help',
-                        'searchreplace visualblocks code insertdatetime media table paste wordcount'
+                        'searchreplace visualblocks code insertdatetime media table paste wordcount noneditable'
                     ],
 
                     toolbar:
@@ -151,6 +159,8 @@ const EditEquipment = (props) => {
 
                         input.click();
                     },
+
+                    noneditable_noneditable_class: "tabHeader",
 
                     setup: function (editor) {
                         editor.ui.registry.addButton("insertNewTab", {
@@ -191,7 +201,7 @@ const EditEquipment = (props) => {
                                     onSubmit: function (api) {
                                         const data = api.getData();
                                         // close the dialog
-                                        editor.insertContent('<div class="tab" style="background-color: #d1d1d1"><h2 class="tabHeader">' + data.tabTitle + '</h2><p>' + data.tabContent + '</p></div><p></p>');
+                                        editor.insertContent('<div class="tab" style="background-color: #d1d1d1"><h3 class="tabHeader">Tab Title:</h3><h2 class="tabHeader">' + data.tabTitle + '</h2><h3 class="tabHeader">Content:</h3><p>' + data.tabContent + '</p></div><p></p>');
                                         api.close();
                                     },
                                 });
@@ -251,9 +261,9 @@ const EditEquipment = (props) => {
 
             <Button style={{marginTop: "3%", marginBottom: "1%"}} onClick={log}>Save</Button>
 
-            <Accordion>
+            {/*<Accordion alwaysOpen>
                 {content}
-            </Accordion>
+            </Accordion>*/}
         </Container>
     );
 }
