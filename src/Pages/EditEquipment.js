@@ -1,4 +1,4 @@
-import {Form, Container, Button, Row, Col, Accordion, Card} from "react-bootstrap";
+import {Form, Container, Button, Row, Col, Accordion} from "react-bootstrap";
 import { Editor } from '@tinymce/tinymce-react';
 import React, {useRef, useState} from "react";
 import $ from 'jquery';
@@ -7,12 +7,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const EditEquipment = (props) => {
     const {equipmentName, id} = props;
-    const [content,setContent] = useState("");
-    const [tabNum, setTabNum] = useState(0);
+    const [content,setContent] = useState([]);
+    const parser = require('html-react-parser');
 
     function image_upload_handler (blobInfo, success, failure, progress) {
-        /*console.log("ih");
-        console.log(blobInfo.filename());*/
         return FileUploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
             console.log(responese);
             return success(responese.location);
@@ -21,12 +19,41 @@ const EditEquipment = (props) => {
 
     const editorRef = useRef(null);
     const log = () => {
+        const tmp = document.createElement("DIV");
+        tmp.innerHTML = editorRef.current.getContent().slice();
+        const tabs = tmp.getElementsByClassName('tab');
+
+        let content = [];
+        const tabNum = tabs.length;
+        const parse = require('html-react-parser');
+
+        for (let i = 0; i < tabs.length; i++) {
+            const tabHeader = tabs[i].getElementsByClassName('tabHeader');
+            let headerTag = [];
+
+            headerTag.push(<Accordion.Header>{parse(tabHeader[0].innerHTML)}</Accordion.Header>);
+            tabs[i].removeChild(tabHeader[0]);
+
+            let bodyTag = [];
+            bodyTag.push(<Accordion.Body>{parse(tabs[i].innerHTML)}</Accordion.Body>);
+
+            content.push(<Accordion.Item eventKey={i}>{headerTag}{bodyTag}</Accordion.Item>);
+            tmp.removeChild(tabs[i]);
+        }
+
+        content.push(
+            <Accordion.Item eventKey={tabNum}>
+                <Accordion.Header>Additional Description</Accordion.Header>
+                <Accordion.Body>{parse(tmp.innerHTML)}</Accordion.Body>
+            </Accordion.Item>);
+        console.log(tmp.innerHTML);
+
+        setContent(content);
+
         /*setContent(editorRef.current.getContent());*/
-
         //save this to database
-        editorRef.current.getContent();
-
-        /*$("#dataContainer").html(editorRef.current.getContent());*/
+        /*editorRef.current.getContent();*/
+        /*$("#dataContainer").html(content);*/
     };
 
     return (
@@ -113,20 +140,7 @@ const EditEquipment = (props) => {
                             const file = this.files;
                             const reader = new FileReader();
 
-                            /*const data = new FormData();
-                            data.append('filetype',meta.filetype);
-                            data.append("file",file);*/
                             reader.onload = function (e) {
-                                /*const id = 'blobid' + (new Date()).getTime();
-                                const blobCache = editorRef.current.editorUpload.blobCache;
-                                const base64 = reader.result.split(',')[1];
-                                const blobInfo = blobCache.create(id, file, base64);
-                                blobCache.add(blobInfo);
-
-                                // call the callback and populate the Title field with the file name
-                                callback(blobInfo.blobUri(), { title: file.name });*/
-
-                                //location
                                 return FileUploader.uploadFiles(file).then((responese)=>{
                                     console.log(responese);
                                     callback(responese.location);
@@ -154,7 +168,7 @@ const EditEquipment = (props) => {
                                                 label: 'Tab Title',
                                             },
                                             {
-                                                type: 'input',
+                                                type: 'textarea',
                                                 name: 'tabContent',
                                                 label: 'Tab Content',
                                             },
@@ -177,7 +191,7 @@ const EditEquipment = (props) => {
                                     onSubmit: function (api) {
                                         const data = api.getData();
                                         // close the dialog
-                                        editor.insertContent('<div style="background-color: #d1d1d1"><h2>' + data.tabTitle + '</h2><p>' + data.tabContent + '</p></div><p></p>');
+                                        editor.insertContent('<div class="tab" style="background-color: #d1d1d1"><h2 class="tabHeader">' + data.tabTitle + '</h2><p>' + data.tabContent + '</p></div><p></p>');
                                         api.close();
                                     },
                                 });
@@ -237,38 +251,9 @@ const EditEquipment = (props) => {
 
             <Button style={{marginTop: "3%", marginBottom: "1%"}} onClick={log}>Save</Button>
 
-            {/*<div>
-                <Form.Label id="dataContainer">{content}</Form.Label>
-            </div>*/}
-
-
-            {/*<Accordion>
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Accordion Item #1</Accordion.Header>
-                    <Accordion.Body>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-                        est laborum.
-                    </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="1">
-                    <Accordion.Header>Accordion Item #2</Accordion.Header>
-                    <Accordion.Body>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-                        est laborum.
-                    </Accordion.Body>
-                </Accordion.Item>
-            </Accordion>*/}
-
+            <Accordion>
+                {content}
+            </Accordion>
         </Container>
     );
 }
