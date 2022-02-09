@@ -3,7 +3,7 @@ import { getHospitalId, getUserName } from "../Component/UserStatus";
 
 const URL = "http://localhost:8080/"; 
 
-class FileUploader{
+class Uploader{
     uploadFiles(files){
         var errorMessage = [];
         //for (let i =0;i<files.length;i++){
@@ -23,6 +23,20 @@ class FileUploader{
         });
         //}
     }
+
+    submitEquipmentData(name,content,category,type){
+        var data = new FormData();
+        var url = URL+"equipment/save";
+        data.append("name",name);
+        data.append("content",content);
+        data.append("category",category);
+        data.append("type",type);
+        data.append("hospitalId",getHospitalId());
+        data.append("username",getUserName());
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
-export default new FileUploader();
+export default new Uploader();

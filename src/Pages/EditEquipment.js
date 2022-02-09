@@ -2,18 +2,21 @@ import {Form, Container, Button, Row, Col, Accordion} from "react-bootstrap";
 import { Editor } from '@tinymce/tinymce-react';
 import React, {useEffect, useRef, useState} from "react";
 import $ from 'jquery';
-import FileUploader from "../Functions/FileUploader";
+import Uploader from "../Functions/Uploader";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GetData from "../Functions/GetData";
+import { getHospitalId } from "../Component/UserStatus";
 
 const EditEquipment = (props) => {
     const {equipmentName, id} = props;
     const [content,setContent] = useState([]);
     const [type,setType] = useState("Select Type");
     const [types,setTypes] = useState([]);
+    const [category,setCategory] = useState("Select Category");
+    const [categories,setCategories] = useState([]);
 
     function image_upload_handler (blobInfo, success, failure, progress) {
-        return FileUploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
+        return Uploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
             console.log(responese);
             return success(responese.location);
         });
@@ -23,6 +26,9 @@ const EditEquipment = (props) => {
         GetData.getTypes().then((data) => {
             setTypes(data)
         });
+        GetData.getCategories().then((categories)=>{
+            setCategories(categories);
+        });
 
     }, []);
 
@@ -30,43 +36,38 @@ const EditEquipment = (props) => {
     const log = () => {
         //save these variable, all of them are string
         //in useEffect and view page we need getEquipmentById to set the name, type and description placeholder
-        const saveName = equipmentName;
-        const saveType = type;
-        const saveDescription = editorRef.current.getContent();
+        var saveName = equipmentName;
+        var saveType = type;
+        var saveCategory = category;
+        var saveDescription = editorRef.current.getContent();
 
+        Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType);
 
         /*const tmp = document.createElement("DIV");
         tmp.innerHTML = editorRef.current.getContent().slice();
         const tabs = tmp.getElementsByClassName('tab');
-
         let content = [];
         const tabNum = tabs.length;
         const parse = require('html-react-parser');
-
         for (let i = 0; i < tabNum; i++) {
             console.log(i);
             const tabHeader = tabs[0].getElementsByClassName('tabHeader');
             let headerTag = [];
-
             headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
             tabs[0].removeChild(tabHeader[0]);
             tabs[0].removeChild(tabHeader[0]);
             tabs[0].removeChild(tabHeader[0]);
-
             let bodyTag = [];
             bodyTag.push(<Accordion.Body>{parse(tabs[0].innerHTML)}</Accordion.Body>);
-
             content.push(<Accordion.Item eventKey={i}>{headerTag}{bodyTag}</Accordion.Item>);
             tmp.removeChild(tabs[0]);
         }
-
         content.push(
             <Accordion.Item eventKey={tabNum}>
                 <Accordion.Header>Additional Description</Accordion.Header>
                 <Accordion.Body>{parse(tmp.innerHTML)}</Accordion.Body>
             </Accordion.Item>);
         console.log(tmp.innerHTML);
-
         setContent(content);*/
 
         /*setContent(editorRef.current.getContent());*/
@@ -89,6 +90,23 @@ const EditEquipment = (props) => {
                     </Col>
                 </Row>
 
+                <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
+                    <Col xl={2}>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Category:</Form.Label>
+                    </Col>
+                    <Col xl={2}>
+                        <select style={{fontSize: 'x-large'}} onChange={(e) => setCategory(e.target.value)} defaultValue={category}>
+                            <option key="Select Category" value="Select Category" label="Select Category"/>
+                            {categories.map((mappingCat) => (
+                                <option
+                                    key={mappingCat}
+                                    value={mappingCat}
+                                    label={mappingCat}
+                                />
+                            ))}
+                        </select>
+                    </Col>
+                </Row>
 
                 <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
                     <Col xl={2}>
@@ -97,11 +115,11 @@ const EditEquipment = (props) => {
                     <Col xl={2}>
                         <select style={{fontSize: 'x-large'}} onChange={(e) => setType(e.target.value)} defaultValue={type}>
                             <option key="Select Type" value="Select Type" label="Select Type"/>
-                            {types.map((type) => (
+                            {types.map((mappingType) => (
                                 <option
-                                    key={type}
-                                    value={type}
-                                    label={type}
+                                    key={mappingType}
+                                    value={mappingType}
+                                    label={mappingType}
                                 />
                             ))}
                         </select>
@@ -149,7 +167,7 @@ const EditEquipment = (props) => {
                             const reader = new FileReader();
 
                             reader.onload = function (e) {
-                                return FileUploader.uploadFiles(file).then((responese)=>{
+                                return Uploader.uploadFiles(file).then((responese)=>{
                                     console.log(responese);
                                     callback(responese.location);
                                 });

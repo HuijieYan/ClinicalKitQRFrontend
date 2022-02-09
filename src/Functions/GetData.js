@@ -110,6 +110,12 @@ class GetData{
         return response.data;
     }
 
+    async getAllAdminsInOrder(){
+        var url = URL+"trusts/all/admins";
+        const response = await axios.get(url);
+        return response.data;
+    }
+
     async getReceivedSharings(id,username){
         var url = URL+"mail/receiver";
         var data = new FormData();
@@ -181,6 +187,16 @@ class GetData{
         data.append("name",name);
         const response = await axios.post(url, data);
         console.log(response.data);
+        return response.data;
+    }
+
+    async getEquipmentById(id){
+        var url = URL+"equipment/get";
+        var data = new FormData();
+        data.append("hospitalId",getHospitalId());
+        data.append("username",getUserName());
+        data.append("id",id);
+        const response = await axios.post(url,data);
         return response.data;
     }
 }

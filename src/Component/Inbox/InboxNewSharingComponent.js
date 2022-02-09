@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { Form } from "react-bootstrap";
+import SharingUsergroupList from "../SharingUsergroupList";
 
 const InboxNewSharingComponent = ({display}) => {
     const [title,setTitle] = useState("");
@@ -27,6 +28,7 @@ const InboxNewSharingComponent = ({display}) => {
                                 onChange={(e)=>setDescription(e.target.value)}/>
                 </Form.Group>
             </Form>
+            <SharingUsergroupList/>
             </div>
         );
     }else{

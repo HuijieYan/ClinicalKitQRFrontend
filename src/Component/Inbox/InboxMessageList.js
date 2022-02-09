@@ -1,11 +1,11 @@
-import { useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
 import InboxDetailedMessage from "./InboxDetailedMessage";
 import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Box, typography } from "@mui/system";
 import { Fragment, useState } from "react";
 import InboxNewSharingComponent from "./InboxNewSharingComponent";
 
-const InboxMessageList = ({data,selected,clicked}) => {
+const InboxMessageList = memo(({data,selected,clicked}) => {
     const [displayMailList,setDisplayMailList] = useState([]);
     const [equipments,SetEquipments] = useState([]);
     const [vacant,setVacant] = useState(true);
@@ -13,32 +13,42 @@ const InboxMessageList = ({data,selected,clicked}) => {
     const [description,setDescription] = useState("Select An Sharing");
     const [title,setTitle] = useState("");
     const [displayState,setDisplayState] = useState(0);
+    const [displayData,SetDisplayData] = useState([]);
  
-    const handleOpenMail = useCallback((id)=>{
+    /*const handleOpenMail = useCallback((id)=>{
         const mailData = data[id];
         setDisplayState(0);
-        console.log(currentMailId);
         console.log(id);
         //if displaying new share editor, change to display detailed message section
         if (vacant || currentMailId !== id){
             const mail = mailData[0];
-            setCurrentMailId(id);
+            setCurrentMailId(currentMailId=>id);
             setTitle(mail.title);
             setDescription(mail.description);
-            setVacant(false);
+            setVacant(vacant=>false);
             SetEquipments(mail.equipments);
         //if vacant, display clicked message
         }else{
             setTitle("");
             setDescription("Select a Sharing");
-            setCurrentMailId(-1);
-            setVacant(true);
+            setCurrentMailId(currentMailId=>-1);
+            setVacant(vacant=>true);
             SetEquipments([]);
             //the mail details disappears and this section becomes vacant
         }
     },[vacant,currentMailId,data]);
+    */
     //usecallbacks rerenders when vacant and currentMailId changes 
     
+    const handleOpenMail = useCallback((id)=>{
+        var mailData = data[id];
+        setDisplayState(0);
+        console.log(id);
+        SetDisplayData([id,mailData]);
+        //send the mail data to the display component
+        //the display component will decide what to display based on the data received
+    },[data]);
+
     useEffect(()=>{
         //setting the list of sharings
        function rendering(){
@@ -91,6 +101,33 @@ const InboxMessageList = ({data,selected,clicked}) => {
     },[data,handleOpenMail]);
 
     useEffect(()=>{
+        function renderDetialedMessage(){
+            var id = displayData[0];
+            if (id===currentMailId){
+                setTitle("");
+                setDescription("Select a Sharing");
+                setCurrentMailId(-1);
+                setVacant(true);
+                SetEquipments([]);
+                //the mail details disappears and this section becomes vacant
+            }else{
+                
+                var mail = displayData[1][0];
+                console.log(mail);
+                setCurrentMailId(id);
+                setTitle(mail.title);
+                setDescription(mail.description);
+                setVacant(false);
+                SetEquipments(mail.equipments);
+            }
+        }
+        
+        if (displayData.length >0){
+            renderDetialedMessage();
+        }
+    },[displayData]);
+
+    useEffect(()=>{
         setTitle("");
         setDescription("Select a Sharing");
         setCurrentMailId(-1);
@@ -122,6 +159,6 @@ const InboxMessageList = ({data,selected,clicked}) => {
             <InboxNewSharingComponent display={displayState===1} />
         </>
      );
-}
+})
  
 export default InboxMessageList;
