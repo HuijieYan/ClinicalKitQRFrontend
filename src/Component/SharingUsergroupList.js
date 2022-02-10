@@ -6,6 +6,7 @@ import TreeView from '@mui/lab/TreeView';
 import { useCallback, useEffect, useState } from 'react';
 import GetData from '../Functions/GetData';
 import SharingListItems from './SharingListItems';
+import RecursiveTreeView from './Si';
 
 const boxSize = 14; 
 
@@ -46,6 +47,11 @@ function CloseSquare(props) {
 const SharingUsergroupList = ()=>{
   const [data,setData] = useState([]);
 
+  useEffect(()=>{
+    GetData.getAllAdminsInOrder().then((ls)=>{
+      setData(ls);    
+    });
+  },[]);
 
   return (
     <TreeView
@@ -54,12 +60,24 @@ const SharingUsergroupList = ()=>{
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
-      sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+      sx={{ height: 264, flexGrow: 1, maxWidth: 1500, overflowY: 'auto' }}
     >
-      <SharingListItems/>
+      <SharingListItems data={data}/>
     </TreeView>
   );
 }
+/**
+ * <TreeView
+      aria-label="customized"
+      defaultExpanded={['1']}
+      defaultCollapseIcon={<MinusSquare />}
+      defaultExpandIcon={<PlusSquare />}
+      defaultEndIcon={<CloseSquare />}
+      sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+    >
+      <SharingListItems data={data}/>
+    </TreeView>
+ */
 
 
 export default SharingUsergroupList;

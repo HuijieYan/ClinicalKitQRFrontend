@@ -61,9 +61,9 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
         for (let i = 0;i<data.length;i++){
             const mail = data[i][0];
             const sender = data[i][1];
-            let senderinfo = sender.name;
+            var senderinfo = sender.name;
             const descriptionSlice = String(mail.description).substring(0, 48);
-            if (String(sender.specialty.specialty).length > 0){
+            if (sender.specialty !== null){
                 senderinfo = sender.name + "-"+sender.specialty.specialty;
             }
             rows.push(
@@ -110,8 +110,7 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
                 setVacant(true);
                 SetEquipments([]);
                 //the mail details disappears and this section becomes vacant
-            }else{
-                
+            }else{      
                 var mail = displayData[1][0];
                 console.log(mail);
                 setCurrentMailId(id);
@@ -120,12 +119,14 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
                 setVacant(false);
                 SetEquipments(mail.equipments);
             }
+            SetDisplayData([]);
+            //set the display data back to empty in order to mark it as used
         }
         
         if (displayData.length >0){
             renderDetialedMessage();
         }
-    },[displayData]);
+    },[displayData,currentMailId]);
 
     useEffect(()=>{
         setTitle("");
