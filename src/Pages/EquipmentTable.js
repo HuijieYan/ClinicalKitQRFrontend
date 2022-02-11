@@ -2,7 +2,6 @@ import MUIDataTable from "mui-datatables";
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
-import axios from "axios";
 import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
 import GetData from "../Functions/GetData";
 import Tooltip from "@mui/material/Tooltip";
@@ -12,15 +11,17 @@ import {useHistory} from "react-router-dom";
 import DeleteData from "../Functions/DeleteData";
 
 const EquipmentTable = () => {
-    const [tableBodyHeight, setTableBodyHeight] = useState("100%");
-    const URL = "http://localhost:3000/equipment/qrcode/id=";
+    const tableBodyHeight = "100%";
+    const QRURL = "http://localhost:3000/equipment/qrcode/id=";
+    const viewURL = "http://localhost:3000/viewEquipment/id=";
+    const editURL = "http://localhost:3000/editEquipment/id=";
     const [rows,setRows] = useState([]);
     //rows of data
     const [selected, setSelected] = useState([]);
     //array of indexes of selected rows
 
     useEffect(()=>{
-        var level = parseInt(getLevel());
+        const level = parseInt(getLevel());
         console.log(getTrustId());
         console.log(getHospitalId());
         if (level === 2){
@@ -53,14 +54,11 @@ const EquipmentTable = () => {
                         viewColumns: false
                     }
                 },
-                { name: "Operation",
+                { name: "operation",
+                    label: "Operation",
                     options: {
                         filter: false,
-                        customBodyRender: (value, tableMeta, updateValue) => {
-                            return (
-                                <a href={value} style={{textDecoration: "none"}}>Edit</a>
-                            );
-                        }
+                        viewColumns: false
                     }
                 },
             ]);
@@ -69,10 +67,11 @@ const EquipmentTable = () => {
                 for (let i = 0;i<data.length;i++){
                     const equipment = data[i];
                     rowsData.push({
-                        name:equipment.name,
-                        id:equipment.equipmentId,
-                        hospital:equipment.hospitalId.hospitalName,
-                        qr:<a href={URL+equipment.equipmentId}>QR code</a>
+                        name: <a href={viewURL+equipment.equipmentId} style={{textDecoration: "none"}}>{equipment.name}</a>,
+                        id: equipment.equipmentId,
+                        hospital: equipment.hospitalId.hospitalName,
+                        qr: <a href={QRURL+equipment.equipmentId}>QR code</a>,
+                        operation: <a href={editURL+equipment.equipmentId} style={{textDecoration: "none"}}>Edit</a>
                     });
                 }
                 setRows(rowsData);
@@ -83,10 +82,11 @@ const EquipmentTable = () => {
                 for (let i = 0;i<data.length;i++){
                     const equipment = data[i];
                     rowsData.push({
-                        name:equipment.name,
+                        name:<a href={viewURL+equipment.equipmentId} style={{textDecoration: "none"}}>{equipment.name}</a>,
                         id:equipment.equipmentId,
                         hospital:equipment.hospitalId.hospitalName,
-                        qr:<a href={URL+equipment.equipmentId}>QR code</a>
+                        qr:<a href={QRURL+equipment.equipmentId}>QR code</a>,
+                        operation: <a href={editURL+equipment.equipmentId} style={{textDecoration: "none"}}>Edit</a>
                     });
                 }
                 setRows(rowsData);
@@ -99,43 +99,40 @@ const EquipmentTable = () => {
 
     const [columns,setColumns] = useState([
         { name: "name",
-                    label: "Equipment Name",
-                    options: {
-                        filterOptions: { fullWidth: true },
-                        viewColumns: false
-                    }
-                },
-                { name: "id",
-                    label: "Equipment ID",
-                    options: {
-                        filterOptions: { fullWidth: true },
-                        viewColumns: false
-                    }
-                },
-                { name: "hospital",
-                    options: {
-                        filterOptions: { fullWidth: true },
-                        viewColumns: false
-                    }
-                },
-                { name: "qr",
-                    label: "QR Code",
-                    options: {
-                        filterOptions: { fullWidth: true },
-                        viewColumns: false
-                    }
-                },
-                { name: "Operation",
-                    options: {
-                        filter: false,
-                        sort: false,
-                        customBodyRender: (value, tableMeta, updateValue) => {
-                            return (
-                                <a href={value} style={{textDecoration: "none"}}>Edit</a>
-                            );
-                        }
-                    }
-                },
+            label: "Equipment Name",
+            options: {
+                filterOptions: { fullWidth: true },
+                viewColumns: false
+            }
+        },
+        { name: "id",
+            label: "Equipment ID",
+            options: {
+                filterOptions: { fullWidth: true },
+                viewColumns: false
+            }
+        },
+        { name: "hospital",
+            label: "Hospital",
+            options: {
+                filterOptions: { fullWidth: true },
+                viewColumns: false
+            }
+        },
+        { name: "qr",
+            label: "QR Code",
+            options: {
+                filterOptions: { fullWidth: true },
+                viewColumns: false
+            }
+        },
+        { name: "Operation",
+            label: "Edit",
+            options: {
+                filter: false,
+                sort: false,
+            }
+        },
 
     ]);
 

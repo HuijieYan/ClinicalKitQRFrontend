@@ -1,15 +1,17 @@
-import {Form, Container, Button, Row, Col, Accordion} from "react-bootstrap";
+import {Form, Container, Button, Row, Col} from "react-bootstrap";
 import { Editor } from '@tinymce/tinymce-react';
 import React, {useEffect, useRef, useState} from "react";
-import $ from 'jquery';
 import Uploader from "../Functions/Uploader";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GetData from "../Functions/GetData";
-import { getHospitalId } from "../Component/UserStatus";
+import {useHistory} from "react-router-dom";
 
 const EditEquipment = (props) => {
-    const {equipmentName, id} = props;
-    const [content,setContent] = useState([]);
+    const {id} = props;
+    const [content,setContent] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const [name, setName] = useState("");
     const [type,setType] = useState("Select Type");
     const [types,setTypes] = useState([]);
     const [category,setCategory] = useState("Select Category");
@@ -30,18 +32,34 @@ const EditEquipment = (props) => {
             setCategories(categories);
         });
 
+        console.log(id);
+        if(id != null){
+            GetData.getEquipmentById(id).then((data) => {
+                setName(data.name);
+                setType(data.type);
+                setCategory(data.category);
+                setContent(data.content);
+            })
+        }
     }, []);
 
+    const history = useHistory();
     const editorRef = useRef(null);
     const log = () => {
         //save these variable, all of them are string
         //in useEffect and view page we need getEquipmentById to set the name, type and description placeholder
-        var saveName = equipmentName;
-        var saveType = type;
-        var saveCategory = category;
-        var saveDescription = editorRef.current.getContent();
+        const saveName = name;
+        const saveType = type;
+        const saveCategory = category;
+        const saveDescription = editorRef.current.getContent();
 
-        Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType);
+        Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType).then((response) => {
+            console.log(response);
+            if(response === "Equipment Saved Successfully"){
+                history.push("/home");
+            }
+            setErrorMessage(response.data);
+        });
 
         /*const tmp = document.createElement("DIV");
         tmp.innerHTML = editorRef.current.getContent().slice();
@@ -86,7 +104,7 @@ const EditEquipment = (props) => {
                         </Form.Group>
                     </Col>
                     <Col xl={2}>
-                        <Form.Control type="text" value={equipmentName}/>
+                        <Form.Control type="text" placeholder={name}/>
                     </Col>
                 </Row>
 
@@ -95,7 +113,7 @@ const EditEquipment = (props) => {
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Category:</Form.Label>
                     </Col>
                     <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}} onChange={(e) => setCategory(e.target.value)} defaultValue={category}>
+                        <select style={{fontSize: 'x-large'}} onChange={(e) => setCategory(e.target.value)} value={category}>
                             <option key="Select Category" value="Select Category" label="Select Category"/>
                             {categories.map((mappingCat) => (
                                 <option
@@ -113,7 +131,7 @@ const EditEquipment = (props) => {
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Type:</Form.Label>
                     </Col>
                     <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}} onChange={(e) => setType(e.target.value)} defaultValue={type}>
+                        <select style={{fontSize: 'x-large'}} onChange={(e) => setType(e.target.value)} value={type}>
                             <option key="Select Type" value="Select Type" label="Select Type"/>
                             {types.map((mappingType) => (
                                 <option
@@ -136,7 +154,7 @@ const EditEquipment = (props) => {
             <Editor
                 onInit={(evt, editor) => editorRef.current = editor}
                 apiKey="ss9xuyjb5f9h3evt41gz1yxf2nqw2ovqjcr5sozwce6p64dy"
-                initialValue="<p>Content</p>"
+                initialValue={content}
                 init={{
                     height: 500,
                     menubar: false,
@@ -146,11 +164,9 @@ const EditEquipment = (props) => {
                     ],
 
                     toolbar:
-                        'undo redo | formatselect | bold italic | \
-                        alignleft aligncenter alignright | \
-                        bullist numlist outdent indent | table | \
-                        link image media fileUploader | insertNewTab | \
-                        preview | print | help',
+                        'undo redo | formatselect | bold italic | alignleft aligncenter alignright | ' +
+                        'bullist numlist outdent indent | table | link image media fileUploader | ' +
+                        'insertNewTab | preview | print | help',
 
                     images_upload_handler: image_upload_handler,
 
@@ -279,9 +295,7 @@ const EditEquipment = (props) => {
 
             <Button style={{marginTop: "3%", marginBottom: "1%"}} onClick={log}>Save</Button>
 
-            {/*<Accordion alwaysOpen>
-                {content}
-            </Accordion>*/}
+            <p>{errorMessage}</p>
         </Container>
     );
 }

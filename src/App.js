@@ -21,6 +21,7 @@ import UploadedFiles from './Pages/UploadedFiles';
 import GuardedRoute from './Component/GuardedRoute';
 import SearchPage from './Pages/SearchPage';
 import SearchResult from './Pages/SearchResult';
+import ViewEquipment from "./Pages/ViewEquipment";
 
 function App() {
   
@@ -56,6 +57,10 @@ function App() {
 
                   <GuardedRoute component={<IssueTable/>} path="/issueTable"/>
 
+                  <GuardedRoute render={(props)=>{
+                    return (<EditEquipment id={props.match.params.id}/>)
+                  }} path="/editEquipment/id=:id" component={null}/>
+
                   <GuardedRoute component={<EditEquipment/>} path="/editEquipment"/>
 
                   <GuardedRoute component={<ContactBook/>} path="/contactBook"/>
@@ -65,6 +70,10 @@ function App() {
                   <GuardedRoute render={(props)=>{
                     return (<EquipmentQrCodePage id={props.match.params.id}/>)
                   }} path="/equipment/qrcode/id=:id" component={null}/>
+
+                  <GuardedRoute render={(props)=>{
+                    return (<ViewEquipment id={props.match.params.id}/>)
+                  }} path="/viewEquipment/id=:id" component={null}/>
                   
                   <GuardedRoute component={<SearchPage/>} path="/search"/>
 
