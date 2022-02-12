@@ -21,7 +21,7 @@ const StyledTreeItem = styled((props) => (
     },
   }));
 
-const SharingListItems = ({data}) => {
+const SharingListItems = ({data,generateNodes}) => {
     const [selected,setSelected] = useState([]);
     const [tree,setTree] = useState(null);
     
@@ -42,7 +42,7 @@ const SharingListItems = ({data}) => {
         var childId = children[i];
         var idx = ls.indexOf(childId);
         if (!isChecked){
-          if (idx===-1&&Number(childId)<data.length){
+          if (idx===-1&&Number(childId)>=0){
             ls.push(childId);
             //select no-child children
           }
@@ -90,83 +90,8 @@ const SharingListItems = ({data}) => {
       return null;
     }
 
-
-    const generateDisplayName = (group)=>{
-        var displayStr = "";
-        if(group.specialty===null){
-          displayStr = group.name;
-        }else{
-          displayStr = group.name+"-"+group.specialty.specialty;
-        }
-        return displayStr;
-      }
-
-    function generateNodes(data){
-      //console.log(data);
-      var hospitalId = -1;
-      var trustId = -1;
-      var hospitalName = "";
-      var trustName = "";
-      var specialIndex = data.length;
-      var tree = {label:"All Trust",value:String(specialIndex)};
-      var trusts = [];
-      var hospitals = [];
-      var groups = [];
-      specialIndex++;
-
-      if (data.length>0){
-        var group = data[0];
-        var hospital = group.hospitalId;
-        var trust = hospital.trust;
-
-        trustId = trust.trustId;
-        console.log(trustId);
-        trustName = trust.trustName;
-        hospitalId = hospital.hospitalId;
-        hospitalName = hospital.hospitalName;
-        //set the hospital and trust pointer to current hospital
-     }
-
-      for (let i = 0;i<data.length;i++){
-        var group = data[i];
-        var hospital = group.hospitalId;
-        var trust = hospital.trust;
-        var displayStr = generateDisplayName(group);
-
-        if (hospitalId !== hospital.hospitalId){
-          hospitals.push({label:hospitalName,value:String(specialIndex),children:groups});
-          groups=[];
-          hospitalName = hospital.hospitalName;
-          hospitalId = hospital.hospitalId;
-          specialIndex++;
-
-          if (trustId !== trust.trustId){
-            trusts.push({label:trustName,value:String(specialIndex),children:hospitals});
-            hospitals = [];
-            trustName = trust.trustName;
-            trustId = trust.trustId;
-            specialIndex++;
-          }
-        }
-
-        groups.push({label:displayStr,value:String(i)});
-      }
-      
-
-      hospitals.push({label:hospitalName,value:String(specialIndex),children:groups});
-      specialIndex++;
-      trusts.push({label:trustName,value:String(specialIndex),children:hospitals});
-      specialIndex++;
-      //console.log(trusts);
-      tree["children"] = trusts;
-      //console.log(tree);
-      return tree;
-    }
-
-    function rendering(data){
+    function rendering(){
       console.log("rendered");
-      var tree = generateNodes(data);
-      //console.log(tree);
       return renderItems(tree);
     }
 
@@ -180,7 +105,7 @@ const SharingListItems = ({data}) => {
       
       const children = childrenLs;
       //delete the node itself from the list
-      const isChecked = (children.length==0&&index!==-1)||(children.length>0&&children.every((childId) => (Number(childId)>data.length || selected.indexOf(childId)!==-1)));
+      const isChecked = (children.length==0&&index!==-1)||(children.length>0&&children.every((childId) => (Number(childId)<0 || selected.indexOf(childId)!==-1)));
       /**
        * Node is checked in following conditions:
        * 1.if the node is an end node and it is selected
@@ -189,17 +114,6 @@ const SharingListItems = ({data}) => {
        */
       const isIndeterminate =
       !isChecked && children.some((childId) => selected.indexOf(childId)!==-1);
-      
-      /** 
-       * index = ls.indexOf(i);
-      if ((isIndeterminate||!isChecked) && index!==-1){
-        //if the node is not checked or is in interminate state while it is still recorded in selected list
-        ls.splice(index,1);
-      }else if (isChecked&&index===-1){
-        //if the node is checked but not found in selected list
-        ls.push(index);
-      }
-      */
       
 
       return (
@@ -213,75 +127,15 @@ const SharingListItems = ({data}) => {
     }
 
     useEffect(()=>{
-      setTree(generateNodes(data));
-    },[data]);
-    /*
-    function renderItems(data){
-      console.log(data);
-      var row = [];
-      var hospitalRows = [];
-      //contains rows within a hospital
-      var trustRows = [];
-      //contains rows within a trust
-      var trustId = -1;
-      var hospitalId = -1;
-      var hospitalName = "";
-      var trustIndex = 0;
-      var trustName = "";
-      var hospitalIndex = 0;
-      var specialIndex = data.length;
-      
       if (data.length>0){
-          var group = data[0];
-          var hosiptal = group.hospitalId;
-          var trust = hosiptal.trust;
-
-          trustId = trust.trustId;
-          trustName = trust.trustName;
-          hospitalId = hosiptal.hospitalId;
-          hospitalName = hosiptal.hospitalName;
-          //set the hospital and trust pointer to current hospital
+        setTree(generateNodes(data));
       }
-
-      for (let i = 0;i<data.length;i++){
-          var group = data[i];
-          var hosiptal = group.hospitalId;
-          var trust = hosiptal.trust;
-          var displayStr = generateDisplayName(group);
-          
-          if (hospitalId !== hosiptal.hospitalId){
-              trustRows.push(<StyledTreeItem nodeId={String(specialIndex)} label={<FormControlLabel label={hospitalName} labelPlacement="start" control={<Checkbox size="small" checked={selected.indexOf(specialIndex) !== -1}/>}/>}>{hospitalRows}</StyledTreeItem>);
-              //add the hospital tree as a branch in the trust tree
-              hospitalId = hosiptal.hospitalId;
-              hospitalName = hosiptal.hospitalName;
-              //set the hospital pointer to current hospital
-              specialIndex++;
-              hospitalRows = [];
-      
-              if (trustId !== trust.trustId){
-                  row.push(<StyledTreeItem nodeId={String(specialIndex)} label={<FormControlLabel label={trustName} labelPlacement="start" control={<Checkbox size="small" checked={selected.indexOf(specialIndex) !== -1}/>}/>}>{trustRows}</StyledTreeItem>);
-                  //add the trust tree as a branch in the whole tree
-                  trustName = trust.trustName;
-                  trustId = trust.trustId;
-                  specialIndex++;
-                  trustRows = [];
-              }
-          }
-  
-          hospitalRows.push(<StyledTreeItem nodeId={String(i)} label={<FormControlLabel label={displayStr} labelPlacement="start" control={<Checkbox size="small" checked={selected.indexOf(i) !== -1} onChange={(e)=>{handleSelected(i)}}/>}/>}/>);
-      }
-  
-  
-      trustRows.push(<StyledTreeItem nodeId={String(specialIndex)} label={<FormControlLabel label={hospitalName} labelPlacement="start" control={<Checkbox size="small" checked={selected.indexOf(specialIndex) !== -1}/>}/>}>{hospitalRows}</StyledTreeItem>);
-      specialIndex++;
-      row.push(<StyledTreeItem nodeId={String(specialIndex)} label={<FormControlLabel label={trustName} labelPlacement="start" control={<Checkbox size="small" checked={selected.indexOf(specialIndex) !== -1}/>}/>}>{trustRows}</StyledTreeItem>);
-      specialIndex++;
-      return(<StyledTreeItem nodeId={String(specialIndex)} label={<FormControlLabel label={"All Trusts"} labelPlacement="start" control={<Checkbox size="small" checked={selected.indexOf(specialIndex) !== -1} onChange={(e)=>{handleSelected(specialIndex)}} />}></FormControlLabel>}>{row}</StyledTreeItem>);
-    }
-    */
+    },[data,generateNodes]);
 
     return ( 
-      <>{rendering(data)}</>
+      
+      <>
+      {data.length>0&&tree!==null?rendering():null}</>
      );
 }
 

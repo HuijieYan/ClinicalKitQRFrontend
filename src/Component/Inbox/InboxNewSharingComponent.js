@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { Form } from "react-bootstrap";
+import SharingEquipmentList from "../SharingEquipmentList";
 import SharingUsergroupList from "../SharingUsergroupList";
 
 const InboxNewSharingComponent = ({display}) => {
@@ -29,6 +30,7 @@ const InboxNewSharingComponent = ({display}) => {
                 </Form.Group>
             </Form>
             <SharingUsergroupList/>
+            <SharingEquipmentList/>
             </div>
         );
     }else{

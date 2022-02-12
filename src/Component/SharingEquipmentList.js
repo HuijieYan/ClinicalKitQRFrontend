@@ -3,11 +3,10 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 import TreeView from '@mui/lab/TreeView';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import GetData from '../Functions/GetData';
-import SharingListItems from './SharingListItems';
-import RecursiveTreeView from './Si';
-import SharingUsergroupItem from './SharingUsergroupItem';
+import { getHospitalId, getLevel, getTrustId } from './UserStatus';
+import SharingEquipmentItem from './SharingEquipmentItem';
 
 const boxSize = 14; 
 
@@ -43,15 +42,22 @@ function CloseSquare(props) {
   );
 }
 
-
-
-const SharingUsergroupList = ()=>{
+const SharingEquipmentList = ()=>{
   const [data,setData] = useState([]);
 
   useEffect(()=>{
-    GetData.getAllAdminsInOrder().then((ls)=>{
-      setData(ls);    
-    });
+    var level = Number(getLevel());
+    console.log(level);
+    if (level===2){
+      GetData.getAllEquipmentByHospital(getHospitalId()).then((ls)=>{
+          setData(ls);    
+      });
+    }else if (level===3){
+      GetData.getAllEquipmentByTrust(getTrustId()).then((ls)=>{
+          setData(ls);
+          console.log(ls);
+      });
+    }
   },[]);
 
   return (
@@ -63,9 +69,9 @@ const SharingUsergroupList = ()=>{
       defaultEndIcon={<CloseSquare />}
       sx={{ height: 264, flexGrow: 1, maxWidth: 1500, overflowY: 'auto' }}
     >
-      <SharingUsergroupItem data={data}/>
+      <SharingEquipmentItem data={data}/>
     </TreeView>
   );
 }
 
-export default SharingUsergroupList;
+export default SharingEquipmentList;
