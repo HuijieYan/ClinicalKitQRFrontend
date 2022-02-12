@@ -37,6 +37,21 @@ class Uploader{
             return response.data;
         });
     }
+
+    updateEquipmentData(id,name,content,category,type){
+        var data = new FormData();
+        var url = URL+"equipment/update";
+        data.append("id",id);
+        data.append("name",name);
+        data.append("content",content);
+        data.append("category",category);
+        data.append("type",type);
+        data.append("hospitalId",getHospitalId());
+        data.append("username",getUserName());
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
 export default new Uploader();

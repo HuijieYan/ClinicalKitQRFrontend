@@ -53,13 +53,26 @@ const EditEquipment = (props) => {
         const saveCategory = category;
         const saveDescription = editorRef.current.getContent();
 
-        Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType).then((response) => {
-            console.log(response);
-            if(response === "Equipment Saved Successfully"){
-                history.push("/home");
-            }
-            setErrorMessage(response.data);
-        });
+        if (id!==null){
+            Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType).then((response) => {
+                console.log(response);
+                if(response === "Equipment Saved Successfully"){
+                    //pop out a window with a redirection button
+                    history.push("/home");
+                }
+                setErrorMessage(response.data);
+            });
+        }else{
+            Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType).then((response) => {
+                console.log(response);
+                if(response === "Equipment Updated Successfully"){
+                    //pop out a window with a redirection button
+                    history.push("/home");
+                }
+                setErrorMessage(response.data);
+            });
+        }
+        
 
         /*const tmp = document.createElement("DIV");
         tmp.innerHTML = editorRef.current.getContent().slice();
