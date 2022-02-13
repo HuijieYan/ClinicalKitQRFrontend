@@ -1,13 +1,17 @@
-import {Accordion, Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Form, Modal} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import GetData from "../Functions/GetData";
+import EquipmentViewRender from "../Component/EquipmentViewRender";
 
 const ViewEquipment = (props) => {
     const {id} = props;
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     const [category, setCategory] = useState("");
-    const [content, setContent] = useState([]);
+    const [description, setDescription] = useState("");
+    const [modalShow, setModalShow] = useState(false);
+
+    let issue = "";
 
 
     useEffect(() => {
@@ -16,54 +20,54 @@ const ViewEquipment = (props) => {
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);
-
-                const tmp = document.createElement("DIV");
-                tmp.innerHTML = data.content;
-                tmp.accessKey = "temp";
-                const tabs = tmp.getElementsByClassName('tab');
-                let content = [];
-                const tabNum = tabs.length;
-                const parse = require('html-react-parser');
-                for (let i = 0; i < tabNum; i++) {
-                    const tabHeader = tabs[0].getElementsByClassName('tabHeader');
-                    let headerTag = [];
-                    headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
-                    tabs[0].removeChild(tabHeader[0]);
-                    tabs[0].removeChild(tabHeader[0]);
-                    tabs[0].removeChild(tabHeader[0]);
-                    let bodyTag = [];
-                    bodyTag.push(<Accordion.Body>{parse(tabs[0].innerHTML)}</Accordion.Body>);
-                    content.push(<Accordion.Item eventKey={i+1}>{headerTag}{bodyTag}</Accordion.Item>);
-                    tmp.removeChild(tabs[0]);
-                }
-                content.push(
-                    <Accordion.Item eventKey={0}>
-                        <Accordion.Header>Additional Description</Accordion.Header>
-                        <Accordion.Body>{parse(tmp.innerHTML)}</Accordion.Body>
-                    </Accordion.Item>);
-                setContent(content);
+                setDescription(data.content);
             });
         }
 
     }, []);
 
+    function submitIssue() {
+        issue = "submit this string to database"
+    }
+
+    function ReportHandler() {
+        return (
+            <Modal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        {name}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Issue Description</h4>
+                    <Form.Control
+                        as="textarea"
+                        rows={5}
+                        placeholder="Enter the description here."
+                        onChange={(e) => issue = e.target.value}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => {submitIssue(); setModalShow(false)}}>Submit</Button>
+                    <Button onClick={() => setModalShow(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+
     return(
-        <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey", textAlign: 'left', fontSize: 'x-large'}}>
-            <Row>
-                <Form.Label style={{color: 'gray'}}>Equipment Name: {name}</Form.Label>
-            </Row>
+        <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", paddingTop: '1%', borderColor: "grey", textAlign: 'left', fontSize: 'x-large'}}>
+            <Button variant="primary" style={{float: 'right'}} onClick={() => setModalShow(true)}>Report Issue</Button>
 
-            <Row>
-                <Form.Label style={{color: 'gray'}}>Equipment Type: {type}</Form.Label>
-            </Row>
+            <ReportHandler/>
 
-            <Row>
-                <Form.Label style={{color: 'gray'}}>Equipment Category: {category}</Form.Label>
-            </Row>
-
-            <Accordion alwaysOpen>
-                {content}
-            </Accordion>
+            <EquipmentViewRender name={name} type={type} category={category} description={description}/>
         </Container>
     );
 }

@@ -1,21 +1,43 @@
-import {Form, Container, Button, Row, Col} from "react-bootstrap";
+import {Form, Container, Button, Row, Col, Modal} from "react-bootstrap";
 import { Editor } from '@tinymce/tinymce-react';
 import React, {useEffect, useRef, useState} from "react";
 import Uploader from "../Functions/Uploader";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GetData from "../Functions/GetData";
 import {useHistory} from "react-router-dom";
+import EquipmentViewRender from "../Component/EquipmentViewRender";
 
 const EditEquipment = (props) => {
     const {id} = props;
     const [content,setContent] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-
     const [name, setName] = useState("");
     const [type,setType] = useState("Select Type");
     const [types,setTypes] = useState([]);
     const [category,setCategory] = useState("Select Category");
     const [categories,setCategories] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
+    const editorRef = useRef(null);
+
+    function PreviewWindow() {
+        return (
+            <Modal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                size="lg"
+                scrollable={true}
+                centered
+            >
+                <Modal.Header closeButton/>
+                <Modal.Body>
+                    <EquipmentViewRender name={name} type={type} category={category} description={content}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setModalShow(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
 
     function image_upload_handler (blobInfo, success, failure, progress) {
         return Uploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
@@ -44,7 +66,6 @@ const EditEquipment = (props) => {
     }, []);
 
     const history = useHistory();
-    const editorRef = useRef(null);
     const log = () => {
         //save these variable, all of them are string
         //in useEffect and view page we need getEquipmentById to set the name, type and description placeholder
@@ -72,43 +93,13 @@ const EditEquipment = (props) => {
                 setErrorMessage(response.data);
             });
         }
-        
 
-        /*const tmp = document.createElement("DIV");
-        tmp.innerHTML = editorRef.current.getContent().slice();
-        const tabs = tmp.getElementsByClassName('tab');
-        let content = [];
-        const tabNum = tabs.length;
-        const parse = require('html-react-parser');
-        for (let i = 0; i < tabNum; i++) {
-            console.log(i);
-            const tabHeader = tabs[0].getElementsByClassName('tabHeader');
-            let headerTag = [];
-            headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
-            tabs[0].removeChild(tabHeader[0]);
-            tabs[0].removeChild(tabHeader[0]);
-            tabs[0].removeChild(tabHeader[0]);
-            let bodyTag = [];
-            bodyTag.push(<Accordion.Body>{parse(tabs[0].innerHTML)}</Accordion.Body>);
-            content.push(<Accordion.Item eventKey={i}>{headerTag}{bodyTag}</Accordion.Item>);
-            tmp.removeChild(tabs[0]);
-        }
-        content.push(
-            <Accordion.Item eventKey={tabNum}>
-                <Accordion.Header>Additional Description</Accordion.Header>
-                <Accordion.Body>{parse(tmp.innerHTML)}</Accordion.Body>
-            </Accordion.Item>);
-        console.log(tmp.innerHTML);
-        setContent(content);*/
-
-        /*setContent(editorRef.current.getContent());*/
-        //save this to database
-        /*editorRef.current.getContent();*/
         /*$("#dataContainer").html(content);*/
     };
 
     return (
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
+            <PreviewWindow />
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
                 <Row>
                     <Col xl={2}>
@@ -172,14 +163,14 @@ const EditEquipment = (props) => {
                     height: 500,
                     menubar: false,
                     plugins: [
-                        'advlist autolink lists link image charmap print preview anchor help',
-                        'searchreplace visualblocks code insertdatetime media table paste wordcount noneditable'
+                        'advlist autolink lists link image charmap print anchor help',
+                        'searchreplace insertdatetime media table paste wordcount noneditable'
                     ],
 
                     toolbar:
                         'undo redo | formatselect | bold italic | alignleft aligncenter alignright | ' +
                         'bullist numlist outdent indent | table | link image media fileUploader | ' +
-                        'insertNewTab | preview | print | help',
+                        'insertNewTab | previewButton | print | help',
 
                     images_upload_handler: image_upload_handler,
 
@@ -299,6 +290,12 @@ const EditEquipment = (props) => {
                                     },
                                 });
                             },
+                        });
+
+                        editor.ui.registry.addButton('previewButton', {
+                            icon: 'preview',
+                            tooltip: 'Preview Equipment Page',
+                            onAction: () => {setContent(editor.getContent()); setModalShow(true)},
                         });
 
                     },
