@@ -10,7 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import {useHistory} from "react-router-dom";
 import {Button} from "@mui/material";
-import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
 
 const UsergroupTable = () => {

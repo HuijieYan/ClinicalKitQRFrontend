@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getHospitalId, getUserName } from "../Component/UserStatus";
+import { getHospitalId, getUserName } from "./UserStatus";
 
 const URL = "http://localhost:8080/"; 
 
@@ -48,6 +48,21 @@ class Uploader{
         data.append("type",type);
         data.append("hospitalId",getHospitalId());
         data.append("username",getUserName());
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
+
+    sendSharings(senderHospitalId,senderUsername,equipmentIds,receivers,title,description,time){
+        var url = URL + "mail/sending";
+        var data = new FormData();
+        data.append("senderHospitalId",senderHospitalId);
+        data.append("senderUsername",senderUsername);
+        data.append("receivers",receivers);
+        data.append("title",title);
+        data.append("description",description);
+        data.append("equipmentIds",equipmentIds);
+        data.append("time",time);
         return axios.post(url,data).then((response)=>{
             return response.data;
         });

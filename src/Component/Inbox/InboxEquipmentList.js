@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useState } from "react";
 import { Button, Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import ArticleIcon from '@mui/icons-material/Article';
 
@@ -22,7 +22,7 @@ const InboxEquipmentList = ({equipments}) => {
         <div>
         {[...equipments].map((equipment)=>{
                 return(
-                    <ListItem key={equipment.equipmentId}>
+                    <ListItem>
                         <ListItemButton onClick={handleSelected(equipment.equipmentId)}>
                             <ListItemIcon>
                                 <Checkbox

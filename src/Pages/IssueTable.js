@@ -6,7 +6,7 @@ import axios from "axios";
 import GetData from "../Functions/GetData";
 import { Checkbox } from "@mui/material";
 import {useHistory} from "react-router-dom";
-import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
 
 const IssueTable = () => {

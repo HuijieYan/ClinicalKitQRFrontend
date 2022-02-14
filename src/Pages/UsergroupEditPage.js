@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button,Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 

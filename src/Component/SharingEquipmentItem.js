@@ -20,6 +20,7 @@ const SharingEquipmentItem = ({data}) => {
          for (let i = 0;i<input.length;i++){
             var equipment = input[i];
             var hospital = equipment.hospitalId;
+            var id = String(equipment.equipmentId)+"\n"+equipment.name;
     
             if (currentHospital.hospitalId !== hospital.hospitalId){
               hospitals.push({label:currentHospital.hospitalName,value:String(specialIndex),children:equipments});
@@ -28,7 +29,7 @@ const SharingEquipmentItem = ({data}) => {
               specialIndex--;
             }
 
-            equipments.push({label:equipment.name,value:String(equipment.equipmentId)});
+            equipments.push({label:equipment.name,value:id});
         }
         
         hospitals.push({label:currentHospital.hospitalName,value:String(specialIndex),children:equipments});

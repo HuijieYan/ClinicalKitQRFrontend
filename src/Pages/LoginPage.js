@@ -18,7 +18,7 @@ import {
   setName,
   setPassword,
   setExpireTime,
-} from "../Component/UserStatus";
+} from "../Functions/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 

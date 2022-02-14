@@ -5,8 +5,11 @@ import TreeView from '@mui/lab/TreeView';
 
 import { useEffect, useState } from 'react';
 import GetData from '../Functions/GetData';
-import { getHospitalId, getLevel, getTrustId } from './UserStatus';
+import { getHospitalId, getLevel, getTrustId } from '../Functions/UserStatus';
 import SharingEquipmentItem from './SharingEquipmentItem';
+import { Button, Modal } from 'react-bootstrap';
+import {Button as MUIButton} from '@mui/material';
+import SharingList from './SharingList';
 
 const boxSize = 14; 
 
@@ -44,6 +47,10 @@ function CloseSquare(props) {
 
 const SharingEquipmentList = ()=>{
   const [data,setData] = useState([]);
+  const [show,setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleOpen = () => setShow(true);
 
   useEffect(()=>{
     var level = Number(getLevel());
@@ -61,6 +68,7 @@ const SharingEquipmentList = ()=>{
   },[]);
 
   return (
+    <SharingList title={"Select Sharing Equipment"} buttonText={"Add Equipment"} component={
     <TreeView
       aria-label="customized"
       defaultExpanded={['1']}
@@ -71,6 +79,8 @@ const SharingEquipmentList = ()=>{
     >
       <SharingEquipmentItem data={data}/>
     </TreeView>
+    }
+    />
   );
 }
 

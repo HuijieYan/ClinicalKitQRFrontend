@@ -157,7 +157,7 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
                 <Divider/>
             </Box>
             <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments} display={displayState===0}/>
-            {/* <InboxNewSharingComponent display={displayState===1} /> */}
+            <InboxNewSharingComponent display={displayState===1} />
         </>
      );
 })

@@ -1,3 +1,4 @@
+import { getHospitalId, getUserName } from "../Functions/UserStatus";
 import SharingListItems from "./SharingListItems";
 
 const SharingUsergroupItem = ({data}) => {
@@ -13,10 +14,10 @@ const SharingUsergroupItem = ({data}) => {
           }
 
         //console.log(data);
-        var hospitalId = -1;
-        var trustId = -1;
-        var hospitalName = "";
-        var trustName = "";
+        var ownHospitalId = Number(getHospitalId());
+        var ownUsername = getUserName();
+        var currentHospital=null;
+        var currentTrust = null;
         var specialIndex = -1;
         var tree = {label:"All Trust",value:String(specialIndex)};
         var trusts = [];
@@ -29,11 +30,9 @@ const SharingUsergroupItem = ({data}) => {
             var hospital = group.hospitalId;
             var trust = hospital.trust;
 
-            trustId = trust.trustId;
-            trustName = trust.trustName;
-            hospitalId = hospital.hospitalId;
-            hospitalName = hospital.hospitalName;
-            //set the hospital and trust pointer to current hospital
+            currentTrust = trust;
+            currentHospital = hospital;
+            //set the hospital and trust pointer to current hospital and trust
         }
 
         for (let i = 0;i<input.length;i++){
@@ -41,30 +40,34 @@ const SharingUsergroupItem = ({data}) => {
             var hospital = group.hospitalId;
             var trust = hospital.trust;
             var displayStr = generateDisplayName(group);
+            var id = String(hospital.hospitalId)+"\n"+group.username+"\n"+displayStr;
 
-            if (hospitalId !== hospital.hospitalId){
-                hospitals.push({label:hospitalName,value:String(specialIndex),children:groups});
+            if (currentHospital.hospitalId !== hospital.hospitalId){
+                if (groups.length>0){
+                    hospitals.push({label:currentHospital.hospitalName,value:String(specialIndex),children:groups});
+                }
                 groups=[];
-                hospitalName = hospital.hospitalName;
-                hospitalId = hospital.hospitalId;
+                currentHospital = hospital;
                 specialIndex--;
 
-                if (trustId !== trust.trustId){
-                    trusts.push({label:trustName,value:String(specialIndex),children:hospitals});
+                if (currentTrust.trustId !== trust.trustId){
+                    if (hospitals.length>0){
+                        trusts.push({label:currentTrust.trustName,value:String(specialIndex),children:hospitals});
+                    }
                     hospitals = [];
-                    trustName = trust.trustName;
-                    trustId = trust.trustId;
+                    currentTrust = trust;
                     specialIndex--;
                 }
             }
-
-            groups.push({label:displayStr,value:String(i)});
+            if (group.username!==ownUsername||hospital.hospitalId!==ownHospitalId){
+                groups.push({label:displayStr,value:id});
+            }
+            
         }
         
-
-        hospitals.push({label:hospitalName,value:String(specialIndex),children:groups});
+        hospitals.push({label:currentHospital.hospitalName,value:String(specialIndex),children:groups});
         specialIndex--;
-        trusts.push({label:trustName,value:String(specialIndex),children:hospitals});
+        trusts.push({label:currentTrust.trustName,value:String(specialIndex),children:hospitals});
         //console.log(trusts);
         tree["children"] = trusts;
         //console.log(tree);
@@ -72,7 +75,7 @@ const SharingUsergroupItem = ({data}) => {
     }
 
     return ( 
-        <SharingListItems data={data} generateNodes={generateNodes} />
+        <SharingListItems data={data} generateNodes={generateNodes}/>
      );
 }
  

@@ -1,18 +1,88 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import Uploader from "../../Functions/Uploader";
+import { getHospitalId, getUserName } from "../../Functions/UserStatus";
+import { storeSelection } from "../../Storage/Actions/actions";
+import selectionReducer from "../../Storage/Reducers/selectionReducer";
 import SharingEquipmentList from "../SharingEquipmentList";
 import SharingUsergroupList from "../SharingUsergroupList";
+import InboxNewSharingEquipmentList from "./InboxNewSharingEquipmentList";
+import InboxNewSharingUserGroupList from "./InboxNewSharingUserGroupList";
+
+const usergroupStore = createStore(selectionReducer,[]);
+const equipmentStore = createStore(selectionReducer,[]);
 
 const InboxNewSharingComponent = ({display}) => {
     const [title,setTitle] = useState("");
     const [description,setDescription] = useState("");
+    const [show,setShow] = useState(false);
+    const [message,setMessage] = useState("");
+    const handleClose = ()=>setShow(false);
+
+    const send = () =>{
+        function decodeUsergroupSelection(selection){
+            var result = [];
+            for (let i=0;i<selection.length;i++){
+                var group = [];
+                var selected = String(selection[i]);
+                var splitedString = selected.split("\n");
+                group.push(splitedString[0]);
+                //first item is the hospital id
+                group.push(splitedString[1]);
+                //first item is the username
+                result.push(group);
+            }
+            return result;
+        }
+
+        function decodeEquipmentSelection(selection){
+            var result = [];
+            for (let i=0;i<selection.length;i++){
+                var equipment = [];
+                var selected = String(selection[i]);
+                var splitedString = selected.split("\n");
+                equipment.push(splitedString[0]);
+                //first item is the equipment id
+                result.push(equipment);
+            }
+            return result;
+        }
+
+        var sendingEquipmentIds=decodeEquipmentSelection(equipmentStore.getState());
+        console.log(sendingEquipmentIds);
+        var sendingUsergroups = decodeUsergroupSelection(usergroupStore.getState());
+        console.log(sendingUsergroups);
+        var time = new Date().toUTCString();
+        Uploader.sendSharings(getHospitalId(),getUserName(),sendingEquipmentIds,sendingUsergroups,title,description,time).then((data)=>{
+            if(data){
+                setMessage("Send Successful");
+            }else{
+                setMessage("Send unsuccessful, please try again");
+            }
+        });
+        setTitle("");
+        setDescription("");
+        usergroupStore.dispatch(storeSelection([]));
+        equipmentStore.dispatch(storeSelection([]));
+        setShow(true);
+    }
 
     if(display){
         return (  
             <div>
-            <Button>Add Admin</Button>
-            <Button>Add Equipment</Button>
+                <Provider store={usergroupStore}>
+                    <SharingUsergroupList/>
+                    <InboxNewSharingUserGroupList />
+                </Provider>
+                <Provider store={equipmentStore}>
+                    <SharingEquipmentList/>
+                    <InboxNewSharingEquipmentList />
+                </Provider>
+                
+            
             <Form>
                 <Form.Group id="title">
                     <Form.Control type="title"
@@ -24,13 +94,21 @@ const InboxNewSharingComponent = ({display}) => {
             <Form>
                 <Form.Group id="Description">
                     <Form.Control type="description"
-                                placeholder="description"
+                                placeholder="Description"
                                 value={description}
                                 onChange={(e)=>setDescription(e.target.value)}/>
                 </Form.Group>
             </Form>
-            <SharingUsergroupList/>
-            <SharingEquipmentList/>
+            
+            <Button onClick={send}>Send</Button>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>Message</Modal.Header>
+                <Modal.Body>{message}</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
             </div>
         );
     }else{

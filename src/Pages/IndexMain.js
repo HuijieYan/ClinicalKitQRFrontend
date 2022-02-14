@@ -6,7 +6,7 @@ import {
   getHospitalId,
   getLevel,
   getUserName,
-} from "../Component/UserStatus";
+} from "../Functions/UserStatus";
 import { Button, Row } from "react-bootstrap";
 import { logout } from "../Functions/LoginFunctions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";

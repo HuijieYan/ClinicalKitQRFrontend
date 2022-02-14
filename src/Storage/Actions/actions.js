@@ -88,3 +88,23 @@ export const getPassword = () => {
         type: 'GET_PASSWORD'
     }
 }
+
+export const getSelection = () => {
+    return{
+        type: 'GET_SELECTION'
+    }
+}
+
+export const storeSelection = (selection) => {
+    return{
+        type: 'SET_SELECTION',
+        data: selection
+    }
+}
+
+export const pushSelection = (selection) => {
+    return{
+        type: 'PUSH_SELECTION',
+        data: selection
+    }
+}

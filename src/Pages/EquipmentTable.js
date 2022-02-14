@@ -2,7 +2,7 @@ import MUIDataTable from "mui-datatables";
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
-import { getHospitalId, getLevel, getTrustId } from "../Component/UserStatus";
+import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import GetData from "../Functions/GetData";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";

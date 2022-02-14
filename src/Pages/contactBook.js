@@ -6,7 +6,7 @@ import axios from "axios";
 import GetData from "../Functions/GetData";
 import { Checkbox, IconButton, Tooltip } from "@mui/material";
 import {useHistory} from "react-router-dom";
-import { getUserName } from "../Component/UserStatus";
+import { getUserName } from "../Functions/UserStatus";
 import {ImShare} from 'react-icons/im';
 
 const ContactBook = () => {

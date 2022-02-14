@@ -75,9 +75,9 @@ const InboxSideBar = () => {
         <Divider />
       </Box>
       <InboxMessage selected={selected} clicked={clickedNewShare} />
-      <InboxNewShareModal show={showModal} onHide={() => setModalShow(false)} />
     </>
   );
 };
+//<InboxNewShareModal show={showModal} onHide={() => setModalShow(false)} />
 
 export default InboxSideBar;
