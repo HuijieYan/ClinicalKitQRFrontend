@@ -23,6 +23,7 @@ import SearchPage from './Pages/SearchPage';
 import SearchResult from './Pages/SearchResult';
 import ViewEquipment from "./Pages/ViewEquipment";
 import PreviewEquipment from './Pages/PreviewEquipment';
+import EquipmentReports from './Pages/EquipmentReports';
 
 function App() {
   
@@ -67,6 +68,8 @@ function App() {
                   <GuardedRoute component={<ContactBook/>} path="/contactBook"/>
 
                   <GuardedRoute component={<Inbox/>} path="/inbox"/>
+
+                  <GuardedRoute component={<EquipmentReports/>} path="/reports"/>
 
                   <GuardedRoute render={(props)=>{
                     return (<EquipmentQrCodePage id={props.match.params.id}/>)
