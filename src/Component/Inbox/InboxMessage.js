@@ -1,31 +1,36 @@
 import { useState } from "react";
 import { useEffect } from "react";
+import { Provider, useDispatch } from "react-redux";
+import { createStore } from "redux";
 import GetData from "../../Functions/GetData";
 import { getHospitalId, getUserName } from "../../Functions/UserStatus";
+import { storeMailData } from "../../Storage/Actions/actions";
+import mailDataReducer from "../../Storage/Reducers/mailDataReducer";
 import InboxMessageList from "./InboxMessageList";
 import InboxSideBar from "./InboxSideBar";
 
+const store = createStore(mailDataReducer);
+
 const InboxMessage = ({ selected, clicked }) => {
-  const [data, setData] = useState([]);
 
   useEffect(() => {
     if (selected === 0) {
       GetData.getReceivedSharings(getHospitalId(), getUserName()).then(
         (data) => {
-          setData(data);
+          store.dispatch(storeMailData(data));
         }
       );
     } else {
       GetData.getSentSharings(getHospitalId(), getUserName()).then((data) => {
-        setData(data);
+        store.dispatch(storeMailData(data));
       });
     }
   }, [selected]);
 
   return (
-    <>
-      <InboxMessageList data={data} selected={selected} clicked={clicked} />
-    </>
+    <Provider store={store}>
+      <InboxMessageList selected={selected} clicked={clicked} />
+    </Provider>
   );
 };
 

@@ -1,10 +1,18 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, ButtonGroup, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper, Typography } from "@mui/material";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useDispatch, useSelector } from "react-redux";
+import { storeMailData } from "../../Storage/Actions/actions";
+import Uploader from "../../Functions/Uploader";
 
-const InboxButtonList = ({options}) => {
+//referenced some code from https://mui.com/components/button-group/
+
+const InboxButtonList = ({selected,setSelected,currentMailIndex}) => {
+    const options = ["SAVE","SAVE ALL"];
     const [index,setIndex] = useState(0);
     const [open,setOpen] = useState(false);
+    const data = useSelector((state)=>state);
+    const dispatch = useDispatch();
     const anchorRef = useRef(null);
 
     const handleOpenList = ()=>()=>{
@@ -13,6 +21,7 @@ const InboxButtonList = ({options}) => {
     }
 
     const handleClick = (event, index) => {
+        console.log("clicked");
         setIndex(index);
         setOpen(false);
       };
@@ -25,10 +34,54 @@ const InboxButtonList = ({options}) => {
         setOpen(false);
       };
 
+    const handleSave = (selections,mails,index)=>{
+        var currentMail=mails[index][0];
+        var equipments = [...currentMail.equipments];
+        var ids = [];
+        for (let i =0;i<selections.length;i++){
+            equipments[selections[i]].saved = true;
+            //change saved attributes in equipment into true
+            ids.push(equipments[i].id);
+        }
+        Uploader.saveEquipments(ids);
+        currentMail["equipments"] = equipments;
+        mails[index][0] = currentMail;
+        dispatch(storeMailData(mails));
+        //update the local data 
+        setSelected([]);
+    }
+
+    const handleSaveAll = (selections,mails,index)=>{
+        var currentMail=mails[index][0];
+        var equipments = [...currentMail.equipments];
+        var ids = [];
+        for (let i =0;i<equipments.length;i++){
+            var equipment = equipments[i];
+            if (!equipment.saved){
+                equipments[i].saved = true;
+                //change saved attributes in equipment into true
+                ids.push(equipments[i].id);
+            }
+        }
+        Uploader.saveEquipments(ids);
+        currentMail["equipments"] = equipments;
+        mails[index][0] = currentMail;
+        dispatch(storeMailData(mails));
+        //update the local data 
+        setSelected([]);
+    }
+
+    const functions = [handleSave,handleSaveAll];
+
+    useEffect(()=>{
+        setIndex(0);
+        //if viewing mail changed, reset the index of buttons
+    },[currentMailIndex])
+
     return (
         <>
             <ButtonGroup ref={anchorRef}>
-                <Button>{options[index]}</Button>
+                <Button onClick={(e)=>{functions[index](selected,data,currentMailIndex)}}>{options[index]}</Button>
                 <Button size="small" onClick={handleOpenList()}>
                     <ArrowDropDownIcon/>
                 </Button>

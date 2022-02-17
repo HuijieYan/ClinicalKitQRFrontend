@@ -59,14 +59,15 @@ const InboxNewSharingComponent = ({display}) => {
         Uploader.sendSharings(getHospitalId(),getUserName(),sendingEquipmentIds,sendingUsergroups,title,description,time).then((data)=>{
             if(data){
                 setMessage("Send Successful");
+                setTitle("");
+                setDescription("");
+                usergroupStore.dispatch(storeSelection([]));
+                equipmentStore.dispatch(storeSelection([]));
             }else{
                 setMessage("Send unsuccessful, please try again");
             }
         });
-        setTitle("");
-        setDescription("");
-        usergroupStore.dispatch(storeSelection([]));
-        equipmentStore.dispatch(storeSelection([]));
+        
         setShow(true);
     }
 

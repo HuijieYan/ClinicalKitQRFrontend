@@ -4,16 +4,15 @@ import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } fro
 import { Box, typography } from "@mui/system";
 import { Fragment, useState } from "react";
 import InboxNewSharingComponent from "./InboxNewSharingComponent";
+import { useSelector } from "react-redux";
 
-const InboxMessageList = memo(({data,selected,clicked}) => {
+const InboxMessageList = memo(({selected,clicked}) => {
     const [displayMailList,setDisplayMailList] = useState([]);
-    const [equipments,SetEquipments] = useState([]);
     const [vacant,setVacant] = useState(true);
     const [currentMailId,setCurrentMailId] = useState(-1);
-    const [description,setDescription] = useState("Select An Sharing");
-    const [title,setTitle] = useState("");
     const [displayState,setDisplayState] = useState(0);
-    const [displayData,SetDisplayData] = useState([]);
+    const [displayIndex,setDisplayIndex] = useState(-1);
+    const data = useSelector((state)=>state);
  
     /*const handleOpenMail = useCallback((id)=>{
         const mailData = data[id];
@@ -44,7 +43,7 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
         var mailData = data[id];
         setDisplayState(0);
         console.log(id);
-        SetDisplayData([id,mailData]);
+        setDisplayIndex(id);
         //send the mail data to the display component
         //the display component will decide what to display based on the data received
     },[data]);
@@ -102,48 +101,33 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
 
     useEffect(()=>{
         function renderDetialedMessage(){
-            var id = displayData[0];
-            if (id===currentMailId){
-                setTitle("");
-                setDescription("Select a Sharing");
+            if (displayIndex===currentMailId){
                 setCurrentMailId(-1);
                 setVacant(true);
-                SetEquipments([]);
                 //the mail details disappears and this section becomes vacant
             }else{      
-                var mail = displayData[1][0];
-                console.log(mail);
-                setCurrentMailId(id);
-                setTitle(mail.title);
-                setDescription(mail.description);
+                setCurrentMailId(displayIndex);
                 setVacant(false);
-                SetEquipments(mail.equipments);
             }
-            SetDisplayData([]);
+            setDisplayIndex(-1);
             //set the display data back to empty in order to mark it as used
         }
         
-        if (displayData.length >0){
+        if (displayIndex >=0){
             renderDetialedMessage();
         }
-    },[displayData,currentMailId]);
+    },[displayIndex,currentMailId]);
 
     useEffect(()=>{
-        setTitle("");
-        setDescription("Select a Sharing");
         setCurrentMailId(-1);
         setVacant(true);
-        SetEquipments([]);
         setDisplayState(1);
         //when clicked new share, hide the detailed message component
     },[clicked]);
 
     useEffect(()=>{
-        setTitle("");
-        setDescription("Select a Sharing");
         setCurrentMailId(-1);
         setVacant(true);
-        SetEquipments([]);
         setDisplayState(0);
         //when clicked a button on the side bar, hide the detailed message component
     },[selected])
@@ -156,7 +140,7 @@ const InboxMessageList = memo(({data,selected,clicked}) => {
                 </List>
                 <Divider/>
             </Box>
-            <InboxDetailedMessage title={title} description={description} vacant={vacant} equipments={equipments} display={displayState===0}/>
+            <InboxDetailedMessage index={currentMailId} vacant={vacant} display={displayState===0} option={selected}/>
             <InboxNewSharingComponent display={displayState===1} />
         </>
      );

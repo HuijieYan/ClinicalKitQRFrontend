@@ -108,3 +108,16 @@ export const pushSelection = (selection) => {
         data: selection
     }
 }
+
+export const getMailData = () => {
+    return{
+        type: 'GET_MAILDATA'
+    }
+}
+
+export const storeMailData = (mails) => {
+    return{
+        type: 'SET_MAILDATA',
+        data: mails
+    }
+}

@@ -67,6 +67,14 @@ class Uploader{
             return response.data;
         });
     }
+
+    saveEquipments(ids){
+        var url = URL+"sentEquipment/saving";
+        var data = new FormData();
+        data.append("hospitalId",getHospitalId());
+        data.append("ids",ids);
+        axios.post(url,data);
+    }
 }
  
 export default new Uploader();
