@@ -32,7 +32,7 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
     }
 
     const handleOpen=(id)=>{
-        history.push("/equipment/preview/"+id);
+        history.push("/previewEquipment/id="+id);
     }
 
     const handleSelected = (id,saved) => () =>{

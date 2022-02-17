@@ -199,6 +199,14 @@ class GetData {
     const response = await axios.post(url, data);
     return response.data;
   }
+
+  async getSentEquipmentById(id) {
+    var url = URL + "sentEquipment/get";
+    var data = new FormData();
+    data.append("id", id);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
 }
 
 export default new GetData();
