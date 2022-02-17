@@ -73,7 +73,6 @@ const EquipmentReports = () => {
             });
         }
     },[]);
-    //renders only once for fetching selection options
 
     function handleCheck(e){
         console.log(e.target.name); 
