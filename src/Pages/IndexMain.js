@@ -21,10 +21,6 @@ const IndexMain = () => {
 
   return (
     <div className="indexMain" id="mainContent">
-      {console.log(getUserName())}
-      {console.log(getHospitalId())}
-      {console.log(getLevel())}
-      {console.log(getExpireTime())}
 
       <section className="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
         <div className="container">

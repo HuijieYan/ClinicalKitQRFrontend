@@ -2,6 +2,7 @@ import {Button, Container, Form, Modal} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import GetData from "../Functions/GetData";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
+import Uploader from "../Functions/Uploader";
 
 const ViewEquipment = (props) => {
     const {id} = props;
@@ -10,12 +11,11 @@ const ViewEquipment = (props) => {
     const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
     const [modalShow, setModalShow] = useState(false);
-
-    let issue = "";
+    const [issue, setIssue] = useState("");
 
 
     useEffect(() => {
-        if(id != null){
+        if(id !== null){
             GetData.getEquipmentById(id).then((data)=>{
                 setName(data.name);
                 setType(data.type);
@@ -27,7 +27,10 @@ const ViewEquipment = (props) => {
     }, []);
 
     function submitIssue() {
-        issue = "submit this string to database"
+        if(issue.length===0){
+            return;
+        }
+        Uploader.submitIssue(issue,id);
     }
 
     function ReportHandler() {
@@ -50,7 +53,7 @@ const ViewEquipment = (props) => {
                         as="textarea"
                         rows={5}
                         placeholder="Enter the description here."
-                        onChange={(e) => issue = e.target.value}
+                        onChange={(e) => setIssue(e.target.value)}
                     />
                 </Modal.Body>
                 <Modal.Footer>

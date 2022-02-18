@@ -75,6 +75,18 @@ class Uploader{
         data.append("ids",ids);
         axios.post(url,data);
     }
+
+    submitIssue(issue,equipmentId){
+        var url = URL+"issues/new";
+        var data = new FormData();
+        data.append("hospitalId",getHospitalId());
+        data.append("username",getUserName());
+        data.append("description",issue);
+        data.append("equipmentId",equipmentId);
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
 export default new Uploader();

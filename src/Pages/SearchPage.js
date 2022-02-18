@@ -56,7 +56,7 @@ const SearchPage = () => {
         <Form>
             <Form.Group id="searchbar">
                 <Form.Control type="searchbar"
-                            placeholder="Enter Equipment Name"
+                            placeholder="Enter Equipment Name or 9-Digit Code"
                             value={name}
                             onChange={(e)=>setName(e.target.value)}/>
             </Form.Group>

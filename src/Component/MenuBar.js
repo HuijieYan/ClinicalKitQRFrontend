@@ -2,8 +2,21 @@ import './MenuBar.css';
 import defaultProfile from "../Picture/defaultProfile.png";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, FormControl, Button, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const MenuBar = () => {
+    const [str,setStr] = useState("");
+    const history = useHistory();
+
+    const search = () =>{
+        if(str === ""){
+            return;
+        }
+        //console.log("/result?name="+name+" category="+selectedCategory+" type="+selectedType);
+        history.push("/result/name="+str+"/category=None/type=None");
+    }
+
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container fluid>
@@ -28,8 +41,10 @@ const MenuBar = () => {
                             placeholder="Search"
                             className="me-2"
                             aria-label="Search"
+                            value={str}
+                            onChange={(e)=>{setStr(e.target.value)}}
                         />
-                        <Button variant="outline-success">Search</Button>
+                        <Button variant="outline-success" onClick={search}>Search</Button>
                     </Form>
                     <img id = "profilePic" src = {defaultProfile} alt="profileImg" height={80} width={80}/>
                 </Navbar.Collapse>
