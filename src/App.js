@@ -3,9 +3,7 @@ import './Component/Sidebar.css';
 import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 import IndexMain from './Pages/IndexMain';
 import LoginPage from './Pages/LoginPage';
-import UsergroupEditPage from './Pages/UsergroupEditPage';
-import HospitalCreationPage from './Pages/HospitalCreationPage';
-import TrustCreationPage from './Pages/TrustCreationPage';
+import EditUsergroup from './Pages/EditUsergroup';
 import MenuBar from './Component/MenuBar';
 import EquipmentQrCodePage from './Pages/EquipmentQrCodePage';
 import UsergroupTable from './Pages/UsergroupTable';
@@ -24,6 +22,8 @@ import SearchResult from './Pages/SearchResult';
 import ViewEquipment from "./Pages/ViewEquipment";
 import PreviewEquipment from './Pages/PreviewEquipment';
 import EquipmentReports from './Pages/EquipmentReports';
+import HospitalTable from "./Pages/HospitalTable";
+import UserProfile from "./Pages/UserProfile";
 
 function App() {
   
@@ -47,15 +47,19 @@ function App() {
                 <Switch>
                   <GuardedRoute component={<IndexMain/>} path="/home"/>
 
-                  <GuardedRoute component={<UsergroupEditPage/>} path="/editUserGroup"/>
+                  <GuardedRoute component={<UserProfile/>} path="/user"/>
 
-                  <GuardedRoute component={<HospitalCreationPage/>} path="/hospitalCreation"/>
+                  <GuardedRoute render={(props)=>{
+                    return (<EditUsergroup groupUsername={props.match.params.username} selectedHospitalId={props.match.params.hospitalId}/>)
+                  }} path="/editUserGroup/username=:username/hospitalId=:hospitalId" component={null}/>
 
-                  <GuardedRoute component={<TrustCreationPage/>} path="/trustCreation"/>
+                  <GuardedRoute component={<EditUsergroup/>} path="/editUserGroup"/>
 
                   <GuardedRoute component={<EquipmentTable/>} path="/equipmentTable"/>
 
                   <GuardedRoute component={<UsergroupTable/>} path="/usergroupTable"/>
+
+                  <GuardedRoute component={<HospitalTable/>} path="/hospitalTable"/>
 
                   <GuardedRoute component={<IssueTable/>} path="/issueTable"/>
 

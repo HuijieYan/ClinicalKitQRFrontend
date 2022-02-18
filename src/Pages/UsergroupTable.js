@@ -1,33 +1,30 @@
-import MUIDataTable, { TableToolbar } from "mui-datatables";
+import MUIDataTable from "mui-datatables";
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
-import axios from "axios";
 import GetData from "../Functions/GetData";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import {useHistory} from "react-router-dom";
-import {Button} from "@mui/material";
 import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
 
 const UsergroupTable = () => {
-    const [tableBodyHeight, setTableBodyHeight] = useState("100%");
     const [rows,setRows] = useState([]);
     //rows of data
     const [selected, setSelected] = useState([]);
+    const editURL = "http://localhost:3000/editUserGroup/username=";
     //array of indexes of selected rows
 
     useEffect(()=>{
-        var level = parseInt(getLevel());
+        const level = parseInt(getLevel());
         console.log(getTrustId());
         console.log(getHospitalId());
         if (level === 2){
             setColumns([
                 { name: "name",
-                    label: "Name",
+                    label: "Group Name",
                     options: {
                         filterOptions: { fullWidth: true },
                         viewColumns: false
@@ -48,13 +45,22 @@ const UsergroupTable = () => {
                     }
                 },
                 { name: "hospital",
+                    label: "Hospital",
                     options: {
                         filterOptions: { fullWidth: true },
                         display: false,
                         viewColumns: false
                     }
                 },
+                { name: "operation",
+                    label: "Edit",
+                    options: {
+                        filter: false,
+                        sort: false,
+                    }
+                },
                 { name: "hospitalId",
+                    label: "Hospital ID",
                     options: {
                         filterOptions: { fullWidth: true },
                         display: false,
@@ -63,30 +69,35 @@ const UsergroupTable = () => {
                 },
             ]);
             GetData.getAllGroupsByHospital(getHospitalId()).then((data)=>{
-                const rowsData = [];
-                for (let i = 0;i<data.length;i++){
-                    const group = data[i];
-                    rowsData.push({name:group[0],username:group[1],role:group[2],hospital:group[3],hospitalId:group[4]});
-                }
-                setRows(rowsData);
+               setRowData(data);
             });
         }else if(level === 3){
             GetData.getAllGroupsByTrust(getTrustId()).then((data)=>{
-                const rowsData = [];
-                console.log(data);
-                for (let i = 0;i<data.length;i++){
-                    const group = data[i];
-                    rowsData.push({name:group[0],username:group[1],role:group[2],hospital:group[3],hospitalId:group[4]});
-                }
-                setRows(rowsData);
+                setRowData(data);
             });
         }
     },[]);
     //renders only once for fetching selection options
 
+    function setRowData(data){
+        const rowsData = [];
+        for (let i = 0;i<data.length;i++){
+            const group = data[i];
+            rowsData.push({
+                name:group[0],
+                username:group[1],
+                role:group[2],
+                hospital:group[3],
+                operation: <a href={editURL+group[1] + "/hospitalId=" + group[4]} style={{textDecoration: "none"}}>Edit</a>,
+                hospitalId:group[4]
+            });
+        }
+        setRows(rowsData);
+    }
+
     const [columns,setColumns] = useState([
         { name: "name",
-            label: "User Group Name",
+            label: "Group Name",
             options: {
                 filterOptions: { fullWidth: true },
                 viewColumns: false
@@ -107,12 +118,21 @@ const UsergroupTable = () => {
             }
         },
         { name: "hospital",
+            label: "Hospital",
             options: {
                 filterOptions: { fullWidth: true },
                 viewColumns: false
             }
         },
+        { name: "operation",
+            label: "Edit",
+            options: {
+                filter: false,
+                sort: false,
+            }
+        },
         { name: "hospitalId",
+            label: "Hospital ID",
             options: {
                 filterOptions: { fullWidth: true },
                 display: false,
@@ -134,18 +154,13 @@ const UsergroupTable = () => {
                         <AddIcon/>
                     </IconButton>
                 </Tooltip>
-                <Tooltip title={"Add Hospital"}>
-                    <IconButton onClick={addUserGroup}>
-                        <AddBusinessIcon/>
-                    </IconButton>
-                </Tooltip>
             </>
         );
     }
 
     const options = {
         filterType: "multiselect",
-        tableBodyHeight,
+        height: "100%",
         jumpToPage: true,
         onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
             setSelected(rowsSelected);
@@ -154,7 +169,7 @@ const UsergroupTable = () => {
             const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
                 const index = selected[i];
-                DeleteData(rowLs[index].hospitalId,rowLs[index].username);
+                DeleteData.deleteUsergroup(rowLs[index].hospitalId,rowLs[index].username);
                 rowLs.splice(index,1);
             }
             setRows(rowLs);

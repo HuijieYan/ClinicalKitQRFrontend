@@ -11,7 +11,6 @@ import {useHistory} from "react-router-dom";
 import DeleteData from "../Functions/DeleteData";
 
 const EquipmentTable = () => {
-    const tableBodyHeight = "100%";
     const QRURL = "http://localhost:3000/equipment/qrcode/id=";
     const viewURL = "http://localhost:3000/viewEquipment/id=";
     const editURL = "http://localhost:3000/editEquipment/id=";
@@ -63,39 +62,32 @@ const EquipmentTable = () => {
                 },
             ]);
             GetData.getAllEquipmentByHospital(getHospitalId()).then((data)=>{
-                const rowsData = [];
-                for (let i = 0;i<data.length;i++){
-                    const equipment = data[i];
-                    rowsData.push({
-                        name: <a href={viewURL+equipment.equipmentId} style={{textDecoration: "none"}}>{equipment.name}</a>,
-                        id: equipment.equipmentId,
-                        hospital: equipment.hospitalId.hospitalName,
-                        qr: <a href={QRURL+equipment.equipmentId}>QR code</a>,
-                        operation: <a href={editURL+equipment.equipmentId} style={{textDecoration: "none"}}>Edit</a>
-                    });
-                }
-                setRows(rowsData);
+                setRowData(data);
             });
         }else if(level === 3){
             GetData.getAllEquipmentByTrust(getTrustId()).then((data)=>{
-                const rowsData = [];
-                for (let i = 0;i<data.length;i++){
-                    const equipment = data[i];
-                    rowsData.push({
-                        name:<a href={viewURL+equipment.equipmentId} style={{textDecoration: "none"}}>{equipment.name}</a>,
-                        id:equipment.equipmentId,
-                        hospital:equipment.hospitalId.hospitalName,
-                        qr:<a href={QRURL+equipment.equipmentId}>QR code</a>,
-                        operation: <a href={editURL+equipment.equipmentId} style={{textDecoration: "none"}}>Edit</a>
-                    });
-                }
-                setRows(rowsData);
+                setRowData(data);
             });
         }
         
         //set trusts' selection option
     },[]);
     //renders only once for fetching selection options
+
+    function setRowData(data){
+        const rowsData = [];
+        for (let i = 0;i<data.length;i++){
+            const equipment = data[i];
+            rowsData.push({
+                name:<a href={viewURL+equipment.equipmentId} style={{textDecoration: "none"}}>{equipment.name}</a>,
+                id:equipment.equipmentId,
+                hospital:equipment.hospitalId.hospitalName,
+                qr:<a href={QRURL+equipment.equipmentId}>QR code</a>,
+                operation: <a href={editURL+equipment.equipmentId} style={{textDecoration: "none"}}>Edit</a>
+            });
+        }
+        setRows(rowsData);
+    }
 
     const [columns,setColumns] = useState([
         { name: "name",
@@ -126,7 +118,7 @@ const EquipmentTable = () => {
                 viewColumns: false
             }
         },
-        { name: "Operation",
+        { name: "operation",
             label: "Edit",
             options: {
                 filter: false,
@@ -153,7 +145,7 @@ const EquipmentTable = () => {
 
     const options = {
         filterType: "multiselect",
-        tableBodyHeight,
+        height: "100%",
         jumpToPage: true,
         onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
             setSelected(rowsSelected);

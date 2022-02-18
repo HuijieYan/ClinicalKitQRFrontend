@@ -1,4 +1,3 @@
-import './MenuBar.css';
 import defaultProfile from "../Picture/defaultProfile.png";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, FormControl, Button, Navbar, Nav, NavDropdown } from "react-bootstrap";
@@ -46,7 +45,15 @@ const MenuBar = () => {
                         />
                         <Button variant="outline-success" onClick={search}>Search</Button>
                     </Form>
-                    <img id = "profilePic" src = {defaultProfile} alt="profileImg" height={80} width={80}/>
+                    <img
+                        id = "profilePic"
+                        src = {defaultProfile}
+                        alt="profileImg"
+                        onClick={() => history.push("/user")}
+                        height={70}
+                        width={70}
+                        style={{marginLeft: '5%'}}
+                    />
                 </Navbar.Collapse>
             </Container>
         </Navbar>

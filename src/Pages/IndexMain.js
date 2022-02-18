@@ -37,23 +37,23 @@ const IndexMain = () => {
             </div>
             <img
               className="img-fluid w-50 d-none d-sm-block"
-              src="./defaultProfile.png"
+              src="../Picture/defaultProfile.png"
               alt=""
             />
           </div>
         </div>
       </section>
       <div className="float-end" id="faqButton">
-        <a href="/">
-          <FaQuestion size="20px" />
-        </a>
+          <div className="h1 mb-3">
+              <FaQuestion/>
+          </div>
       </div>
       <Row className="mb-3 justify-content-center">
         <ButtonList />
       </Row>
 
       <Button
-        onClick={(e) => {
+        onClick={() => {
           handleLogout();
         }}
       >

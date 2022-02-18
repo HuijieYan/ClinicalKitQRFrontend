@@ -7,8 +7,7 @@ import GetData from "../Functions/GetData";
 import {useHistory} from "react-router-dom";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 
-const EditEquipment = (props) => {
-    const {id} = props;
+const EditEquipment = ({id}) => {
     const [content,setContent] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [name, setName] = useState("");
@@ -102,7 +101,7 @@ const EditEquipment = (props) => {
             <PreviewWindow />
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
                 <Row>
-                    <Col xl={2}>
+                    <Col xl={3}>
                         <Form.Group style={{textAlign: 'left', fontSize: 'x-large'}}>
                             <Form.Label style={{color: 'gray', textAlign: 'left', fontSize: 'x-large'}}>Equipment Name:</Form.Label>
                         </Form.Group>
@@ -113,7 +112,7 @@ const EditEquipment = (props) => {
                 </Row>
 
                 <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
-                    <Col xl={2}>
+                    <Col xl={3}>
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Category:</Form.Label>
                     </Col>
                     <Col xl={2}>
@@ -131,7 +130,7 @@ const EditEquipment = (props) => {
                 </Row>
 
                 <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
-                    <Col xl={2}>
+                    <Col xl={3}>
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Type:</Form.Label>
                     </Col>
                     <Col xl={2}>
@@ -239,7 +238,7 @@ const EditEquipment = (props) => {
                                     onSubmit: function (api) {
                                         const data = api.getData();
                                         // close the dialog
-                                        editor.insertContent('<div class="tab" style="background-color: #d1d1d1"><h3 class="tabHeader">Tab Title:</h3><h2 class="tabHeader">' + data.tabTitle + '</h2><h3 class="tabHeader">Content:</h3><p>' + data.tabContent + '</p></div><p></p>');
+                                        editor.insertContent('<div class="tab" style="background-color: #484848"><h3 class="tabHeader">Tab Title:</h3><h2 class="tabHeader">' + data.tabTitle + '</h2><h3 class="tabHeader">Content:</h3><p>' + data.tabContent + '</p></div><p></p>');
                                         api.close();
                                     },
                                 });

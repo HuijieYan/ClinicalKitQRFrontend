@@ -4,6 +4,8 @@ import { RiGroupLine } from "react-icons/ri";
 import { GoReport } from "react-icons/go";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import "./HomePageActionCards.css";
+import {getLevel} from "../Functions/UserStatus";
+import {FaRegHospital} from "react-icons/fa";
 
 const ButtonList = () => {
   const history = useHistory();
@@ -26,6 +28,24 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+          {parseInt(getLevel()) === 3 &&
+            <div className="col-md">
+              <div
+                  className="card bg-dark d-flex text-light h-100 "
+                  onClick={() => history.push("/hospitalTable")}
+              >
+                <div className="card-body justify-content-center d-flex align-items-center">
+                  <div>
+                    <div className="h1 mb-3">
+                      <FaRegHospital/>
+                    </div>
+                    <h3 className="card-title mb-3">Hospital</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
