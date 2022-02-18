@@ -10,7 +10,6 @@ import {
 import { Button, Row } from "react-bootstrap";
 import { logout } from "../Functions/LoginFunctions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-// import HomePageActionCards from "../Component/HomePageActionCards";
 
 const IndexMain = () => {
   const history = useHistory();
@@ -50,7 +49,6 @@ const IndexMain = () => {
         </a>
       </div>
       <Row className="mb-3 justify-content-center">
-        {/* <HomePageActionCards /> */}
         <ButtonList />
       </Row>
 

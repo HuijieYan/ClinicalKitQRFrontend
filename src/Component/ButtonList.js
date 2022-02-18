@@ -88,7 +88,7 @@ const ButtonList = () => {
           </div>
 
           <div className="col-md">
-            <div className="card bg-dark text-light h-100">
+            <div className="card bg-dark text-light h-100" onClick={() => history.push("/reports")}>
               <div className="card-body text-center">
                 <div className="h1 mb-3">
                   <HiOutlineDocumentReport />
