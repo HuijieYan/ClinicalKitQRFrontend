@@ -82,7 +82,6 @@ const UserProfile = () => {
 
     function handleAddTrust(e){
         const { name, value } = e.target;
-        console.log(newTrustData);
         setNewTrustData(prevState => ({
             ...prevState,
             [name]: value
