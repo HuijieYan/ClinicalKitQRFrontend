@@ -8,7 +8,7 @@ const SharingUsergroupItem = ({data}) => {
             if(group.specialty===null){
               displayStr = group.name;
             }else{
-              displayStr = group.name+"-"+group.specialty.specialty;
+              displayStr = group.name+"-"+group.specialty;
             }
             return displayStr;
           }

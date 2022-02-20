@@ -99,9 +99,27 @@ class GetData {
     return axios.post(url, data);
   }
 
-  getHospitalById(id) {
+  async getHospitalById(id) {
     var url = URL + "hospitals/hospitalId=" + id;
-    return axios.get(url);
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getTrustById(id) {
+    var url = URL + "trusts/";
+    var data = new FormData();
+    data.append("id",id);
+    const response = await axios.post(url,data);
+    return response.data;
+  }
+
+  async getGroup(hospitalId,username) {
+    var url = URL + "usergroup/get";
+    var data = new FormData();
+    data.append("hospitalId",hospitalId);
+    data.append("username",username);
+    const response = await axios.post(url,data);
+    return response.data;
   }
 
   async getAllAdmins() {

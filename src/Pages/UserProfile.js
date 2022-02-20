@@ -8,36 +8,47 @@ import GetData from "../Functions/GetData";
 const UserProfile = () => {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
     const [showTrustEditor, setShowTrustEditor] = useState(false);
-    const [currentData, setCurrentData] = useState({
+    const [currentData,setCurrentData] = useState({
         trust: "",
         hospital: "",
-        username: getUserName(),
-        name: getName(),
-        password: getPassword(),
+        username: "",
+        name: "",
         email: "",
         specialty: "",
     });
-    const updateData = {
+    const [updateData, setUpdateData] = useState({
         name: "",
         password: "",
         email: "",
         specialty: "",
-    };
-    const newTrustData= {
+    });
+    const [newTrustData, setNewTrustData] = useState({
         trustName: "",
         username: "",
         name: "",
         password: "",
         email: "",
         specialty: "",
-    };
+    });
     const [errorMessage, setErrorMessage] = useState("");
     const history = useHistory();
 
     useEffect(()=>{
         //getUserGroup by trustId and hospitalId and username and get trustName by Trust Id
-        const hospital = GetData.getHospitalById(getHospitalId()).then((hospital) => hospital.hospitalName);
-
+        
+        GetData.getGroup(getHospitalId(),getUserName()).then((group)=>{
+            var user = {};
+            user["username"] = getUserName();
+            user["name"] = getName();
+            var hospital = group.hospitalId;
+            user["hospital"] = hospital.hospitalName;
+            user["trust"] = hospital.trust.trustName;
+            user["email"] = group.email;
+            user["specialty"] = group.specialty;
+            console.log(user);
+            setCurrentData(user);
+        });
+        
     },[]);
 
     function updateUsergroup(){
@@ -55,9 +66,27 @@ const UserProfile = () => {
     function addTrust(){
         //post newTrustData
         const succeed = true; // response outcome
+        console.log(newTrustData);
         if(!succeed){
             setErrorMessage("response message");
         }
+    }
+
+    function handleUpdate(e){
+        const { name, value } = e.target;
+        setUpdateData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    function handleAddTrust(e){
+        const { name, value } = e.target;
+        console.log(newTrustData);
+        setNewTrustData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     }
 
     return(
@@ -79,7 +108,8 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Group Name Here:"
                         defaultValue={currentData.name}
-                        onChange={(e) => updateData.name = e.target.value}
+                        onChange={handleUpdate}
+                        name="name"
                     />
 
                     <h4>Enter Password:</h4>
@@ -87,7 +117,8 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Password Here:"
                         defaultValue={currentData.password}
-                        onChange={(e) => updateData.password = e.target.value}
+                        onChange={handleUpdate}
+                        name="password"
                     />
 
                     <h4>Email (Optional):</h4>
@@ -95,7 +126,8 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Email Here:"
                         defaultValue={currentData.email}
-                        onChange={(e) => updateData.email = e.target.value}
+                        onChange={handleUpdate}
+                        name="email"
                     />
 
                     <h4>Specialty (Optional):</h4>
@@ -103,7 +135,8 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Specialty Here:"
                         defaultValue={currentData.specialty}
-                        onChange={(e) => updateData.specialty = e.target.value}
+                        onChange={handleUpdate}
+                        name="specialty"
                     />
                 </Modal.Body>
                 <Modal.Footer>
@@ -126,42 +159,48 @@ const UserProfile = () => {
                     <Form.Control
                         as="input"
                         placeholder="Enter Trust Name Here:"
-                        onChange={(e) => newTrustData.trustName = e.target.value}
+                        onChange={handleAddTrust}
+                        name="trustName"
                     />
 
                     <h4>Trust Admin username:</h4>
                     <Form.Control
                         as="input"
                         placeholder="Enter Trust Admin username Here:"
-                        onChange={(e) => newTrustData.username = e.target.value}
+                        onChange={handleAddTrust}
+                        name="username"
                     />
 
                     <h4>Trust Admin Group name:</h4>
                     <Form.Control
                         as="input"
                         placeholder="Enter Trust Admin Group name Here:"
-                        onChange={(e) => newTrustData.name = e.target.value}
+                        onChange={handleAddTrust}
+                        name="name"
                     />
 
                     <h4>Trust Admin Password:</h4>
                     <Form.Control
                         as="input"
                         placeholder="Enter Trust Admin Password Here:"
-                        onChange={(e) => newTrustData.password = e.target.value}
+                        onChange={handleAddTrust}
+                        name="password"
                     />
 
                     <h4>Trust Admin Email (Optional):</h4>
                     <Form.Control
                         as="input"
                         placeholder="Enter Trust Admin Email Here:"
-                        onChange={(e) => newTrustData.email = e.target.value}
+                        onChange={handleAddTrust}
+                        name="email"
                     />
 
                     <h4>Trust Admin Specialty (Optional):</h4>
                     <Form.Control
                         as="input"
                         placeholder="Enter Trust Admin Specialty Here:"
-                        onChange={(e) => newTrustData.specialty = e.target.value}
+                        onChange={handleAddTrust}
+                        name="specialty"
                     />
                 </Modal.Body>
                 <Modal.Footer>
@@ -216,15 +255,6 @@ const UserProfile = () => {
                     </Col>
                     <Col xl={2}>
                         <Form.Label>{currentData.name}</Form.Label>
-                    </Col>
-                </Row>
-
-                <Row  style={{marginTop: '3%'}}>
-                    <Col xl={2}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Password:</Form.Label>
-                    </Col>
-                    <Col xl={2}>
-                        <Form.Label>{currentData.password}</Form.Label>
                     </Col>
                 </Row>
 
