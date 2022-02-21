@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
+import Uploader from "../Functions/Uploader";
 
 const EditUsergroup = ({groupUsername, selectedHospitalId}) => {
     const history = useHistory();
@@ -15,7 +16,7 @@ const EditUsergroup = ({groupUsername, selectedHospitalId}) => {
     const [hospitalId,setHospitalId] = useState("");
     const [hospitals,setHospitals] = useState([]);
     const [email,setEmail] = useState("");
-    const [speciality,setSpeciality] = useState("");
+    const [specialty,setSpecialty] = useState("");
     const [isAdmin,setIsAdmin] = useState(false);
     const [isTrustHospital,setIsTrustHospital] = useState(false);
     const [trustHospitalId,setTrustHospitalId] = useState("");
@@ -50,6 +51,7 @@ const EditUsergroup = ({groupUsername, selectedHospitalId}) => {
 
         }else {
             //we do update here, need a new url and a backend post mapping
+            Uploader.updateUsergroup(hospitalId,groupUsername,name,password,email,specialty);
         }
     }
 
@@ -125,13 +127,13 @@ const EditUsergroup = ({groupUsername, selectedHospitalId}) => {
             </Form>
 
             <Form>
-                <Form.Group id="speciality">
+                <Form.Group id="specialty">
                     <Form.Label>Speciality (optional)</Form.Label>
                     <Form.Control
-                        type="speciality"
-                        placeholder="Enter speciality"
-                        defaultValue={speciality}
-                        onChange={(e) => setSpeciality(e.target.value)}
+                        type="specialty"
+                        placeholder="Enter specialty"
+                        defaultValue={specialty}
+                        onChange={(e) => setSpecialty(e.target.value)}
                     />
                 </Form.Group>
             </Form>

@@ -87,6 +87,35 @@ class Uploader{
             return response.data;
         });
     }
+
+    updateUsergroup(id,username,name,password,email,specialty){
+        var url = URL+"usergroup/update";
+        var data = new FormData();
+        data.append("hospitalId",id);
+        data.append("username",username);
+        data.append("name",name);
+        data.append("password",password);
+        data.append("email",email);
+        data.append("specialty",specialty);
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
+
+    addNewTrust(trustName,id,username,name,password,email,specialty){
+        var url = URL+"usergroup/addTrust";
+        var data = new FormData();
+        data.append("trustName",trustName);
+        data.append("hospitalId",id);
+        data.append("username",username);
+        data.append("name",name);
+        data.append("password",password);
+        data.append("email",email);
+        data.append("specialty",specialty);
+        return axios.post(url,data).then((response)=>{
+            return response.data;
+        });
+    }
 }
  
 export default new Uploader();

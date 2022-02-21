@@ -4,10 +4,15 @@ import React, {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {logout} from "../Functions/LoginFunctions";
 import GetData from "../Functions/GetData";
+import Uploader from "../Functions/Uploader";
 
 const UserProfile = () => {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
     const [showTrustEditor, setShowTrustEditor] = useState(false);
+    const [show,setShow] = useState(false);
+    const [changed,setChanged] = useState(false);
+    const handleClose = ()=>setShow(false);
+    const [message,setMessage] = useState("");
     const [currentData,setCurrentData] = useState({
         trust: "",
         hospital: "",
@@ -49,27 +54,33 @@ const UserProfile = () => {
             setCurrentData(user);
         });
         
-    },[]);
+    },[changed]);
 
     function updateUsergroup(){
         //post the trustId username hospitalId
         //and post updateData
-
-        setErrorMessage("response message");
-        const succeed = true; // response outcome
-        if(succeed){
-            logout();
-            history.push("/login");
-        }
+        Uploader.updateUsergroup(getHospitalId(),getUserName(),updateData.name,updateData.password,updateData.email,updateData.specialty).then((succeed)=>{
+            if(succeed){
+                setShowGroupEditor(false);
+                setChanged(!changed);
+            }else{
+                setShow(true);
+                setMessage("Error occurred, changes not saved");
+            }
+        });
     }
 
     function addTrust(){
         //post newTrustData
-        const succeed = true; // response outcome
-        console.log(newTrustData);
-        if(!succeed){
-            setErrorMessage("response message");
-        }
+        Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((succeed)=>{
+            if(succeed){
+                setShowGroupEditor(false);
+                setChanged(!changed);
+            }else{
+                setShow(true);
+                setMessage("Error occurred, changes not saved");
+            }
+        });
     }
 
     function handleUpdate(e){
@@ -90,6 +101,14 @@ const UserProfile = () => {
 
     return(
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>Message</Modal.Header>
+                <Modal.Body>{message}</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
             <Modal
                 show={showGroupEditor}
                 onHide={() => setShowGroupEditor(false)}
