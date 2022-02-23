@@ -108,17 +108,17 @@ class GetData {
   async getTrustById(id) {
     var url = URL + "trusts/";
     var data = new FormData();
-    data.append("id",id);
-    const response = await axios.post(url,data);
+    data.append("id", id);
+    const response = await axios.post(url, data);
     return response.data;
   }
 
-  async getGroup(hospitalId,username) {
+  async getGroup(hospitalId, username) {
     var url = URL + "usergroup/get";
     var data = new FormData();
-    data.append("hospitalId",hospitalId);
-    data.append("username",username);
-    const response = await axios.post(url,data);
+    data.append("hospitalId", hospitalId);
+    data.append("username", username);
+    const response = await axios.post(url, data);
     return response.data;
   }
 
@@ -223,6 +223,22 @@ class GetData {
     var data = new FormData();
     data.append("id", id);
     const response = await axios.post(url, data);
+    return response.data;
+  }
+  // Report and Viewing Getters
+
+  async getViewingsByUserGroup(hospitalId, usergroup) {
+    var url =
+      URL + "reports/hospitalId=" + hospitalId + "/username" + usergroup;
+    const response = await axios.get(url);
+    console.log("Got viewings by date", response.data);
+    return response.data;
+  }
+
+  async getViewingsByEquipmentId(equipmentId) {
+    var url = URL + "reports/equipmentId=" + equipmentId;
+    const response = await axios.get(url);
+    console.log("Got viewings by equipment id:", response.data);
     return response.data;
   }
 }
