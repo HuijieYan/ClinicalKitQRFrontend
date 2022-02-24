@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import { getLevel, getTrustId } from "../Functions/UserStatus";
 import {Button, Form, Modal} from "react-bootstrap";
+import DeleteData from "../Functions/DeleteData";
 
 const HospitalTable = () => {
     const [rows,setRows] = useState([]);
@@ -100,13 +101,14 @@ const HospitalTable = () => {
         height: "100%",
         jumpToPage: true,
         onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
+            console.log(rowsSelected);
             setSelected(rowsSelected);
         },
         onRowsDelete:function(){
             const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
                 const index = selected[i];
-                //we need a delete mapping in back end
+                DeleteData.deleteHospital(rows[index].hospitalId);
 
                 rowLs.splice(index,1);
             }

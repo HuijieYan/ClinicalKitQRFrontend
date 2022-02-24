@@ -31,6 +31,14 @@ class DeleteData {
     axios.post(url,data);
   }
   
+  async deleteHospital(id){
+    var url = URL + "hospitals/delete";
+    var data = new FormData();
+    data.append("id",id);
+    var response = await axios.post(url,data);
+    return response.data;
+  }
+
   async deleteTrust(id){
     var url = URL + "trusts/delete";
     var data = new FormData();
