@@ -1,6 +1,7 @@
 import Tab from "react-bootstrap/Tab";
 import { Tabs } from "react-bootstrap";
 import EquipmentReportsTab from "../Component/Report/EquipmentReportsTab";
+import React from "react";
 
 const EquipmentReports = () => {
   return (

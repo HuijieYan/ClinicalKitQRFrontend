@@ -12,8 +12,10 @@ import DatePicker from "@mui/lab/DatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import TextField from "@mui/material/TextField";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Row, Col } from "react-bootstrap";
 import { createGraphDataFromEquipment } from "../../Functions/ReportFunctions";
+import BarChart from "./BarChart";
+import PieChart from "./PieChart";
 
 const EquipmentReportsTab = () => {
   const [tableBodyHeight, setTableBodyHeight] = useState("100%");
@@ -24,6 +26,15 @@ const EquipmentReportsTab = () => {
   const [modalShow, setModalShow] = useState(false);
   const viewURL = "http://localhost:3000/viewEquipmentReport/id=";
   const [columns, setColumns] = useState([]);
+  const [graphData, setGraphData] = useState({
+    datasets: [
+      {
+        data: [],
+      },
+    ],
+    labels: [" "],
+  });
+  console.log(graphData.datasets[0].data);
 
   function setupEquipmentTable() {
     const level = parseInt(getLevel());
@@ -91,13 +102,14 @@ const EquipmentReportsTab = () => {
 
   useEffect(() => {
     // rerenders when dates or equipment selection changes
-    if (selectedEquipment.length > 0) {
-      GetData.getViewingsByEquipmentId(rows[selectedEquipment[0]].id).then(
-        (data) => {
-          console.log(data);
-          createGraphDataFromEquipment(data);
-        }
-      );
+    if (
+      selectedEquipment.length > 0 &&
+      startDate === null &&
+      endDate === null
+    ) {
+      setGraphData(createGraphDataFromEquipment(rows[selectedEquipment[0]].id));
+      console.log(graphData);
+    } else if (graphData.datasets.data) {
     }
   }, [selectedEquipment, startDate, endDate]);
 
@@ -124,33 +136,41 @@ const EquipmentReportsTab = () => {
 
   return (
     <>
-      <div className="tableActions mb-3">
-        <Button onClick={() => setModalShow(true)}>Select Equipment</Button>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Start Date"
-            inputFormat="dd/MM/yyyy"
-            value={startDate}
-            onChange={(newDate) => {
-              setStartDate(newDate);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-            maxDate={endDate === null ? null : endDate}
-          />
-          <Button className="btn-close"></Button>
-          <DatePicker
-            label="End Date"
-            inputFormat="dd/MM/yyyy"
-            value={endDate}
-            onChange={(newDate) => setEndDate(newDate)}
-            renderInput={(params) => <TextField {...params} />}
-            maxDate={new Date()}
-            minDate={startDate === null ? null : startDate}
-          />
-        </LocalizationProvider>
-      </div>
+      <Row className="mb-3">
+        <Col>
+          <Button onClick={() => setModalShow(true)}>Select Equipment</Button>
+        </Col>
+        <Col>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Start Date"
+              inputFormat="dd/MM/yyyy"
+              value={startDate}
+              onChange={(newDate) => {
+                setStartDate(newDate);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+              maxDate={endDate === null ? null : endDate}
+            />
+            <Button className="btn-close"></Button>
+            <DatePicker
+              label="End Date"
+              inputFormat="dd/MM/yyyy"
+              value={endDate}
+              onChange={(newDate) => setEndDate(newDate)}
+              renderInput={(params) => <TextField {...params} />}
+              maxDate={new Date()}
+              minDate={startDate === null ? null : startDate}
+            />
+          </LocalizationProvider>
+        </Col>
+      </Row>
 
-      <div className="graphs"></div>
+      <div className="graphs">
+        {graphData.datasets.data !== [] && <PieChart data={graphData} />}
+        {graphData.datasets.data !== [] && <BarChart data={graphData} />}
+        {/* <BarChart data={graphData} /> */}
+      </div>
 
       {/* Hidden elements */}
       <Modal
