@@ -5,13 +5,16 @@ import {useHistory} from "react-router-dom";
 import {logout} from "../Functions/LoginFunctions";
 import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
+import DeleteData from "../Functions/DeleteData";
 
 const UserProfile = () => {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
+    const [showGroupDeletion, setShowGroupDeletion] = useState(false);
     const [showTrustEditor, setShowTrustEditor] = useState(false);
+    const [showDeleteTrust, setShowDeleteTrust] = useState(false);
     const [show,setShow] = useState(false);
     const [changed,setChanged] = useState(false);
-    const handleClose = ()=>setShow(false);
+    const handleClose = () => setShow(false);
     const [message,setMessage] = useState("");
     const [currentData,setCurrentData] = useState({
         trust: "",
@@ -36,16 +39,15 @@ const UserProfile = () => {
         specialty: "",
     });
     const [errorMessage, setErrorMessage] = useState("");
-    const history = useHistory();
 
     useEffect(()=>{
         //getUserGroup by trustId and hospitalId and username and get trustName by Trust Id
         
         GetData.getGroup(getHospitalId(),getUserName()).then((group)=>{
-            var user = {};
+            const user = {};
             user["username"] = getUserName();
             user["name"] = getName();
-            var hospital = group.hospitalId;
+            const hospital = group.hospitalId;
             user["hospital"] = hospital.hospitalName;
             user["trust"] = hospital.trust.trustName;
             user["email"] = group.email;
@@ -70,6 +72,11 @@ const UserProfile = () => {
         });
     }
 
+    function deleteUsergroup(){
+        DeleteData.deleteUsergroup(getHospitalId(), getUserName());
+        logout();
+    }
+
     function addTrust(){
         //post newTrustData
         Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((succeed)=>{
@@ -81,6 +88,10 @@ const UserProfile = () => {
                 setMessage("Error occurred, changes not saved");
             }
         });
+    }
+
+    function deleteTrust(){
+        //delete trust by id
     }
 
     function handleUpdate(e){
@@ -107,7 +118,7 @@ const UserProfile = () => {
                 <Modal.Footer>
                     <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal>`
 
             <Modal
                 show={showGroupEditor}
@@ -158,8 +169,33 @@ const UserProfile = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {updateUsergroup(); setShowGroupEditor(false)}}>Submit</Button>
+                    <Button onClick={() => {
+                        updateUsergroup();
+                        setShowGroupEditor(false)
+                    }}>Submit</Button>
                     <Button onClick={() => setShowGroupEditor(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={showGroupDeletion}
+                onHide={() => setShowGroupDeletion(false)}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Delete Your Group
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Your Group: {currentData.name} will be closed permanently</h4>
+                    Once you delete your Group, your Group can not be retrieved.
+                    Be careful, if u are the Sole Trust Admin, once you delete your Group, your Trust will be deleted.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => {deleteUsergroup();setShowGroupDeletion(false)}}>Delete</Button>
+                    <Button onClick={() => setShowGroupDeletion(false)}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
 
@@ -222,8 +258,33 @@ const UserProfile = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {addTrust(); setShowTrustEditor(false)}}>Submit</Button>
+                    <Button onClick={() => {
+                        addTrust();
+                        setShowTrustEditor(false)
+                    }}>Submit</Button>
                     <Button onClick={() => setShowTrustEditor(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={showDeleteTrust}
+                onHide={() => setShowDeleteTrust(false)}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Delete Your Trust
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Your Trust: {currentData.trust} will be closed permanently</h4>
+                    Once you delete your Trust, your Trust can not be retrieved.
+                    Be careful, delete your Trust means all data in this trust will be lost.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => {deleteTrust();setShowDeleteTrust(false)}}>Delete</Button>
+                    <Button onClick={() => setShowDeleteTrust(false)}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
 
@@ -295,13 +356,26 @@ const UserProfile = () => {
                 </Row>
 
                 <Row  style={{marginTop: '3%'}}>
-                    <Col xl={3} style={{textAlign: "center"}}>
-                        <Button onClick={() => setShowGroupEditor(true)}>Edit</Button>
-                    </Col>
+                    {parseInt(getLevel()) >= 2 &&
+                    <>
+                        <Col xl={3} style={{textAlign: "center"}}>
+                            <Button onClick={() => setShowGroupEditor(true)}>Edit</Button>
+                        </Col>
+                        <Col xl={3} style={{textAlign: "center"}}>
+                            <Button onClick={() => setShowGroupDeletion(true)}>Delete Group</Button>
+                        </Col>
+                    </>
+                    }
+
                     {parseInt(getLevel()) === 3 &&
+                    <>
                         <Col xl={2} style={{textAlign: "center"}}>
                             <Button onClick={() => setShowTrustEditor(true)}>Add New Trust</Button>
                         </Col>
+                        <Col xl={2} style={{textAlign: "center"}}>
+                            <Button onClick={() => setShowDeleteTrust(true)}>Delete Trust</Button>
+                        </Col>
+                    </>
                     }
                     <Form.Label style={{color: 'red', margin: '2%'}}>{errorMessage}</Form.Label>
                 </Row>
@@ -309,4 +383,5 @@ const UserProfile = () => {
         </Container>
     );
 }
+
 export default UserProfile;
