@@ -30,6 +30,14 @@ class DeleteData {
     data.append("username",getUserName());
     axios.post(url,data);
   }
+  
+  async deleteTrust(id){
+    var url = URL + "trusts/delete";
+    var data = new FormData();
+    data.append("id",id);
+    var response = await axios.post(url,data);
+    return response.data;
+  }
 }
 
 export default new DeleteData();

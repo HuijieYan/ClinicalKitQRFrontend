@@ -39,6 +39,7 @@ const UserProfile = () => {
         specialty: "",
     });
     const [errorMessage, setErrorMessage] = useState("");
+    const history = useHistory();
 
     useEffect(()=>{
         //getUserGroup by trustId and hospitalId and username and get trustName by Trust Id
@@ -92,6 +93,18 @@ const UserProfile = () => {
 
     function deleteTrust(){
         //delete trust by id
+        DeleteData.deleteTrust(getTrustId()).then((succeed)=>{
+            console.log(succeed);
+            if (succeed){
+                logout();
+                history.push("/login");
+            }else{
+                setShow(true);
+                setMessage("Error occurred, Trust not deleted");
+            }
+        });
+        
+        
     }
 
     function handleUpdate(e){
