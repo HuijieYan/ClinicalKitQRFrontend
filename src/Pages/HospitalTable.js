@@ -9,15 +9,18 @@ import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import { getLevel, getTrustId } from "../Functions/UserStatus";
 import {Button, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
+import Uploader from "../Functions/Uploader";
 
 const HospitalTable = () => {
     const [rows,setRows] = useState([]);
     //rows of data
     const [selected, setSelected] = useState([]);
     const [modalShow, setModalShow] = useState(false);
+    const [messageShow, setMessageShow] = useState(false);
     const [selectedId, setSelectedId] = useState(-1);
     const [placeHolder, setPlaceHolder] = useState("");
     const [name, setName] = useState("");
+    const [refresh,setRefresh] = useState(false);
     //array of indexes of selected rows
 
     useEffect(()=>{
@@ -26,37 +29,42 @@ const HospitalTable = () => {
                 const rowsData = [];
                 for (let i = 0; i<data.length; i++){
                     const hospital = data[i];
-                    rowsData.push({
-                        hospital:hospital.hospitalName,
-                        operation: <a
-                            href="#"
-                            style={{textDecoration: 'none'}}
-                            onClick={
-                                (e) => {e.preventDefault();
-                                setPlaceHolder(hospital.hospitalName);
-                                setModalShow(true);
-                                setSelectedId(hospital.hospitalId)}
-                            }>
-                            Edit</a>,
-                        hospitalId:hospital.hospitalId,
-                    });
+                    if (hospital.hospitalName!=="Trust Admin"){
+                        rowsData.push({
+                            hospital:hospital.hospitalName,
+                            operation: <a
+                                href="#"
+                                style={{textDecoration: 'none'}}
+                                onClick={
+                                    (e) => {e.preventDefault();
+                                    setPlaceHolder(hospital.hospitalName);
+                                    setModalShow(true);
+                                    setSelectedId(hospital.hospitalId)}
+                                }>
+                                Edit</a>,
+                            hospitalId:hospital.hospitalId,
+                        });
+                    }
+                    
                 }
                 setRows(rowsData);
             });
         }
-    },[]);
+    },[refresh]);
     //renders only once for fetching selection options
 
     function submitHospital(){
         if(selectedId !== -1){
-            console.log("update a hospital with id and name");
+            Uploader.updateHospital(selectedId,name);
             console.log(selectedId);
             console.log(name);
         }else {
+            Uploader.addNewHospital(getTrustId(),name);
             console.log("create a hospital with string and trust id");
             console.log(getTrustId());
             console.log(name);
         }
+        setRefresh(!refresh);
     }
 
     const columns = [
@@ -96,6 +104,18 @@ const HospitalTable = () => {
         );
     }
 
+    function deleting(){
+        const rowLs = rows;
+        for (let i = 0;i<selected.length;i++){
+            const index = selected[i];
+            DeleteData.deleteHospital(rows[index].hospitalId);
+
+            rowLs.splice(index,1);
+        }
+        setRows(rowLs);
+        setSelected([]);
+    }
+
     const options = {
         filterType: "multiselect",
         height: "100%",
@@ -105,15 +125,7 @@ const HospitalTable = () => {
             setSelected(rowsSelected);
         },
         onRowsDelete:function(){
-            const rowLs = rows;
-            for (let i = 0;i<selected.length;i++){
-                const index = selected[i];
-                DeleteData.deleteHospital(rows[index].hospitalId);
-
-                rowLs.splice(index,1);
-            }
-            setRows(rowLs);
-            setSelected([]);
+            setMessageShow(true);
             return true;
         },
         customToolbar: customToolbar,
@@ -142,6 +154,25 @@ const HospitalTable = () => {
                     <Button onClick={() => setModalShow(false)}>Close</Button>
                 </Modal.Footer>
             </Modal>
+
+            <Modal
+                show={messageShow}
+                onHide={() => setMessageShow(false)}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton/>
+                <Modal.Body>
+                <h4>Selected hospitals will be deleted permanently</h4>
+                    Once you delete these hospitals, they cannot be retrieved.
+                    Be careful, delete these hospitals mean all data in these hospitals will be lost.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => {deleting(); setMessageShow(false)}}>Delete</Button>
+                    <Button onClick={() => setMessageShow(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
 
             <MUIDataTable
                 title={"Hospitals"}

@@ -116,6 +116,22 @@ class Uploader{
             return response.data;
         });
     }
+
+    addNewHospital(trustId,name){
+        var url = URL+"hospitals/new";
+        var data = new FormData();
+        data.append("id",trustId);
+        data.append("name",name);
+        axios.post(url,data);
+    }
+
+    updateHospital(hospitalId,name){
+        var url = URL+"hospitals/update";
+        var data = new FormData();
+        data.append("id",hospitalId);
+        data.append("name",name);
+        axios.post(url,data);
+    }
 }
  
 export default new Uploader();
