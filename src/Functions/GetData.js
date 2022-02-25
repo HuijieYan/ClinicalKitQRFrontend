@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { getHospitalId, getUserName, getLevel, getTrustId } from "../Component/UserStatus";
 import { getHospitalId, getUserName, getLevel, getTrustId } from "./UserStatus";
 
 const URL = "http://localhost:8080/";
@@ -229,16 +228,22 @@ class GetData {
 
   async getViewingsByUserGroup(hospitalId, usergroup) {
     var url =
-      URL + "reports/hospitalId=" + hospitalId + "/username" + usergroup;
+      URL + "reports/hospitalId=" + hospitalId + "&username=" + usergroup;
     const response = await axios.get(url);
     console.log("Got viewings by date", response.data);
     return response.data;
   }
 
-  async getViewingsByEquipmentId(equipmentId) {
-    var url = URL + "reports/equipmentId=" + equipmentId;
+  async getViewingsByEquipmentIdAndDateBetween(id, startDate, endDate) {
+    var url =
+      URL +
+      "reports/equipmentId=" +
+      id +
+      "/startDate=" +
+      (startDate == null ? "" : startDate.toISOString()) +
+      "/endDate=" +
+      (endDate == null ? "" : endDate.toISOString());
     const response = await axios.get(url);
-    console.log("Got viewings by equipment id:", response.data);
     return response.data;
   }
 }

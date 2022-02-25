@@ -1,14 +1,12 @@
-import GetData from "./GetData";
-export function createGraphDataFromEquipment(id) {
-  const graphData = { datasets: [{ data: [] }], labels: [] };
-  GetData.getViewingsByEquipmentId(id).then((data) => {
-    const equipmentData = data;
+export function createGraphData(equipmentName, data) {
+  const graphData = { datasets: [{ data: [], label: "" }], labels: [] };
+  graphData.datasets[0].label = equipmentName;
 
-    for (let index = 0; index < equipmentData.length; index++) {
-      const equipmentViewData = equipmentData[index];
-      graphData.labels.push(equipmentViewData.userGroup.name);
-      graphData.datasets[0].data.push(equipmentViewData.viewCount);
-    }
-  });
+  for (let index = 0; index < data.length; index++) {
+    const equipmentViewData = data[index];
+    graphData.labels.push(equipmentViewData.userGroup.name);
+    graphData.datasets[0].data.push(equipmentViewData.viewCount);
+  }
+
   return graphData;
 }

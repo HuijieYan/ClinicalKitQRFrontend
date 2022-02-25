@@ -4,9 +4,9 @@ import { Chart as ChartJS } from "chart.js/auto"; // do not delete, is needed
 
 const BarChart = (props) => {
   return (
-    <div className="graphs">
+    <div className="graph">
       <Bar
-        height={400}
+        height={300}
         width={400}
         options={{ maintainAspectRatio: false }}
         data={props.data}

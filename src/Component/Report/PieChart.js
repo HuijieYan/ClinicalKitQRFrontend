@@ -4,7 +4,7 @@ import { Chart as ChartJS } from "chart.js/auto"; // do not delete, is needed
 
 const PieChart = (props) => {
   return (
-    <div className="graphs">
+    <div className="graph">
       <Pie
         height={400}
         width={400}

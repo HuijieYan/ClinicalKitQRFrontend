@@ -12,8 +12,8 @@ import DatePicker from "@mui/lab/DatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import TextField from "@mui/material/TextField";
-import { Button, Modal, Row, Col } from "react-bootstrap";
-import { createGraphDataFromEquipment } from "../../Functions/ReportFunctions";
+import { Button, Modal, Row, Col, Tabs, Tab } from "react-bootstrap";
+import { createGraphData } from "../../Functions/ReportFunctions";
 import BarChart from "./BarChart";
 import PieChart from "./PieChart";
 
@@ -26,15 +26,10 @@ const EquipmentReportsTab = () => {
   const [modalShow, setModalShow] = useState(false);
   const viewURL = "http://localhost:3000/viewEquipmentReport/id=";
   const [columns, setColumns] = useState([]);
+  const emptyGraph = { datasets: [{ data: [] }], labels: [] };
   const [graphData, setGraphData] = useState({
-    datasets: [
-      {
-        data: [],
-      },
-    ],
-    labels: [" "],
+    ...emptyGraph,
   });
-  console.log(graphData.datasets[0].data);
 
   function setupEquipmentTable() {
     const level = parseInt(getLevel());
@@ -96,23 +91,6 @@ const EquipmentReportsTab = () => {
     }
   }
 
-  useEffect(() => {
-    setupEquipmentTable();
-  }, []);
-
-  useEffect(() => {
-    // rerenders when dates or equipment selection changes
-    if (
-      selectedEquipment.length > 0 &&
-      startDate === null &&
-      endDate === null
-    ) {
-      setGraphData(createGraphDataFromEquipment(rows[selectedEquipment[0]].id));
-      console.log(graphData);
-    } else if (graphData.datasets.data) {
-    }
-  }, [selectedEquipment, startDate, endDate]);
-
   const options = {
     filterType: "checkbox",
     selectableRows: "single",
@@ -134,6 +112,26 @@ const EquipmentReportsTab = () => {
     customToolbarSelect: () => {},
   };
 
+  useEffect(() => {
+    setupEquipmentTable();
+  }, []);
+
+  useEffect(() => {
+    // rerenders when dates or equipment selection changes
+    if (selectedEquipment.length === 0) {
+      setGraphData({ ...emptyGraph });
+    }
+    if (selectedEquipment.length > 0) {
+      GetData.getViewingsByEquipmentIdAndDateBetween(
+        rows[selectedEquipment[0]].id,
+        startDate,
+        endDate
+      ).then((data) => {
+        setGraphData(createGraphData(rows[selectedEquipment[0]].name, data));
+      });
+    }
+  }, [selectedEquipment, startDate, endDate]);
+
   return (
     <>
       <Row className="mb-3">
@@ -149,10 +147,13 @@ const EquipmentReportsTab = () => {
               onChange={(newDate) => {
                 setStartDate(newDate);
               }}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <TextField {...params}></TextField>}
               maxDate={endDate === null ? null : endDate}
             />
-            <Button className="btn-close"></Button>
+            <Button
+              onClick={() => setStartDate(null)}
+              className="btn-close"
+            ></Button>
             <DatePicker
               label="End Date"
               inputFormat="dd/MM/yyyy"
@@ -162,15 +163,25 @@ const EquipmentReportsTab = () => {
               maxDate={new Date()}
               minDate={startDate === null ? null : startDate}
             />
+            <Button
+              onClick={() => setEndDate(null)}
+              className="btn-close"
+            ></Button>
           </LocalizationProvider>
         </Col>
       </Row>
-
-      <div className="graphs">
-        {graphData.datasets.data !== [] && <PieChart data={graphData} />}
-        {graphData.datasets.data !== [] && <BarChart data={graphData} />}
-        {/* <BarChart data={graphData} /> */}
-      </div>
+      <Tabs defaultActiveKey={"barChart"}>
+        <Tab eventKey={"barChart"} title="Bar Chart">
+          {graphData.datasets[0].data.length !== 0 && (
+            <BarChart data={graphData} />
+          )}
+        </Tab>
+        <Tab eventKey={"pieChart"} title="Pie Chart">
+          {graphData.datasets[0].data.length !== 0 && (
+            <PieChart data={graphData} />
+          )}
+        </Tab>
+      </Tabs>
 
       {/* Hidden elements */}
       <Modal
