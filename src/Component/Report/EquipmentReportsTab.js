@@ -76,6 +76,35 @@ const EquipmentReportsTab = () => {
       });
     } else if (level === 3) {
       // if user is a trust admin (this displays the hospital in the table)
+
+      setColumns([
+        {
+          name: "id",
+          label: "Equipment ID",
+          options: {
+            filterOptions: { fullWidth: true },
+            viewColumns: false,
+          },
+        },
+        {
+          name: "name",
+          label: "Equipment Name",
+          options: {
+            filterOptions: { fullWidth: true },
+            viewColumns: false,
+          },
+        },
+
+        {
+          name: "hospital",
+          options: {
+            filterOptions: { fullWidth: true },
+            display: true,
+            viewColumns: false,
+          },
+        },
+      ]);
+
       GetData.getAllEquipmentByTrust(getTrustId()).then((data) => {
         const rowsData = [];
         for (let i = 0; i < data.length; i++) {
