@@ -132,6 +132,23 @@ class Uploader{
         data.append("name",name);
         axios.post(url,data);
     }
+
+    addNewQuestion(question, answer){
+        var url = URL+"question/new";
+        var data = new FormData();
+        data.append("question", question);
+        data.append("answer", answer);
+        axios.post(url,data);
+    }
+
+    updateQuestion(id, question, answer){
+        var url = URL+"question/update";
+        var data = new FormData();
+        data.append("id", id);
+        data.append("question", question);
+        data.append("answer", answer);
+        axios.post(url,data);
+    }
 }
  
 export default new Uploader();

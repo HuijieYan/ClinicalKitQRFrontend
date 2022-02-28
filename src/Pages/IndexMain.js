@@ -45,7 +45,7 @@ const IndexMain = () => {
       </section>
       <div className="float-end" id="faqButton">
           <div className="h1 mb-3">
-              <FaQuestion/>
+              <FaQuestion onClick={() => history.push("/faq")}/>
           </div>
       </div>
       <Row className="mb-3 justify-content-center">

@@ -25,6 +25,7 @@ import Reports from "./Pages/Reports";
 import HospitalTable from "./Pages/HospitalTable";
 import UserProfile from "./Pages/UserProfile";
 import ViewEquipmentReport from "./Pages/ViewEquipmentReport";
+import FAQ from "./Pages/FAQ";
 
 function App() {
   return (
@@ -49,6 +50,8 @@ function App() {
                 <MenuBar />
                 <Switch>
                   <GuardedRoute component={<IndexMain />} path="/home" />
+
+                  <GuardedRoute component={<FAQ />} path="/faq" />
 
                   <GuardedRoute component={<UserProfile />} path="/user" />
 

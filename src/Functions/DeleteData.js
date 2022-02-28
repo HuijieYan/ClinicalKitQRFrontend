@@ -46,6 +46,14 @@ class DeleteData {
     var response = await axios.post(url,data);
     return response.data;
   }
+
+  async deleteQuestion(id){
+    var url = URL + "question/delete";
+    var data = new FormData();
+    data.append("id",id);
+    var response = await axios.post(url,data);
+    return response.data;
+  }
 }
 
 export default new DeleteData();

@@ -246,6 +246,12 @@ class GetData {
     const response = await axios.get(url);
     return response.data;
   }
+
+  async getAllQuestions() {
+    var url = URL + "question/all";
+    const response = await axios.get(url);
+    return response.data;
+  }
 }
 
 export default new GetData();
