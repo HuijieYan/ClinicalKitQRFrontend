@@ -26,7 +26,10 @@ const EquipmentReportsTab = () => {
   const [modalShow, setModalShow] = useState(false);
   const viewURL = "http://localhost:3000/viewEquipmentReport/id=";
   const [columns, setColumns] = useState([]);
-  const emptyGraph = { datasets: [{ data: [] }], labels: [] };
+  const emptyGraph = {
+    datasets: [{ data: [], label: "", backgroundColor: [] }],
+    labels: [],
+  };
   const [graphData, setGraphData] = useState({
     ...emptyGraph,
   });
