@@ -18,13 +18,12 @@ import BarChart from "./BarChart";
 import PieChart from "./PieChart";
 
 const EquipmentReportsTab = () => {
-  const [tableBodyHeight, setTableBodyHeight] = useState("100%");
+  const [tableBodyHeight] = useState("100%");
   const [rows, setRows] = useState([]);
   const [selectedEquipment, setSelectedEquipment] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [modalShow, setModalShow] = useState(false);
-  const viewURL = "http://localhost:3000/viewEquipmentReport/id=";
   const [columns, setColumns] = useState([]);
   const emptyGraph = {
     datasets: [{ data: [], label: "", backgroundColor: [] }],

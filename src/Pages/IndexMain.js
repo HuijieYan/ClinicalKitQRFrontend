@@ -20,7 +20,6 @@ const IndexMain = () => {
 
   return (
     <div className="indexMain" id="mainContent">
-
       <section className="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
         <div className="container">
           <div className="d-sm-flex align-items-center justify-content-between">
@@ -44,9 +43,9 @@ const IndexMain = () => {
         </div>
       </section>
       <div className="float-end" id="faqButton">
-          <div className="h1 mb-3">
-              <FaQuestion onClick={() => history.push("/faq")}/>
-          </div>
+        <div className="h1 mb-3">
+          <FaQuestion onClick={() => history.push("/faq")} />
+        </div>
       </div>
       <Row className="mb-3 justify-content-center">
         <ButtonList />
@@ -63,7 +62,8 @@ const IndexMain = () => {
       <img
         className="images"
         src={
-          "http://localhost:8080/file/download/bb5fa948-db14-4543-a8aa-fc4198d81747.png"
+          process.env.REACT_APP_BACKEND_URL +
+          "file/download/bb5fa948-db14-4543-a8aa-fc4198d81747.png"
         }
         alt={""}
       />

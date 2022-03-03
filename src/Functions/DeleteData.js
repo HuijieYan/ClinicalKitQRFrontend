@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getHospitalId, getUserName } from "./UserStatus";
 
-const URL = "http://localhost:8080/";
+const URL = process.env.REACT_APP_BACKEND_URL;
 
 class DeleteData {
   deleteEquipment(id) {
@@ -12,7 +12,7 @@ class DeleteData {
     axios.delete(URL + "issues/delete/issueId=" + id);
   }
 
-  deleteUsergroup(hospitalId, username){
+  deleteUsergroup(hospitalId, username) {
     axios.delete(
       URL +
         "usergroup/delete/hospitalId=" +
@@ -22,36 +22,36 @@ class DeleteData {
     );
   }
 
-  deleteMail(id){
-    var url = URL+"mail/delete";
+  deleteMail(id) {
+    var url = URL + "mail/delete";
     var data = new FormData();
-    data.append("id",id);
-    data.append("hospitalId",getHospitalId());
-    data.append("username",getUserName());
-    axios.post(url,data);
+    data.append("id", id);
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    axios.post(url, data);
   }
-  
-  async deleteHospital(id){
+
+  async deleteHospital(id) {
     var url = URL + "hospitals/delete";
     var data = new FormData();
-    data.append("id",id);
-    var response = await axios.post(url,data);
+    data.append("id", id);
+    var response = await axios.post(url, data);
     return response.data;
   }
 
-  async deleteTrust(id){
+  async deleteTrust(id) {
     var url = URL + "trusts/delete";
     var data = new FormData();
-    data.append("id",id);
-    var response = await axios.post(url,data);
+    data.append("id", id);
+    var response = await axios.post(url, data);
     return response.data;
   }
 
-  async deleteQuestion(id){
+  async deleteQuestion(id) {
     var url = URL + "question/delete";
     var data = new FormData();
-    data.append("id",id);
-    var response = await axios.post(url,data);
+    data.append("id", id);
+    var response = await axios.post(url, data);
     return response.data;
   }
 }

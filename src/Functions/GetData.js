@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getHospitalId, getUserName, getLevel, getTrustId } from "./UserStatus";
 
-const URL = "http://localhost:8080/";
+const URL = process.env.REACT_APP_BACKEND_URL;
+
 class GetData {
   async getAllTrusts() {
     var url = URL + "trusts/all";
