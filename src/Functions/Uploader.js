@@ -5,28 +5,22 @@ const URL = process.env.REACT_APP_BACKEND_URL;
 
 class Uploader {
   uploadFiles(files) {
-    var errorMessage = [];
-    //for (let i =0;i<files.length;i++){
-    var file = files[0];
-    var url = URL + "file/upload";
-    var data = new FormData();
+    const errorMessage = [];
+    const file = files[0];
+    const url = URL + "file/upload";
+    const data = new FormData();
     data.append("file", file);
     data.append("username", getUserName());
     data.append("hospitalId", getHospitalId());
     return axios.post(url, data).then((response) => {
-      var message = String(response.data);
-      /*if (!message.includes("Successfully saved")){
-                errorMessage.push(message);
-            }
-            */
+      const message = String(response.data);
       return response.data;
     });
-    //}
   }
 
   submitEquipmentData(name, content, category, type) {
-    var data = new FormData();
-    var url = URL + "equipment/save";
+    const data = new FormData();
+    const url = URL + "equipment/save";
     data.append("name", name);
     data.append("content", content);
     data.append("category", category);
@@ -39,8 +33,8 @@ class Uploader {
   }
 
   updateEquipmentData(id, name, content, category, type) {
-    var data = new FormData();
-    var url = URL + "equipment/update";
+    const data = new FormData();
+    const url = URL + "equipment/update";
     data.append("id", id);
     data.append("name", name);
     data.append("content", content);
@@ -62,8 +56,8 @@ class Uploader {
     description,
     time
   ) {
-    var url = URL + "mail/sending";
-    var data = new FormData();
+    const url = URL + "mail/sending";
+    const data = new FormData();
     data.append("senderHospitalId", senderHospitalId);
     data.append("senderUsername", senderUsername);
     data.append("receivers", receivers);
@@ -77,16 +71,16 @@ class Uploader {
   }
 
   saveEquipments(ids) {
-    var url = URL + "sentEquipment/saving";
-    var data = new FormData();
+    const url = URL + "sentEquipment/saving";
+    const data = new FormData();
     data.append("hospitalId", getHospitalId());
     data.append("ids", ids);
     axios.post(url, data);
   }
 
   submitIssue(issue, equipmentId) {
-    var url = URL + "issues/new";
-    var data = new FormData();
+    const url = URL + "issues/new";
+    const data = new FormData();
     data.append("hospitalId", getHospitalId());
     data.append("username", getUserName());
     data.append("description", issue);
@@ -97,8 +91,8 @@ class Uploader {
   }
 
   updateUsergroup(id, username, name, password, email, specialty) {
-    var url = URL + "usergroup/update";
-    var data = new FormData();
+    const url = URL + "usergroup/update";
+    const data = new FormData();
     data.append("hospitalId", id);
     data.append("username", username);
     data.append("name", name);
@@ -111,8 +105,8 @@ class Uploader {
   }
 
   addNewTrust(trustName, id, username, name, password, email, specialty) {
-    var url = URL + "usergroup/addTrust";
-    var data = new FormData();
+    const url = URL + "usergroup/addTrust";
+    const data = new FormData();
     data.append("trustName", trustName);
     data.append("hospitalId", id);
     data.append("username", username);
@@ -126,32 +120,32 @@ class Uploader {
   }
 
   addNewHospital(trustId, name) {
-    var url = URL + "hospitals/new";
-    var data = new FormData();
+    const url = URL + "hospitals/new";
+    const data = new FormData();
     data.append("id", trustId);
     data.append("name", name);
     axios.post(url, data);
   }
 
   updateHospital(hospitalId, name) {
-    var url = URL + "hospitals/update";
-    var data = new FormData();
+    const url = URL + "hospitals/update";
+    const data = new FormData();
     data.append("id", hospitalId);
     data.append("name", name);
     axios.post(url, data);
   }
 
   addNewQuestion(question, answer) {
-    var url = URL + "question/new";
-    var data = new FormData();
+    const url = URL + "question/new";
+    const data = new FormData();
     data.append("question", question);
     data.append("answer", answer);
     axios.post(url, data);
   }
 
   updateQuestion(id, question, answer) {
-    var url = URL + "question/update";
-    var data = new FormData();
+    const url = URL + "question/update";
+    const data = new FormData();
     data.append("id", id);
     data.append("question", question);
     data.append("answer", answer);

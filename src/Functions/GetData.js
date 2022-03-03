@@ -5,25 +5,25 @@ const URL = process.env.REACT_APP_BACKEND_URL;
 
 class GetData {
   async getAllTrusts() {
-    var url = URL + "trusts/all";
+    const url = URL + "trusts/all";
     const response = await axios.get(url);
     return response.data;
   }
 
   async getAllHospitals() {
-    var url = URL + "hospitals/all";
+    const url = URL + "hospitals/all";
     const response = await axios.get(url);
     return response.data;
   }
 
   async getAllHospitalsByTrust(id) {
-    var url = URL + "hospitals/all/trustId=" + id;
+    const url = URL + "hospitals/all/trustId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getEquipment() {
-    var level = getLevel();
+    const level = getLevel();
     if (level === 2) {
       const data = await this.getAllEquipmentByHospital(getHospitalId());
       return data;
@@ -35,19 +35,19 @@ class GetData {
   }
 
   async getAllEquipmentByHospital(id) {
-    var url = URL + "equipment/hospitalId=" + id;
+    const url = URL + "equipment/hospitalId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getAllEquipmentByTrust(id) {
-    var url = URL + "equipment/trustId=" + id;
+    const url = URL + "equipment/trustId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getGroups() {
-    var level = getLevel();
+    const level = getLevel();
     if (level === 2) {
       const data = await this.getAllGroupsByHospital(getHospitalId());
       return data;
@@ -58,19 +58,19 @@ class GetData {
   }
 
   async getAllGroupsByTrust(id) {
-    var url = URL + "usergroup/trustId=" + id;
+    const url = URL + "usergroup/trustId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getAllGroupsByHospital(id) {
-    var url = URL + "usergroup/hospitalId=" + id;
+    const url = URL + "usergroup/hospitalId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getIssues() {
-    var level = getLevel();
+    const level = getLevel();
     if (level === 2) {
       const data = await this.getAllIssuesByHospital(getHospitalId());
       return data;
@@ -81,41 +81,41 @@ class GetData {
   }
 
   async getAllIssuesByHospital(id) {
-    var url = URL + "issues/hospitalId=" + id;
+    const url = URL + "issues/hospitalId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getAllIssuesByTrust(id) {
-    var url = URL + "issues/trustId=" + id;
+    const url = URL + "issues/trustId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   setIssueSolved(id, solved) {
-    var url = URL + "issues/issueId=" + id;
-    var data = new FormData();
+    const url = URL + "issues/issueId=" + id;
+    const data = new FormData();
     data.append("solved", solved);
     return axios.post(url, data);
   }
 
   async getHospitalById(id) {
-    var url = URL + "hospitals/hospitalId=" + id;
+    const url = URL + "hospitals/hospitalId=" + id;
     const response = await axios.get(url);
     return response.data;
   }
 
   async getTrustById(id) {
-    var url = URL + "trusts/";
-    var data = new FormData();
+    const url = URL + "trusts/";
+    const data = new FormData();
     data.append("id", id);
     const response = await axios.post(url, data);
     return response.data;
   }
 
   async getGroup(hospitalId, username) {
-    var url = URL + "usergroup/get";
-    var data = new FormData();
+    const url = URL + "usergroup/get";
+    const data = new FormData();
     data.append("hospitalId", hospitalId);
     data.append("username", username);
     const response = await axios.post(url, data);
@@ -123,20 +123,20 @@ class GetData {
   }
 
   async getAllAdmins() {
-    var url = URL + "usergroup/all/admins";
+    const url = URL + "usergroup/all/admins";
     const response = await axios.get(url);
     return response.data;
   }
 
   async getAllAdminsInOrder() {
-    var url = URL + "trusts/all/admins";
+    const url = URL + "trusts/all/admins";
     const response = await axios.get(url);
     return response.data;
   }
 
   async getReceivedSharings(id, username) {
-    var url = URL + "mail/receiver";
-    var data = new FormData();
+    const url = URL + "mail/receiver";
+    const data = new FormData();
     data.append("hospitalId", id);
     data.append("username", username);
     const response = await axios.post(url, data);
@@ -144,8 +144,8 @@ class GetData {
   }
 
   async getSentSharings(id, username) {
-    var url = URL + "mail/sender";
-    var data = new FormData();
+    const url = URL + "mail/sender";
+    const data = new FormData();
     data.append("hospitalId", id);
     data.append("username", username);
     const response = await axios.post(url, data);
@@ -153,8 +153,8 @@ class GetData {
   }
 
   async getFile(id) {
-    var url = URL + "file/download/" + id;
-    var data = new FormData();
+    const url = URL + "file/download/" + id;
+    const data = new FormData();
     data.append("username", getUserName());
     data.append("hospitalId", getHospitalId());
     const response = await axios.get(url, data);
@@ -162,9 +162,9 @@ class GetData {
   }
 
   async login(hospitalId, username, password) {
-    var url = URL + "usergroup/login";
-    var data = new FormData();
-    var id = String(hospitalId);
+    const url = URL + "usergroup/login";
+    const data = new FormData();
+    const id = String(hospitalId);
     data.append("hospitalId", id);
     data.append("username", username);
     data.append("password", password);
@@ -177,20 +177,20 @@ class GetData {
   }
 
   async getTypes() {
-    var url = URL + "equipment/types";
+    const url = URL + "equipment/types";
     const response = await axios.get(url);
     return response.data;
   }
 
   async getCategories() {
-    var url = URL + "equipment/categories";
+    const url = URL + "equipment/categories";
     const response = await axios.get(url);
     return response.data;
   }
 
   async searchByName(name, category, type) {
-    var url = URL + "equipment/search";
-    var data = new FormData();
+    const url = URL + "equipment/search";
+    const data = new FormData();
     console.log(name);
     if (category === "None") {
       category = "";
@@ -209,8 +209,8 @@ class GetData {
   }
 
   async getEquipmentById(id) {
-    var url = URL + "equipment/get";
-    var data = new FormData();
+    const url = URL + "equipment/get";
+    const data = new FormData();
     data.append("hospitalId", getHospitalId());
     data.append("username", getUserName());
     data.append("id", id);
@@ -219,8 +219,8 @@ class GetData {
   }
 
   async getSentEquipmentById(id) {
-    var url = URL + "sentEquipment/get";
-    var data = new FormData();
+    const url = URL + "sentEquipment/get";
+    const data = new FormData();
     data.append("id", id);
     const response = await axios.post(url, data);
     return response.data;
@@ -228,7 +228,7 @@ class GetData {
   // Report and Viewing Getters
 
   async getViewingsByUserGroup(hospitalId, usergroup) {
-    var url =
+    const url =
       URL + "reports/hospitalId=" + hospitalId + "&username=" + usergroup;
     const response = await axios.get(url);
     console.log("Got viewings by date", response.data);
@@ -236,7 +236,7 @@ class GetData {
   }
 
   async getViewingsByEquipmentIdAndDateBetween(id, startDate, endDate) {
-    var url =
+    const url =
       URL +
       "reports/equipmentId=" +
       id +
@@ -249,7 +249,7 @@ class GetData {
   }
 
   async getAllQuestions() {
-    var url = URL + "question/all";
+    const url = URL + "question/all";
     const response = await axios.get(url);
     return response.data;
   }

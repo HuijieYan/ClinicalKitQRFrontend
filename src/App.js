@@ -24,7 +24,6 @@ import PreviewEquipment from "./Pages/PreviewEquipment";
 import Reports from "./Pages/Reports";
 import HospitalTable from "./Pages/HospitalTable";
 import UserProfile from "./Pages/UserProfile";
-import ViewEquipmentReport from "./Pages/ViewEquipmentReport";
 import FAQ from "./Pages/FAQ";
 
 function App() {
@@ -111,14 +110,6 @@ function App() {
                   <GuardedRoute component={<Inbox />} path="/inbox" />
 
                   <GuardedRoute component={<Reports />} path="/reports" />
-
-                  <GuardedRoute
-                    render={(props) => {
-                      return <ViewEquipmentReport id={props.match.params.id} />;
-                    }}
-                    path="/viewEquipmentReport/id=:id"
-                    component={null}
-                  />
 
                   <GuardedRoute
                     render={(props) => {

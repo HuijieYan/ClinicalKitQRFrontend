@@ -57,7 +57,7 @@ const LoginPage = () => {
     GetData.login(hospitalId, username, password).then((resultArray) => {
       console.log("Result array", resultArray);
       if (resultArray.length > 0) {
-        var expireTime = new Date().setUTCHours(new Date().getUTCHours() + 3);
+        const expireTime = new Date().setUTCHours(new Date().getUTCHours() + 3);
         console.log(expireTime.valueOf());
         //3 hours session
         setLevel(resultArray[0]);
