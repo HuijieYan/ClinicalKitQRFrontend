@@ -1,5 +1,4 @@
-
-import { Button, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import ArticleIcon from '@mui/icons-material/Article';
 import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -9,8 +8,8 @@ const InboxNewSharingList = ({getDisplayName}) => {
     const selections = useSelector((state)=>state);
     const dispatch = useDispatch();
     const handleDelete=(selection)=>{
-        var ls = [...selections];
-        var index = ls.indexOf(selection);
+        const ls = [...selections];
+        const index = ls.indexOf(selection);
         ls.splice(index,1);
         dispatch(storeSelection(ls));
     }
@@ -18,9 +17,9 @@ const InboxNewSharingList = ({getDisplayName}) => {
     return ( 
         <div>
         {[...selections].map((selection)=>{
-            var name = getDisplayName(selection);
+            const name = getDisplayName(selection);
 
-                return(
+            return(
                     <ListItem>
                         <ListItemButton>
                             <ListItemIcon>
@@ -31,7 +30,8 @@ const InboxNewSharingList = ({getDisplayName}) => {
                         <IconButton onClick={(e)=>{handleDelete(selection)}}><DeleteIcon/></IconButton>
                     </ListItem>
                 );
-            })}
+            })
+        }
         </div>
      );
 }

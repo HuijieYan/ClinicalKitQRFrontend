@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect } from "react";
 import InboxDetailedMessage from "./InboxDetailedMessage";
 import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
-import { Box, typography } from "@mui/system";
+import { Box } from "@mui/system";
 import { Fragment, useState } from "react";
 import InboxNewSharingComponent from "./InboxNewSharingComponent";
 import { useSelector } from "react-redux";
@@ -40,9 +40,7 @@ const InboxMessageList = memo(({selected,clicked}) => {
     //usecallbacks rerenders when vacant and currentMailId changes 
     
     const handleOpenMail = useCallback((id)=>{
-        var mailData = data[id];
         setDisplayState(0);
-        console.log(id);
         setDisplayIndex(id);
         //send the mail data to the display component
         //the display component will decide what to display based on the data received
@@ -51,8 +49,7 @@ const InboxMessageList = memo(({selected,clicked}) => {
     useEffect(()=>{
         //setting the list of sharings
        function rendering(){
-        var rows = [];
-        console.log("rerendered");
+           const rows = [];
         if (data.length === 0){
             rows.push(<ListItem alignItems="flex-start" key={0}><Typography>No sharings received yet</Typography></ListItem>);
         }
@@ -60,7 +57,7 @@ const InboxMessageList = memo(({selected,clicked}) => {
         for (let i = 0;i<data.length;i++){
             const mail = data[i][0];
             const sender = data[i][1];
-            var senderinfo = sender.name;
+            let senderinfo = sender.name;
             const descriptionSlice = String(mail.description).substring(0, 48);
             if (sender.specialty !== null){
                 senderinfo = sender.name + "-"+sender.specialty.specialty;

@@ -4,6 +4,7 @@ import persistReducer from 'redux-persist/lib/persistReducer';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import { loginReducer } from './Reducers/loginReducer';
 
+//Config for local storage
 const persistConfig = {
     key:'root',
     storage

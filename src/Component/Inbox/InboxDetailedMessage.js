@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import { Button, Checkbox, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ArticleIcon from '@mui/icons-material/Article';
 import InboxButtonList from "./InboxButtonList";
 import { useHistory } from "react-router-dom";
@@ -26,7 +26,7 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
 
     const handleDelete=(id)=>{
         DeleteData.deleteMail(id);
-        var ls = [...data];
+        const ls = [...data];
         ls.splice(index,1);
         dispatch(storeMailData(ls));
     }
@@ -36,7 +36,6 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
     }
 
     const handleSelected = (id,saved) => () =>{
-        console.log(id);
         if (saved){
         //if the equipment has already been saved, do nothing
             return;
@@ -49,13 +48,10 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
         }else{
             list.splice(index,1);
         }
-        console.log(list);
         setSelected(list);
     }
 
     useEffect(()=>{
-        //console.log("rerendered");
-        console.log(data);
         function rendering(){
             if(vacant||index>=data.length){
                 setTitle("");
@@ -67,9 +63,8 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
             //if this area is vacant or displaying a data which does not exist,
             //display select a sharing
             }else{
-                var line = data[Number(index)];
-                console.log(index);
-                var mail = line[0];
+                const line = data[Number(index)];
+                const mail = line[0];
                 setTitle(mail.title);
                 setDescription(mail.description);
                 setEquipments(mail.equipments);
@@ -92,7 +87,7 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
                     equipments.map((equipment,index)=>{
                     return(
                         <ListItem key={equipment.id} secondaryAction={
-                            <Button edge="end" onClick={(e)=>{handleOpen(equipment.id)}}>OPEN</Button>
+                            <Button edge="end" onClick={()=>{handleOpen(equipment.id)}}>OPEN</Button>
                         } disablePadding>
                             <ListItemButton onClick={handleSelected(index,equipment.saved)}>
                                 <ListItemIcon>
@@ -122,11 +117,11 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
                     <div style={{margin: '2%'}}>
                         <InboxButtonList selected={selected} setSelected={setSelected} currentMailIndex={index}/>
                         <span style={{marginLeft: '3%', marginRight: '3%'}}/>
-                        <Button onClick={(e)=>{handleDelete(id)}}>Delete The Sharing</Button>
+                        <Button onClick={()=>{handleDelete(id)}}>Delete The Sharing</Button>
                     </div>
                 )}
                 {Number(option)===1&&buttons && (
-                        <Button onClick={(e)=>{handleDelete(id)}}>Delete The Sharing</Button>
+                        <Button onClick={()=>{handleDelete(id)}}>Delete The Sharing</Button>
                 )}
             </Box>
          );

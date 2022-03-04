@@ -4,6 +4,8 @@ import GetData from "../Functions/GetData";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 import Uploader from "../Functions/Uploader";
 
+//This is equipment display page for user, and it contains the corresponding report modal
+
 const ViewEquipment = (props) => {
     const {id} = props;
     const [name, setName] = useState("");

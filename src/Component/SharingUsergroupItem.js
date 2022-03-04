@@ -3,8 +3,22 @@ import SharingListItems from "./SharingListItems";
 
 const SharingUsergroupItem = ({data}) => {
     const generateNodes=(input)=>{
+        let trust;
+        let hospital;
+        let group;
+        const ownHospitalId = Number(getHospitalId());
+        const ownUsername = getUserName();
+        let currentHospital = null;
+        let currentTrust = null;
+        let specialIndex = -1;
+        const tree = {label: "All Trust", value: String(specialIndex)};
+        const trusts = [];
+        let hospitals = [];
+        let groups = [];
+        specialIndex--;
+
         function generateDisplayName(group){
-            var displayStr = "";
+            let displayStr = "";
             if(group.specialty===null){
               displayStr = group.name;
             }else{
@@ -13,22 +27,10 @@ const SharingUsergroupItem = ({data}) => {
             return displayStr;
           }
 
-        //console.log(data);
-        var ownHospitalId = Number(getHospitalId());
-        var ownUsername = getUserName();
-        var currentHospital=null;
-        var currentTrust = null;
-        var specialIndex = -1;
-        var tree = {label:"All Trust",value:String(specialIndex)};
-        var trusts = [];
-        var hospitals = [];
-        var groups = [];
-        specialIndex--;
-
         if (input.length>0){
-            var group = input[0];
-            var hospital = group.hospitalId;
-            var trust = hospital.trust;
+            group = input[0];
+            hospital = group.hospitalId;
+            trust = hospital.trust;
 
             currentTrust = trust;
             currentHospital = hospital;
@@ -36,11 +38,11 @@ const SharingUsergroupItem = ({data}) => {
         }
 
         for (let i = 0;i<input.length;i++){
-            var group = input[i];
-            var hospital = group.hospitalId;
-            var trust = hospital.trust;
-            var displayStr = generateDisplayName(group);
-            var id = String(hospital.hospitalId)+"\n"+group.username+"\n"+displayStr;
+            group = input[i];
+            hospital = group.hospitalId;
+            trust = hospital.trust;
+            const displayStr = generateDisplayName(group);
+            const id = String(hospital.hospitalId) + "\n" + group.username + "\n" + displayStr;
 
             if (currentHospital.hospitalId !== hospital.hospitalId){
                 if (groups.length>0){
@@ -68,15 +70,11 @@ const SharingUsergroupItem = ({data}) => {
         hospitals.push({label:currentHospital.hospitalName,value:String(specialIndex),children:groups});
         specialIndex--;
         trusts.push({label:currentTrust.trustName,value:String(specialIndex),children:hospitals});
-        //console.log(trusts);
         tree["children"] = trusts;
-        //console.log(tree);
         return tree;
     }
 
-    return ( 
-        <SharingListItems data={data} generateNodes={generateNodes}/>
-     );
+    return (<SharingListItems data={data} generateNodes={generateNodes}/>);
 }
  
 export default SharingUsergroupItem;

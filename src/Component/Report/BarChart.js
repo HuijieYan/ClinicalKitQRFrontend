@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
 import { Bar, Chart } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto"; // do not delete, is needed
 import { Col, Row } from "react-bootstrap";
+
 const BarChart = (props) => {
   return (
     <div className="graph d-flex justify-content-center">

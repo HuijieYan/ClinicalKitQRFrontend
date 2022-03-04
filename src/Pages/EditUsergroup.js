@@ -1,14 +1,11 @@
 import { Checkbox, FormControlLabel } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 
 const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
-  const history = useHistory();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,9 +14,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   const [email, setEmail] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isTrustHospital, setIsTrustHospital] = useState(false);
   const [trustHospitalId, setTrustHospitalId] = useState("");
-  const url = process.env.REACT_APP_BACKEND_URL + "usergroup/register/";
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -39,8 +34,9 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
       setUsername(groupUsername);
       //get usergroup information by username and hospitalId and trustId
       //so we could get the placeholder while editing
-      setIsAdmin(false);
       setHospitalId(selectedHospitalId);
+
+      GetData.getGroup(selectedHospitalId, groupUsername).then((data) => setIsAdmin(data.isAdmin));
     }
   }, []);
 
@@ -48,6 +44,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
 
   async function submit() {
     if (groupUsername === undefined) {
+        //add new usergroup
     } else {
       //we do update here, need a new url and a backend post mapping
       Uploader.updateUsergroup(
@@ -78,7 +75,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
             disabled={groupUsername !== undefined}
             onChange={(e) => detectTrustHospital(e)}
           >
-            <option key={-1} value={-1} label="Select a Trust" />
+            <option key={-1} value={-1} label="Select a Hospital" />
             {hospitals.map((hospital) => (
               <option
                 key={hospital.hospitalId}
@@ -121,7 +118,6 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
           <Form.Control
             type="password"
             placeholder="Enter Password"
-            defaultValue={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>

@@ -22,6 +22,8 @@ import {
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
+//Login page get trust and group from backend and save the user data in local host
+
 const LoginPage = () => {
   const history = useHistory();
   const [trusts, setFormTrusts] = useState([]);
@@ -53,12 +55,10 @@ const LoginPage = () => {
     ) {
       return;
     }
-    console.log("called login");
+
     GetData.login(hospitalId, username, password).then((resultArray) => {
-      console.log("Result array", resultArray);
       if (resultArray.length > 0) {
-        var expireTime = new Date().setUTCHours(new Date().getUTCHours() + 3);
-        console.log(expireTime.valueOf());
+        const expireTime = new Date().setUTCHours(new Date().getUTCHours() + 3);
         //3 hours session
         setLevel(resultArray[0]);
         setHospitalID(resultArray[1]);

@@ -11,6 +11,8 @@ import {Button, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
 import Uploader from "../Functions/Uploader";
 
+//Hospital Table is a table contains hospital data and it's corresponding operations
+
 const HospitalTable = () => {
     const [rows,setRows] = useState([]);
     //rows of data
@@ -20,7 +22,6 @@ const HospitalTable = () => {
     const [selectedId, setSelectedId] = useState(-1);
     const [placeHolder, setPlaceHolder] = useState("");
     const [name, setName] = useState("");
-    const [refresh,setRefresh] = useState(false);
     //array of indexes of selected rows
 
     useEffect(()=>{
@@ -50,21 +51,16 @@ const HospitalTable = () => {
                 setRows(rowsData);
             });
         }
-    },[refresh]);
+    },[]);
     //renders only once for fetching selection options
 
     function submitHospital(){
         if(selectedId !== -1){
             Uploader.updateHospital(selectedId,name);
-            console.log(selectedId);
-            console.log(name);
         }else {
             Uploader.addNewHospital(getTrustId(),name);
-            console.log("create a hospital with string and trust id");
-            console.log(getTrustId());
-            console.log(name);
         }
-        setRefresh(!refresh);
+        window.location.reload();
     }
 
     const columns = [

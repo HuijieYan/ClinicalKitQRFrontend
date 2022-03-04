@@ -7,8 +7,6 @@ import { useEffect, useState } from 'react';
 import GetData from '../Functions/GetData';
 import { getHospitalId, getLevel, getTrustId } from '../Functions/UserStatus';
 import SharingEquipmentItem from './SharingEquipmentItem';
-import { Button, Modal } from 'react-bootstrap';
-import {Button as MUIButton} from '@mui/material';
 import SharingList from './SharingList';
 
 const boxSize = 14; 
@@ -53,7 +51,7 @@ const SharingEquipmentList = ()=>{
   const handleOpen = () => setShow(true);
 
   useEffect(()=>{
-    var level = Number(getLevel());
+    const level = Number(getLevel());
     console.log(level);
     if (level===2){
       GetData.getAllEquipmentByHospital(getHospitalId()).then((ls)=>{

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import GetData from "../Functions/GetData";
+
+//Search page for equipment
 
 const SearchPage = () => {
     const [types,setTypes] = useState([]);
@@ -13,11 +14,9 @@ const SearchPage = () => {
     const history = useHistory();
     
     const search = () =>{
-        
         if(name === ""){
             return;
         }
-        //console.log("/result?name="+name+" category="+selectedCategory+" type="+selectedType);
         history.push("/result/name="+name+"/category="+selectedCategory+"/type="+selectedType);
     }
 
@@ -34,20 +33,20 @@ const SearchPage = () => {
         <div>   
         <Form>
             <Row className="mb-3">
-                    <Form.Select value={selectedCategory} onChange={(e)=>setSelectedCategory(e.target.value)}>
-                        <option defaultValue="None"></option>  
-                        {categories.map(category=>(
+                <Form.Select value={selectedCategory} onChange={(e)=>setSelectedCategory(e.target.value)}>
+                    <option defaultValue="None"/>
+                    {categories.map(category=>(
                         <option key={category} value={category} label={category}/>
-                        ))}
-                    </Form.Select>
+                    ))}
+                </Form.Select>
             </Row>
         </Form>
         <Form>
             <Row className="mb-3">
                 <Form.Select value={selectedType} onChange={(e)=>setSelectedType(e.target.value)}>
-                    <option defaultValue="None"></option>   
+                    <option defaultValue="None"/>
                     {types.map(type=>(
-                    <option key={type} value={type} label={type}/>
+                        <option key={type} value={type} label={type}/>
                     ))}
 
                 </Form.Select>
@@ -61,7 +60,7 @@ const SearchPage = () => {
                             onChange={(e)=>setName(e.target.value)}/>
             </Form.Group>
         </Form>
-        <Button type="submit" onClick={(e)=>{search()}}>Search</Button>
+        <Button type="submit" onClick={()=>{search()}}>Search</Button>
         </div>
      );
 }

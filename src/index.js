@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './Component/reportWebVitals';
 import { CookiesProvider } from 'react-cookie';
 
+//This is React default start setting
 ReactDOM.render(
   <CookiesProvider>
   <>

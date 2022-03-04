@@ -1,12 +1,6 @@
 import ButtonList from "../Component/ButtonList";
 import { FaQuestion } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.css";
-import {
-  getExpireTime,
-  getHospitalId,
-  getLevel,
-  getUserName,
-} from "../Functions/UserStatus";
 import { Button, Row } from "react-bootstrap";
 import { logout } from "../Functions/LoginFunctions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -42,11 +36,13 @@ const IndexMain = () => {
           </div>
         </div>
       </section>
+
       <div className="float-end" id="faqButton">
         <div className="h1 mb-3">
           <FaQuestion onClick={() => history.push("/faq")} />
         </div>
       </div>
+
       <Row className="mb-3 justify-content-center">
         <ButtonList />
       </Row>
@@ -55,9 +51,7 @@ const IndexMain = () => {
         onClick={() => {
           handleLogout();
         }}
-      >
-        Log Out
-      </Button>
+      >Log Out</Button>
 
       <img
         className="images"

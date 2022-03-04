@@ -7,6 +7,8 @@ import nameReducer from "./nameReducer";
 import expireTimeReducer from "./expireTimeReducer";
 import passwordReducer from "./passwordReducer";
 
+//reducers are responsible for set and get the local stored data
+
 export const loginReducer = combineReducers({
     name:nameReducer,
     username:usernameReducer,

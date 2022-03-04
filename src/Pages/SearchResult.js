@@ -6,6 +6,8 @@ import ArticleIcon from '@mui/icons-material/Article';
 import GetData from "../Functions/GetData";
 import SearchPage from "./SearchPage";
 
+//Search Results append to the search page
+
 const SearchResult = ({name,category,type}) => {
     const [results,setResults] = useState([]);
     const history = useHistory();

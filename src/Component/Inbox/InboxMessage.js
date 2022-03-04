@@ -1,13 +1,11 @@
-import { useState } from "react";
 import { useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { createStore } from "redux";
 import GetData from "../../Functions/GetData";
 import { getHospitalId, getUserName } from "../../Functions/UserStatus";
 import { storeMailData } from "../../Storage/Actions/actions";
 import mailDataReducer from "../../Storage/Reducers/mailDataReducer";
 import InboxMessageList from "./InboxMessageList";
-import InboxSideBar from "./InboxSideBar";
 
 const store = createStore(mailDataReducer);
 

@@ -1,5 +1,5 @@
 import {Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
-import {getUserName, getName, getPassword, getLevel, getTrustId, getHospitalId} from "../Functions/UserStatus";
+import {getUserName, getName, getLevel, getTrustId, getHospitalId, getPassword} from "../Functions/UserStatus";
 import React, {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {logout} from "../Functions/LoginFunctions";
@@ -7,13 +7,14 @@ import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 import DeleteData from "../Functions/DeleteData";
 
+//User Profile is used for edit the user group information and trust information, only used by admins
+
 const UserProfile = () => {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
     const [showGroupDeletion, setShowGroupDeletion] = useState(false);
     const [showTrustEditor, setShowTrustEditor] = useState(false);
     const [showDeleteTrust, setShowDeleteTrust] = useState(false);
     const [show,setShow] = useState(false);
-    const [changed,setChanged] = useState(false);
     const handleClose = () => setShow(false);
     const [message,setMessage] = useState("");
     const [currentData,setCurrentData] = useState({
@@ -45,27 +46,36 @@ const UserProfile = () => {
         //getUserGroup by trustId and hospitalId and username and get trustName by Trust Id
         
         GetData.getGroup(getHospitalId(),getUserName()).then((group)=>{
-            const user = {};
-            user["username"] = getUserName();
-            user["name"] = getName();
             const hospital = group.hospitalId;
-            user["hospital"] = hospital.hospitalName;
-            user["trust"] = hospital.trust.trustName;
-            user["email"] = group.email;
-            user["specialty"] = group.specialty;
-            console.log(user);
-            setCurrentData(user);
+            setCurrentData({
+                trust: hospital.trust.trustName,
+                hospital: hospital.hospitalName,
+                username: getUserName(),
+                name: getName(),
+                email: group.email,
+                specialty: group.specialty,
+            });
+            setUpdateData({
+                name: getName(),
+                password: getPassword(),
+                email: group.email,
+                specialty: group.specialty,
+            });
         });
         
-    },[changed]);
+    },[]);
 
     function updateUsergroup(){
-        //post the trustId username hospitalId
-        //and post updateData
         Uploader.updateUsergroup(getHospitalId(),getUserName(),updateData.name,updateData.password,updateData.email,updateData.specialty).then((succeed)=>{
             if(succeed){
                 setShowGroupEditor(false);
-                setChanged(!changed);
+                setCurrentData(prevState => ({
+                    ...prevState,
+                    name: updateData.name,
+                    password: updateData.password,
+                    email: updateData.email,
+                    specialty: updateData.specialty,
+                }));
             }else{
                 setShow(true);
                 setMessage("Error occurred, changes not saved");
@@ -83,7 +93,6 @@ const UserProfile = () => {
         Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((succeed)=>{
             if(succeed){
                 setShowGroupEditor(false);
-                setChanged(!changed);
             }else{
                 setShow(true);
                 setMessage("Error occurred, changes not saved");
@@ -94,7 +103,6 @@ const UserProfile = () => {
     function deleteTrust(){
         //delete trust by id
         DeleteData.deleteTrust(getTrustId()).then((succeed)=>{
-            console.log(succeed);
             if (succeed){
                 logout();
                 history.push("/login");
@@ -103,8 +111,6 @@ const UserProfile = () => {
                 setMessage("Error occurred, Trust not deleted");
             }
         });
-        
-        
     }
 
     function handleUpdate(e){

@@ -7,6 +7,8 @@ import {Button, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemT
 import {FormGroup, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
 
+//FAQ page, built in modal for edit
+
 const FAQ = () => {
     const [questions, setQuestions] = useState([]);
     const [showQuestion, setShowQuestion] = useState(false);
@@ -19,7 +21,6 @@ const FAQ = () => {
 
     useEffect(()=>{
         GetData.getAllQuestions().then((data) => {
-            console.log(data.length);
             setQuestions(data);
         })
 

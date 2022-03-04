@@ -2,6 +2,8 @@ import { Tabs, Tab } from "react-bootstrap";
 import EquipmentReportsTab from "../Component/Report/EquipmentReportsTab";
 import React from "react";
 
+//layout for Equipment report page
+
 const EquipmentReports = () => {
   return (
     <>

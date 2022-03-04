@@ -6,15 +6,13 @@ const InboxEquipmentList = ({equipments}) => {
     const[selected,setSelected] = useState([]);
     
     const handleSelected = (id) =>{
-        console.log(id);
-        var index = selected.indexOf(id);
-        var list = [...selected];
+        const index = selected.indexOf(id);
+        const list = [...selected];
         if (index === -1){
             list.push(id);    
         }else{
             list.splice(index,1);
         }
-        console.log(list);
         setSelected(list);
     }
 
@@ -40,7 +38,8 @@ const InboxEquipmentList = ({equipments}) => {
                         </ListItemButton>
                     </ListItem>
                 );
-            })}
+            })
+        }
         </div>
      );
 }

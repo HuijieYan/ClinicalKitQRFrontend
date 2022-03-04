@@ -1,6 +1,4 @@
-import "./App.css";
-import "./Component/Sidebar.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import IndexMain from "./Pages/IndexMain";
 import LoginPage from "./Pages/LoginPage";
 import EditUsergroup from "./Pages/EditUsergroup";
@@ -15,7 +13,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./Storage/storeConfiguration";
 import ContactBook from "./Pages/contactBook";
 import Inbox from "./Pages/Inbox";
-import UploadedFiles from "./Pages/UploadedFiles";
 import GuardedRoute from "./Component/GuardedRoute";
 import SearchPage from "./Pages/SearchPage";
 import SearchResult from "./Pages/SearchResult";
@@ -27,24 +24,21 @@ import UserProfile from "./Pages/UserProfile";
 import ViewEquipmentReport from "./Pages/ViewEquipmentReport";
 import FAQ from "./Pages/FAQ";
 
+//This page is responsible for matching path with pages
 function App() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <div className="App" id="app">
+        <div className="App" id="app" style={{textAlign: "center"}}>
           <Router>
             <Switch>
+              <Route exact path="/">
+                <Redirect to="/login"/>
+              </Route>
+
               <Route exact path="/login">
                 <LoginPage />
               </Route>
-
-              <GuardedRoute
-                render={(props) => {
-                  return <UploadedFiles id={props.match.params.id} />;
-                }}
-                path="/uploadedFiles/:id"
-                component={null}
-              />
 
               <div>
                 <MenuBar />

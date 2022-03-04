@@ -3,9 +3,9 @@ import InboxNewSharingList from "./InboxNewSharingList";
 const InboxNewSharingEquipmentList = () => {
 
     const getDisplayName=(selection)=>{
-        var ls = String(selection).split("\n");
-        var name = ls[1];
-        return name;
+        const ls = String(selection).split("\n");
+        //ls[1] is the Display name
+        return ls[1];
     }
 
     return ( 

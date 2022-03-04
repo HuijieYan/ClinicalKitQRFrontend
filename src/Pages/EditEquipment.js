@@ -7,6 +7,8 @@ import GetData from "../Functions/GetData";
 import {useHistory} from "react-router-dom";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 
+//This page is used for adding new equipment or edit exit equipment
+
 const EditEquipment = ({id}) => {
     const [content,setContent] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -40,7 +42,6 @@ const EditEquipment = ({id}) => {
 
     function image_upload_handler (blobInfo, success, failure, progress) {
         return Uploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
-            console.log(responese);
             return success(responese.location);
         });
     }
@@ -56,6 +57,7 @@ const EditEquipment = ({id}) => {
         console.log(id);
         if(id != null){
             GetData.getEquipmentById(id).then((data) => {
+                console.log(data.name);
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);
@@ -66,34 +68,26 @@ const EditEquipment = ({id}) => {
 
     const history = useHistory();
     const log = () => {
-        //save these variable, all of them are string
-        //in useEffect and view page we need getEquipmentById to set the name, type and description placeholder
         const saveName = name;
         const saveType = type;
         const saveCategory = category;
         const saveDescription = editorRef.current.getContent();
 
-        if (id!==null){
+        if (id == null){
             Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType).then((response) => {
-                console.log(response);
                 if(response === "Equipment Saved Successfully"){
-                    //pop out a window with a redirection button
                     history.push("/home");
                 }
                 setErrorMessage(response.data);
             });
         }else{
             Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType).then((response) => {
-                console.log(response);
                 if(response === "Equipment Updated Successfully"){
-                    //pop out a window with a redirection button
                     history.push("/home");
                 }
                 setErrorMessage(response.data);
             });
         }
-
-        /*$("#dataContainer").html(content);*/
     };
 
     return (
@@ -107,7 +101,12 @@ const EditEquipment = ({id}) => {
                         </Form.Group>
                     </Col>
                     <Col xl={2}>
-                        <Form.Control type="text" placeholder={name}/>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter Equipment Name here"
+                            defaultValue={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                     </Col>
                 </Row>
 
@@ -173,10 +172,6 @@ const EditEquipment = ({id}) => {
 
                     images_upload_handler: image_upload_handler,
 
-                    /*video_template_callback: function(data) {
-                        return "<iframe src=\"" + data.source + "\" width=\"" + data.width + "\" height=\"" + data.height + "\" allowfullscreen=\"allowfullscreen\"></iframe>";
-                    },*/
-
                     file_picker_callback: function(callback, value, meta) {
                         const input = document.createElement('input');
                         input.setAttribute('type', 'file');
@@ -185,9 +180,8 @@ const EditEquipment = ({id}) => {
                             const file = this.files;
                             const reader = new FileReader();
 
-                            reader.onload = function (e) {
+                            reader.onload = function () {
                                 return Uploader.uploadFiles(file).then((responese)=>{
-                                    console.log(responese);
                                     callback(responese.location);
                                 });
                             };
@@ -235,15 +229,18 @@ const EditEquipment = ({id}) => {
                                             enabled: false
                                         }
                                     ],
+
                                     onSubmit: function (api) {
                                         const data = api.getData();
-                                        // close the dialog
+                                        //This is a nonEditable Tab
                                         editor.insertContent('<div class="tab" style="background-color: #484848"><h3 class="tabHeader">Tab Title:</h3><h2 class="tabHeader">' + data.tabTitle + '</h2><h3 class="tabHeader">Content:</h3><p>' + data.tabContent + '</p></div><p></p>');
                                         api.close();
                                     },
                                 });
                             },
                         });
+
+                        //urlinput will call filepicker
 
                         editor.ui.registry.addButton("fileUploader", {
                             tooltip: "Upload Files",
@@ -275,12 +272,6 @@ const EditEquipment = ({id}) => {
                                             enabled: false
                                         }
                                     ],
-
-                                    onChange: function (api, changeData) {
-                                        const data = api.getData();
-                                        console.log("onchange");
-                                        console.log(data);
-                                    },
 
                                     onSubmit: function (api) {
                                         const data = api.getData();

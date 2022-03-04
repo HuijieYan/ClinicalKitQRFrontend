@@ -12,7 +12,7 @@ const MenuBar = () => {
         if(str === ""){
             return;
         }
-        //console.log("/result?name="+name+" category="+selectedCategory+" type="+selectedType);
+
         history.push("/result/name="+str+"/category=None/type=None");
     }
 

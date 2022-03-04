@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import { useHistory } from "react-router-dom";
 import DeleteData from "../Functions/DeleteData";
 
+//Equipment Table is a table contains equipments data and it's corresponding operations
+
 const EquipmentTable = () => {
   const QRURL = process.env.REACT_APP_FRONTEND_URL + "equipment/qrcode/id=";
   const viewURL = process.env.REACT_APP_FRONTEND_URL + "viewEquipment/id=";
@@ -21,8 +23,6 @@ const EquipmentTable = () => {
 
   useEffect(() => {
     const level = parseInt(getLevel());
-    console.log(getTrustId());
-    console.log(getHospitalId());
     if (level === 2) {
       setColumns([
         {
@@ -66,6 +66,7 @@ const EquipmentTable = () => {
           },
         },
       ]);
+
       GetData.getAllEquipmentByHospital(getHospitalId()).then((data) => {
         setRowData(data);
       });
@@ -75,7 +76,6 @@ const EquipmentTable = () => {
       });
     }
 
-    //set trusts' selection option
   }, []);
   //renders only once for fetching selection options
 

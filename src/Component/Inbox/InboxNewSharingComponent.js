@@ -24,11 +24,11 @@ const InboxNewSharingComponent = ({display}) => {
 
     const send = () =>{
         function decodeUsergroupSelection(selection){
-            var result = [];
+            const result = [];
             for (let i=0;i<selection.length;i++){
-                var group = [];
-                var selected = String(selection[i]);
-                var splitedString = selected.split("\n");
+                const group = [];
+                const selected = String(selection[i]);
+                const splitedString = selected.split("\n");
                 group.push(splitedString[0]);
                 //first item is the hospital id
                 group.push(splitedString[1]);
@@ -39,11 +39,11 @@ const InboxNewSharingComponent = ({display}) => {
         }
 
         function decodeEquipmentSelection(selection){
-            var result = [];
+            const result = [];
             for (let i=0;i<selection.length;i++){
-                var equipment = [];
-                var selected = String(selection[i]);
-                var splitedString = selected.split("\n");
+                const equipment = [];
+                const selected = String(selection[i]);
+                const splitedString = selected.split("\n");
                 equipment.push(splitedString[0]);
                 //first item is the equipment id
                 result.push(equipment);
@@ -51,11 +51,9 @@ const InboxNewSharingComponent = ({display}) => {
             return result;
         }
 
-        var sendingEquipmentIds=decodeEquipmentSelection(equipmentStore.getState());
-        console.log(sendingEquipmentIds);
-        var sendingUsergroups = decodeUsergroupSelection(usergroupStore.getState());
-        console.log(sendingUsergroups);
-        var time = new Date().toUTCString();
+        const sendingEquipmentIds = decodeEquipmentSelection(equipmentStore.getState());
+        const sendingUsergroups = decodeUsergroupSelection(usergroupStore.getState());
+        const time = new Date().toUTCString();
         Uploader.sendSharings(getHospitalId(),getUserName(),sendingEquipmentIds,sendingUsergroups,title,description,time).then((data)=>{
             if(data){
                 setMessage("Send Successful");

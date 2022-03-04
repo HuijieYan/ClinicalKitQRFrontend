@@ -1,7 +1,10 @@
-import {Button, Container, Form, Modal} from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import GetData from "../Functions/GetData";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
+
+//PreviewEquipment is only used for inbox equipment preview in certain component
+//EquipmentViewRender is responsible for render the page
 
 const PreviewEquipment = (props) => {
     const {id} = props;

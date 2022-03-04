@@ -178,13 +178,13 @@ const EquipmentReportsTab = () => {
               onChange={(newDate) => {
                 setStartDate(newDate);
               }}
-              renderInput={(params) => <TextField {...params}></TextField>}
+              renderInput={(params) => <TextField {...params}/>}
               maxDate={endDate === null ? null : endDate}
             />
             <Button
-              onClick={() => setStartDate(null)}
-              className="btn-close"
-            ></Button>
+            onClick={() => setStartDate(null)}
+            className="btn-close"
+            />
             <DatePicker
               label="End Date"
               inputFormat="dd/MM/yyyy"
@@ -197,7 +197,7 @@ const EquipmentReportsTab = () => {
             <Button
               onClick={() => setEndDate(null)}
               className="btn-close"
-            ></Button>
+            />
           </LocalizationProvider>
         </Col>
       </Row>

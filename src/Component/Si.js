@@ -14,6 +14,7 @@ export default function RecursiveTreeView() {
             id: "1",
             name: "Child - 1"
           },
+
           {
             id: "3",
             name: "Child - 3",
@@ -34,6 +35,7 @@ export default function RecursiveTreeView() {
               }
             ]
           },
+
           {
             id: "5",
             name: "Child - 5",
@@ -44,6 +46,7 @@ export default function RecursiveTreeView() {
               }
             ]
           },
+
           {
             id: "9",
             name: "Child - 9",
@@ -68,15 +71,12 @@ export default function RecursiveTreeView() {
       };
 
     const [selected, setSelected] = React.useState([]);
-    console.log(selected);
   
     const selectedSet = React.useMemo(() => new Set(selected), [selected]);
   
     const parentMap = React.useMemo(() => {
       return goThroughAllNodes(data);
     }, []);
-  
-    // console.log("parentMAp", parentMap);
   
     function goThroughAllNodes(nodes, map = {}) {
       if (!nodes.children) {
@@ -169,7 +169,6 @@ export default function RecursiveTreeView() {
         ) || false;
   
       if (allSelectedChildren && !selectedSet.has(nodes.id)) {
-        console.log("if allSelectedChildren");
   
         setSelected([...selected, nodes.id]);
       }

@@ -16,12 +16,10 @@ const InboxButtonList = ({selected,setSelected,currentMailIndex}) => {
     const anchorRef = useRef(null);
 
     const handleOpenList = ()=>()=>{
-        console.log("clicked open");
         setOpen(!open);
     }
 
     const handleClick = (event, index) => {
-        console.log("clicked");
         setIndex(index);
         setOpen(false);
       };
@@ -35,9 +33,9 @@ const InboxButtonList = ({selected,setSelected,currentMailIndex}) => {
       };
 
     const handleSave = (selections,mails,index)=>{
-        var currentMail=mails[index][0];
-        var equipments = [...currentMail.equipments];
-        var ids = [];
+        const currentMail = mails[index][0];
+        const equipments = [...currentMail.equipments];
+        const ids = [];
         for (let i =0;i<selections.length;i++){
             equipments[selections[i]].saved = true;
             //change saved attributes in equipment into true
@@ -52,11 +50,11 @@ const InboxButtonList = ({selected,setSelected,currentMailIndex}) => {
     }
 
     const handleSaveAll = (selections,mails,index)=>{
-        var currentMail=mails[index][0];
-        var equipments = [...currentMail.equipments];
-        var ids = [];
+        const currentMail = mails[index][0];
+        const equipments = [...currentMail.equipments];
+        const ids = [];
         for (let i =0;i<equipments.length;i++){
-            var equipment = equipments[i];
+            const equipment = equipments[i];
             if (!equipment.saved){
                 equipments[i].saved = true;
                 //change saved attributes in equipment into true
@@ -81,7 +79,7 @@ const InboxButtonList = ({selected,setSelected,currentMailIndex}) => {
     return (
         <>
             <ButtonGroup ref={anchorRef}>
-                <Button onClick={(e)=>{functions[index](selected,data,currentMailIndex)}}>{options[index]}</Button>
+                <Button onClick={()=>{functions[index](selected,data,currentMailIndex)}}>{options[index]}</Button>
                 <Button size="small" onClick={handleOpenList()}>
                     <ArrowDropDownIcon/>
                 </Button>

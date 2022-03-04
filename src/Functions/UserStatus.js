@@ -1,6 +1,8 @@
 import { storeExpireTime, storeHospitalId, storeLevel, storeName, storePassword, storeTrustId, storeUsername } from "../Storage/Actions/actions";
 import { store } from "../Storage/storeConfiguration";
 
+//Controller for dispatch the local stored information
+
 export function setUserName(name){
     store.dispatch(storeUsername(name));
 }
