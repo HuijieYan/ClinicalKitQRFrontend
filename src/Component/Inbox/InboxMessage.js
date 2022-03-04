@@ -10,7 +10,6 @@ import InboxMessageList from "./InboxMessageList";
 const store = createStore(mailDataReducer);
 
 const InboxMessage = ({ selected, clicked }) => {
-
   useEffect(() => {
     if (selected === 0) {
       GetData.getReceivedSharings(getHospitalId(), getUserName()).then(
