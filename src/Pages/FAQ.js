@@ -3,7 +3,7 @@ import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 import {getLevel} from "../Functions/UserStatus";
 import {Box} from "@mui/system";
-import {Button, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {Button, Divider, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
 import {FormGroup, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
 

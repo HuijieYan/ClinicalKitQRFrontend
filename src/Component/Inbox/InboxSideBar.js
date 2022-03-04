@@ -12,7 +12,6 @@ import SendIcon from "@mui/icons-material/Send";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { Button } from "react-bootstrap";
 import InboxMessage from "./InboxMessage";
-import InboxNewShareModal from "./InboxNewShareModal";
 
 //list of buttons a the side of inbox
 const InboxSideBar = () => {

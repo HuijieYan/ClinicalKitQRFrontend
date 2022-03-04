@@ -1,4 +1,4 @@
-import { Bar, Chart } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto"; // do not delete, is needed
 import { Row } from "react-bootstrap";
 
