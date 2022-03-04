@@ -1,6 +1,6 @@
 import { Bar, Chart } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto"; // do not delete, is needed
-import { Col, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 
 const BarChart = (props) => {
   return (
