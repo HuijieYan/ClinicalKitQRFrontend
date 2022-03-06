@@ -8,7 +8,7 @@ import SearchPage from "./SearchPage";
 
 //Search Results append to the search page
 
-const SearchResult = ({name,category,type}) => {
+const SearchResult = ({name,category,type,manufacturer,model}) => {
     const [results,setResults] = useState([]);
     const history = useHistory();
 
@@ -17,10 +17,10 @@ const SearchResult = ({name,category,type}) => {
     }
 
     useEffect(()=>{
-        GetData.searchByName(name,category,type).then((response)=>{
+        GetData.search(name,category,type,manufacturer,model).then((response)=>{
             setResults(response);
         });
-    },[]);
+    },[name,category,type,manufacturer,model]);
 
     return ( 
         <>

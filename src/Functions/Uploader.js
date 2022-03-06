@@ -18,7 +18,7 @@ class Uploader {
     });
   }
 
-  submitEquipmentData(name, content, category, type) {
+  submitEquipmentData(name, content, category, type,manufacturer,model) {
     const data = new FormData();
     const url = URL + "equipment/save";
     data.append("name", name);
@@ -27,21 +27,25 @@ class Uploader {
     data.append("type", type);
     data.append("hospitalId", getHospitalId());
     data.append("username", getUserName());
+    data.append("model",model);
+    data.append("manufacturer",manufacturer);
     return axios.post(url, data).then((response) => {
       return response.data;
     });
   }
 
-  updateEquipmentData(id, name, content, category, type) {
+  updateEquipmentData(id, name, content, category, type,manufacturer,model) {
     const data = new FormData();
     const url = URL + "equipment/update";
-    data.append("id", id);
+    data.append("equipmentId", id);
     data.append("name", name);
     data.append("content", content);
     data.append("category", category);
     data.append("type", type);
     data.append("hospitalId", getHospitalId());
     data.append("username", getUserName());
+    data.append("model",model);
+    data.append("manufacturer",manufacturer);
     return axios.post(url, data).then((response) => {
       return response.data;
     });

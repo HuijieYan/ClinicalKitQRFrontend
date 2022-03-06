@@ -138,10 +138,12 @@ function App() {
                           name={props.match.params.name}
                           category={props.match.params.category}
                           type={props.match.params.type}
+                          manufacturer={props.match.params.manufacturer}
+                          model={props.match.params.model}
                         />
                       );
                     }}
-                    path={"/result/name=:name/category=:category/type=:type"}
+                    path={"/result/name=:name/category=:category/type=:type/manufacturer=:manufacturer/model=:model"}
                     component={null}
                   />
                 </Switch>

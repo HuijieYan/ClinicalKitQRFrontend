@@ -13,10 +13,16 @@ const EditEquipment = ({id}) => {
     const [content,setContent] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [name, setName] = useState("");
-    const [type,setType] = useState("Select Type");
+    const [type,setType] = useState("");
+    //the clinical system of an equipment
     const [types,setTypes] = useState([]);
-    const [category,setCategory] = useState("Select Category");
+    const [category,setCategory] = useState("");
+    //the patient demographic of an equipment
     const [categories,setCategories] = useState([]);
+    const [manufacturer,setManufacturer] = useState("");
+    //the manufacturer of the equipment
+    const [manufacturers,setManufacturers] = useState([]);
+    const [model,setModel] = useState("");
     const [modalShow, setModalShow] = useState(false);
     const editorRef = useRef(null);
 
@@ -50,8 +56,13 @@ const EditEquipment = ({id}) => {
         GetData.getTypes().then((data) => {
             setTypes(data)
         });
+
         GetData.getCategories().then((categories)=>{
             setCategories(categories);
+        });
+
+        GetData.getAllManufacturers().then((manufacturers)=>{
+            setManufacturers(manufacturers);
         });
 
         console.log(id);
@@ -62,26 +73,38 @@ const EditEquipment = ({id}) => {
                 setType(data.type);
                 setCategory(data.category);
                 setContent(data.content);
+                setModel(data.model.modelName);
+                setManufacturer(data.model.manufacturer.manufacturerName);
             })
         }
-    }, []);
+    }, [id]);
 
     const history = useHistory();
     const log = () => {
+        if(category === ""){
+            setErrorMessage("Error: Patient demographic not selected");
+            return;
+        }
+        if(type === ""){
+            setErrorMessage("Error: Clinical system not selected");
+            return;
+        }
         const saveName = name;
         const saveType = type;
         const saveCategory = category;
         const saveDescription = editorRef.current.getContent();
+        const saveManufacturer = manufacturer;
+        const saveModel = model;
 
         if (id == null){
-            Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType).then((response) => {
+            Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
                 if(response === "Equipment Saved Successfully"){
                     history.push("/home");
                 }
                 setErrorMessage(response.data);
             });
         }else{
-            Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType).then((response) => {
+            Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
                 if(response === "Equipment Updated Successfully"){
                     history.push("/home");
                 }
@@ -112,11 +135,45 @@ const EditEquipment = ({id}) => {
 
                 <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
                     <Col xl={3}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Category:</Form.Label>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Manufacturer:</Form.Label>
+                    </Col>
+                    <Col xl={2}>
+                        <select style={{fontSize: 'x-large'}} onChange={(e) => setManufacturer(e.target.value)} value={manufacturer}>
+                            <option key="Select Manufacturer" value="" label="Select Manufacturer"/>
+                            {manufacturers.map((manufacturer) => (
+                                <option
+                                    key={manufacturer}
+                                    value={manufacturer}
+                                    label={manufacturer}
+                                />
+                            ))}
+                        </select>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col xl={3}>
+                        <Form.Group style={{textAlign: 'left', fontSize: 'x-large'}}>
+                            <Form.Label style={{color: 'gray', textAlign: 'left', fontSize: 'x-large'}}>Equipment Model Name:</Form.Label>
+                        </Form.Group>
+                    </Col>
+                    <Col xl={2}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter Equipment Model Name here"
+                            defaultValue={model}
+                            onChange={(e) => setModel(e.target.value)}
+                        />
+                    </Col>
+                </Row>
+
+                <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
+                    <Col xl={3}>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Patient Demographic:</Form.Label>
                     </Col>
                     <Col xl={2}>
                         <select style={{fontSize: 'x-large'}} onChange={(e) => setCategory(e.target.value)} value={category}>
-                            <option key="Select Category" value="Select Category" label="Select Category"/>
+                            <option key="Select Patient Demographic" value="" label="Select Patient Demographic"/>
                             {categories.map((mappingCat) => (
                                 <option
                                     key={mappingCat}
@@ -130,11 +187,11 @@ const EditEquipment = ({id}) => {
 
                 <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
                     <Col xl={3}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Equipment Type:</Form.Label>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Clinical System:</Form.Label>
                     </Col>
                     <Col xl={2}>
                         <select style={{fontSize: 'x-large'}} onChange={(e) => setType(e.target.value)} value={type}>
-                            <option key="Select Type" value="Select Type" label="Select Type"/>
+                            <option key="Select Clinical System" value="" label="Select Clinical System"/>
                             {types.map((mappingType) => (
                                 <option
                                     key={mappingType}
@@ -149,7 +206,7 @@ const EditEquipment = ({id}) => {
 
             <Row  style={{textAlign: 'left', fontSize: 'x-large'}}>
                 <Col>
-                    <Form.Label style={{color: 'gray'}}>Additional Description:</Form.Label>
+                    <Form.Label style={{color: 'gray'}}>Page Data:</Form.Label>
                 </Col>
             </Row>
 

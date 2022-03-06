@@ -187,21 +187,31 @@ class GetData {
     return response.data;
   }
 
-  async searchByName(name, category, type) {
+  async search(name, category, type,manufacturer,model) {
     const url = URL + "equipment/search";
     const data = new FormData();
-    console.log(name);
-    if (category === "None") {
+    if(name===" "){
+      name = "";
+    }
+    if(category==="all"){
       category = "";
     }
-    if (type === "None") {
+    if(type==="all"){
       type = "";
+    }
+    if(manufacturer==="all"){
+      manufacturer = "";
+    }
+    if(model==="all"){
+      model = "";
     }
     data.append("hospitalId", getHospitalId());
     data.append("username", getUserName());
     data.append("category", category);
     data.append("type", type);
     data.append("name", name);
+    data.append("manufacturer", manufacturer);
+    data.append("model", model);
     const response = await axios.post(url, data);
     return response.data;
   }
@@ -249,6 +259,34 @@ class GetData {
   async getAllQuestions() {
     const url = URL + "question/all";
     const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllManufacturers() {
+    const url = URL + "equipment/manufacturers/all";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    const response = await axios.post(url,data);
+    return response.data;
+  }
+
+  async getAllModelsByUser() {
+    const url = URL + "equipment/models/getByUser";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    const response = await axios.post(url,data);
+    return response.data;
+  }
+
+  async getAllModelsByManufacturer(manufacturer) {
+    const url = URL + "equipment/models/getByManufacturer";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("manufacturer",manufacturer);
+    const response = await axios.post(url,data);
     return response.data;
   }
 }
