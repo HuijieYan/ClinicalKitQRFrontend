@@ -1,7 +1,6 @@
 import ButtonList from "../Component/ButtonList";
-import { FaQuestion } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.css";
-import { Button, Row } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import { logout } from "../Functions/LoginFunctions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
@@ -14,27 +13,13 @@ const IndexMain = () => {
 
   return (
     <div className="indexMain" id="mainContent">
-      <section className="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
-        <div className="container">
-          <div className="d-sm-flex align-items-center justify-content-between">
-            <div>
-              <h1>
-                <span className="text-warning"> Welcome </span>
-              </h1>
-              <p className="lead my-4">
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-              </p>
-            </div>
-            <img
-              className="img-fluid w-50 d-none d-sm-block"
-              src="../Picture/defaultProfile.png"
-              alt=""
-            />
-          </div>
-        </div>
+
+      <section className="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center ">
+        <Container>
+          <Col className="mb-3">
+          <h1>Welcome</h1>
+          </Col>
+        </Container>
       </section>
 
       <Row className="mb-3 justify-content-center">

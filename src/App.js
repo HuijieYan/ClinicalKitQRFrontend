@@ -22,6 +22,7 @@ import Reports from "./Pages/Reports";
 import HospitalTable from "./Pages/HospitalTable";
 import UserProfile from "./Pages/UserProfile";
 import FAQ from "./Pages/FAQ";
+import "./_theme.scss";
 
 //This page is responsible for matching path with pages
 function App() {

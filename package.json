@@ -20,6 +20,7 @@
     "file-saver": "^2.0.5",
     "html-react-parser": "^1.4.8",
     "jquery": "^3.6.0",
+    "node-sass": "^7.0.1",
     "react": "^17.0.2",
     "react-auth-code-input": "^3.0.0",
     "react-bootstrap": "^2.1.0",

@@ -17,9 +17,9 @@ const MenuBar = () => {
     }
 
     return (
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expand="lg" lg bg="dark" variant="dark">
             <Container fluid>
-                <Navbar.Brand href="/home">NHS neonatal Information System Icon</Navbar.Brand>
+                <Navbar.Brand href="/home">NHS Icon</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
@@ -54,7 +54,7 @@ const MenuBar = () => {
                     <Form className="d-flex">
                         <FormControl
                             type="search"
-                            placeholder="Search"
+                            placeholder="Search Equipment"
                             className="me-2"
                             aria-label="Search"
                             value={searchStr}
