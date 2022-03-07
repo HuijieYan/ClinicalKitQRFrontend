@@ -64,24 +64,30 @@ const HospitalTable = () => {
     }
 
     const columns = [
-        { name: "hospital",
+        {
+            name: "hospital",
             label: "Hospital",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
-        { name: "operation",
+
+        {
+            name: "operation",
             label: "Edit",
             options: {
+                viewColumns: false,
                 filter: false,
                 sort: false,
             }
         },
-        { name: "hospitalId",
+
+        {
+            name: "hospitalId",
             label: "Hospital ID",
             options: {
                 filterOptions: { fullWidth: true },
+                filter: false,
                 display: false,
                 viewColumns: false
             }

@@ -68,7 +68,10 @@
   "devDependencies": {
     "@mui/icons-material": "^5.2.5",
     "@mui/styles": "^5.2.3",
+    "@mui/system": "^5.4.0",
+    "html-react-parser": "^1.4.8",
     "mui-datatables": "^4.0.0",
-    "prop-types": "^15.8.0"
+    "prop-types": "^15.8.0",
+    "tinymce": "^5.10.2"
   }
 }

@@ -24,9 +24,9 @@ const IssueTable = () => {
                     name: "id",
                     label: "Issue ID",
                     options: {
-                        filterOptions: { fullWidth: true },
+                        filter: false,
                         display: false,
-                        viewColumns: false
+                        viewColumns: false,
                     }
                 },
 
@@ -35,7 +35,6 @@ const IssueTable = () => {
                     label: "Date",
                     options: {
                         filterOptions: { fullWidth: true },
-                        viewColumns: false
                     }
                 },
 
@@ -43,8 +42,7 @@ const IssueTable = () => {
                     name: "description",
                     label: "Description",
                     options: {
-                        filterOptions: { fullWidth: true },
-                        viewColumns: false
+                        filter: false,
                     }
                 },
 
@@ -53,16 +51,15 @@ const IssueTable = () => {
                     label: "Equipment",
                     options: {
                         filterOptions: { fullWidth: true },
-                        viewColumns: false
                     }
                 },
 
                 {
                     name: "hospital",
                     options: {
-                        filterOptions: { fullWidth: true },
+                        filter: false,
                         display: false,
-                        viewColumns: false
+                        viewColumns: false,
                     }
                 },
 
@@ -71,7 +68,6 @@ const IssueTable = () => {
                     label: "User Group",
                     options: {
                         filterOptions: { fullWidth: true },
-                        viewColumns: false
                     }
                 },
 
@@ -79,8 +75,8 @@ const IssueTable = () => {
                     name: "solved",
                     label: "Solved",
                     options: {
-                        filterOptions: { fullWidth: true },
-                        viewColumns: false
+                        filter: false,
+                        viewColumns: false,
                     }
                 },
             ]);
@@ -116,9 +112,9 @@ const IssueTable = () => {
             name: "id",
             label: "Issue ID",
             options: {
-                filterOptions: { fullWidth: true },
+                filter: false,
                 display: false,
-                viewColumns: false
+                viewColumns: false,
             }
         },
 
@@ -127,15 +123,13 @@ const IssueTable = () => {
             label: "Date",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
         {
             name: "description",
             label: "Description",
             options: {
-                filterOptions: { fullWidth: true },
-                viewColumns: false
+                filter: false,
             }
         },
 
@@ -144,7 +138,6 @@ const IssueTable = () => {
             label: "Equipment",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
 
@@ -152,7 +145,6 @@ const IssueTable = () => {
             name: "hospital",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
 
@@ -161,7 +153,6 @@ const IssueTable = () => {
             label: "User Group",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
 
@@ -169,8 +160,8 @@ const IssueTable = () => {
             name: "solved",
             label: "Solved",
             options: {
-                filterOptions: { fullWidth: true },
-                viewColumns: false
+                filter: false,
+                viewColumns: false,
             }
         },
     ]);

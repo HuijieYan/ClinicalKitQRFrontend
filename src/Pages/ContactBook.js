@@ -28,11 +28,11 @@ const ContactBook = () => {
                         role:group[2],
                         hospitalId:group[3],
                         email:group[4],
-                        share:  <Tooltip title={"Share Equipment"}>
+                        /*share:  <Tooltip title={"Share Equipment"}>
                                     <IconButton>
                                         <ImShare/>
                                     </IconButton>
-                                </Tooltip>
+                                </Tooltip>*/
                     });
                 }
             }
@@ -46,7 +46,7 @@ const ContactBook = () => {
             name: "name",
             label: "Name",
             options: {
-                filterOptions: { fullWidth: true },
+                filter: false,
                 display: false,
                 viewColumns: false
             }
@@ -57,7 +57,6 @@ const ContactBook = () => {
             label: "Hospital",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
         {
@@ -65,7 +64,6 @@ const ContactBook = () => {
             label: "Role",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
 
@@ -74,7 +72,6 @@ const ContactBook = () => {
             label: "Email",
             options: {
                 filterOptions: { fullWidth: true },
-                viewColumns: false
             }
         },
 
@@ -82,20 +79,20 @@ const ContactBook = () => {
             name: "hospitalId",
             label: "hospital Id",
             options: {
-                filterOptions: { fullWidth: true },
+                filter: false,
                 display: false,
-                viewColumns: false
+                viewColumns: false,
             }
         },
 
-        {
+        /*{
             name: "share",
             label: "share",
             options: {
                 filterOptions: { fullWidth: true },
                 viewColumns: false
             }
-        },
+        },*/
     ]);
 
     const options = {

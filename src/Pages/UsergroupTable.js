@@ -27,16 +27,14 @@ const UsergroupTable = () => {
           name: "name",
           label: "Group Name",
           options: {
-            filterOptions: { fullWidth: true },
-            viewColumns: false,
+            filter: false,
           },
         },
         {
           name: "username",
           label: "Username",
           options: {
-            filterOptions: { fullWidth: true },
-            viewColumns: false,
+            filter: false,
           },
         },
         {
@@ -44,14 +42,13 @@ const UsergroupTable = () => {
           label: "Role",
           options: {
             filterOptions: { fullWidth: true },
-            viewColumns: false,
           },
         },
         {
           name: "hospital",
           label: "Hospital",
           options: {
-            filterOptions: { fullWidth: true },
+            filter: false,
             display: false,
             viewColumns: false,
           },
@@ -60,15 +57,15 @@ const UsergroupTable = () => {
           name: "operation",
           label: "Edit",
           options: {
+            viewColumns: false,
             filter: false,
-            sort: false,
           },
         },
         {
           name: "hospitalId",
           label: "Hospital ID",
           options: {
-            filterOptions: { fullWidth: true },
+            filter: false,
             display: false,
             viewColumns: false,
           },
@@ -114,16 +111,14 @@ const UsergroupTable = () => {
       name: "name",
       label: "Group Name",
       options: {
-        filterOptions: { fullWidth: true },
-        viewColumns: false,
+        filter: false,
       },
     },
     {
       name: "username",
       label: "Username",
       options: {
-        filterOptions: { fullWidth: true },
-        viewColumns: false,
+        filter: false,
       },
     },
     {
@@ -131,7 +126,6 @@ const UsergroupTable = () => {
       label: "Role",
       options: {
         filterOptions: { fullWidth: true },
-        viewColumns: false,
       },
     },
     {
@@ -139,22 +133,21 @@ const UsergroupTable = () => {
       label: "Hospital",
       options: {
         filterOptions: { fullWidth: true },
-        viewColumns: false,
       },
     },
     {
       name: "operation",
       label: "Edit",
       options: {
+        viewColumns: false,
         filter: false,
-        sort: false,
       },
     },
     {
       name: "hospitalId",
       label: "Hospital ID",
       options: {
-        filterOptions: { fullWidth: true },
+        filter: false,
         display: false,
         viewColumns: false,
       },

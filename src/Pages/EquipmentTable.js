@@ -29,22 +29,20 @@ const EquipmentTable = () => {
           name: "name",
           label: "Equipment Name",
           options: {
-            filterOptions: { fullWidth: true },
-            viewColumns: false,
+            filter: false,
           },
         },
         {
           name: "id",
           label: "Equipment ID",
           options: {
-            filterOptions: { fullWidth: true },
-            viewColumns: false,
+            filter: false,
           },
         },
         {
           name: "hospital",
           options: {
-            filterOptions: { fullWidth: true },
+            filter: false,
             display: false,
             viewColumns: false,
           },
@@ -53,7 +51,8 @@ const EquipmentTable = () => {
           name: "qr",
           label: "QR Code",
           options: {
-            filterOptions: { fullWidth: true },
+            filter: false,
+            sort: false,
             viewColumns: false,
           },
         },
@@ -62,6 +61,7 @@ const EquipmentTable = () => {
           label: "Operation",
           options: {
             filter: false,
+            sort: false,
             viewColumns: false,
           },
         },
@@ -84,24 +84,25 @@ const EquipmentTable = () => {
     for (let i = 0; i < data.length; i++) {
       const equipment = data[i];
       rowsData.push({
-        name: (
-          <a
-            href={viewURL + equipment.equipmentId}
-            style={{ textDecoration: "none" }}
-          >
-            {equipment.name}
-          </a>
-        ),
+        name: equipment.name,
         id: equipment.equipmentId,
         hospital: equipment.hospitalId.hospitalName,
         qr: <a href={QRURL + equipment.equipmentId}>QR code</a>,
         operation: (
-          <a
-            href={editURL + equipment.equipmentId}
-            style={{ textDecoration: "none" }}
-          >
-            Edit
-          </a>
+            <>
+              <a
+                  href={viewURL + equipment.equipmentId}
+                  style={{ textDecoration: "none", marginRight: '8%'}}
+              >
+                View
+              </a>
+              <a
+                href={editURL + equipment.equipmentId}
+                style={{ textDecoration: "none" }}
+              >
+                Edit
+              </a>
+            </>
         ),
       });
     }
@@ -113,16 +114,14 @@ const EquipmentTable = () => {
       name: "name",
       label: "Equipment Name",
       options: {
-        filterOptions: { fullWidth: true },
-        viewColumns: false,
+        filter: false,
       },
     },
     {
       name: "id",
       label: "Equipment ID",
       options: {
-        filterOptions: { fullWidth: true },
-        viewColumns: false,
+        filter: false,
       },
     },
     {
@@ -130,23 +129,24 @@ const EquipmentTable = () => {
       label: "Hospital",
       options: {
         filterOptions: { fullWidth: true },
-        viewColumns: false,
       },
     },
     {
       name: "qr",
       label: "QR Code",
       options: {
-        filterOptions: { fullWidth: true },
+        filter: false,
+        sort: false,
         viewColumns: false,
       },
     },
     {
       name: "operation",
-      label: "Edit",
+      label: "Operation",
       options: {
         filter: false,
         sort: false,
+        viewColumns: false,
       },
     },
   ]);
