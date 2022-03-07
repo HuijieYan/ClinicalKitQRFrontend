@@ -6,11 +6,12 @@ import Uploader from "../Functions/Uploader";
 
 //This is equipment display page for user, and it contains the corresponding report modal
 
-const ViewEquipment = (props) => {
-    const {id} = props;
+const ViewEquipment = ({id}) => {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     const [category, setCategory] = useState("");
+    const [manufacturer, setManufacturer] = useState("");
+    const [model, setModel] = useState("");
     const [description, setDescription] = useState("");
     const [modalShow, setModalShow] = useState(false);
     const [issue, setIssue] = useState("");
@@ -23,6 +24,8 @@ const ViewEquipment = (props) => {
                 setType(data.type);
                 setCategory(data.category);
                 setDescription(data.content);
+                setManufacturer(data.model.manufacturer.manufacturerName)
+                setModel(data.model.modelName)
             });
         }
 
@@ -68,7 +71,12 @@ const ViewEquipment = (props) => {
                 </Modal.Footer>
             </Modal>
 
-            <EquipmentViewRender name={name} type={type} category={category} description={description}/>
+            <EquipmentViewRender name={name}
+                                 type={type}
+                                 category={category}
+                                 manufacturer={manufacturer}
+                                 model={model}
+                                 description={description}/>
         </Container>
     );
 }

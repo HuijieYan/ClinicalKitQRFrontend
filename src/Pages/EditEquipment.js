@@ -6,6 +6,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import GetData from "../Functions/GetData";
 import {useHistory} from "react-router-dom";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
+import Select from "react-select";
+import CreatableSelect from 'react-select/creatable';
 
 //This page is used for adding new equipment or edit exit equipment
 
@@ -13,16 +15,20 @@ const EditEquipment = ({id}) => {
     const [content,setContent] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [name, setName] = useState("");
-    const [type,setType] = useState("");
+
     //the clinical system of an equipment
+    const [type,setType] = useState("");
     const [types,setTypes] = useState([]);
-    const [category,setCategory] = useState("");
+
     //the patient demographic of an equipment
+    const [category,setCategory] = useState("");
     const [categories,setCategories] = useState([]);
-    const [manufacturer,setManufacturer] = useState("");
+
     //the manufacturer of the equipment
+    const [manufacturer,setManufacturer] = useState("");
     const [manufacturers,setManufacturers] = useState([]);
     const [model,setModel] = useState("");
+
     const [modalShow, setModalShow] = useState(false);
     const editorRef = useRef(null);
 
@@ -53,19 +59,30 @@ const EditEquipment = ({id}) => {
     }
 
     useEffect(() => {
-        GetData.getTypes().then((data) => {
-            setTypes(data)
+        GetData.getTypes().then((types) => {
+            let typeOptions = [{ value: "", label: "Select Clinical System" }]
+            types.map((type) => {
+                typeOptions.push({ value: type, label: type })
+            })
+            setTypes(typeOptions)
         });
 
         GetData.getCategories().then((categories)=>{
-            setCategories(categories);
+            let categoryOptions = [{ value: "", label: "Select Patient Demographic" }]
+            categories.map((category) => {
+                categoryOptions.push({ value: category, label: category })
+            })
+            setCategories(categoryOptions);
         });
 
         GetData.getAllManufacturers().then((manufacturers)=>{
-            setManufacturers(manufacturers);
+            let manufacturerOptions = [{ value: "", label: "Select Manufacturer" }]
+            manufacturers.map((manufacturer) => {
+                manufacturerOptions.push({ value: manufacturer, label: manufacturer })
+            })
+            setManufacturers(manufacturerOptions);
         });
 
-        console.log(id);
         if(id != null){
             GetData.getEquipmentById(id).then((data) => {
                 console.log(data.name);
@@ -108,22 +125,32 @@ const EditEquipment = ({id}) => {
                 if(response === "Equipment Updated Successfully"){
                     history.push("/home");
                 }
+                console.log(saveManufacturer)
+                console.log(response)
+                console.log(response.data)
                 setErrorMessage(response.data);
             });
         }
     };
 
+    function createManufacturer(e){
+        if(e.__isNew__ === true){
+            setManufacturers([...manufacturers, { value: e.value, label: e.value }])
+        }
+        setManufacturer(e.value)
+    }
+
     return (
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
             <PreviewWindow />
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
-                <Row>
-                    <Col xl={3}>
-                        <Form.Group style={{textAlign: 'left', fontSize: 'x-large'}}>
-                            <Form.Label style={{color: 'gray', textAlign: 'left', fontSize: 'x-large'}}>Equipment Name:</Form.Label>
+                <Row style={{textAlign: 'left'}}>
+                    <Col xl={3} style={{color: 'gray', fontSize: 'x-large'}}>
+                        <Form.Group>
+                            <Form.Label>Equipment Name:</Form.Label>
                         </Form.Group>
                     </Col>
-                    <Col xl={2}>
+                    <Col xl={3}>
                         <Form.Control
                             type="text"
                             placeholder="Enter Equipment Name here"
@@ -133,31 +160,27 @@ const EditEquipment = ({id}) => {
                     </Col>
                 </Row>
 
-                <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
-                    <Col xl={3}>
+                <Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    <Col xl={3} style={{fontSize: 'x-large'}}>
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Manufacturer:</Form.Label>
                     </Col>
-                    <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}} onChange={(e) => setManufacturer(e.target.value)} value={manufacturer}>
-                            <option key="Select Manufacturer" value="" label="Select Manufacturer"/>
-                            {manufacturers.map((manufacturer) => (
-                                <option
-                                    key={manufacturer}
-                                    value={manufacturer}
-                                    label={manufacturer}
-                                />
-                            ))}
-                        </select>
+                    <Col xl={3}>
+                        <CreatableSelect
+                            value={manufacturers.filter(option => option.value === manufacturer)}
+                            onChange={createManufacturer}
+                            options={manufacturers}
+                            menuPortalTarget={document.body}
+                        />
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col xl={3}>
+                <Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    <Col xl={3} style={{fontSize: 'x-large'}}>
                         <Form.Group style={{textAlign: 'left', fontSize: 'x-large'}}>
                             <Form.Label style={{color: 'gray', textAlign: 'left', fontSize: 'x-large'}}>Equipment Model Name:</Form.Label>
                         </Form.Group>
                     </Col>
-                    <Col xl={2}>
+                    <Col xl={3}>
                         <Form.Control
                             type="text"
                             placeholder="Enter Equipment Model Name here"
@@ -167,42 +190,31 @@ const EditEquipment = ({id}) => {
                     </Col>
                 </Row>
 
-                <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
-                    <Col xl={3}>
+                <Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    <Col xl={3} style={{fontSize: 'x-large'}}>
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Patient Demographic:</Form.Label>
                     </Col>
-                    <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}} onChange={(e) => setCategory(e.target.value)} value={category}>
-                            <option key="Select Patient Demographic" value="" label="Select Patient Demographic"/>
-                            {categories.map((mappingCat) => (
-                                <option
-                                    key={mappingCat}
-                                    value={mappingCat}
-                                    label={mappingCat}
-                                />
-                            ))}
-                        </select>
+                    <Col xl={3}>
+                        <Select value={categories.filter(option => option.value === category)}
+                                options={categories}
+                                onChange={(e) => setCategory(e.value)}
+                                menuPortalTarget={document.body}/>
                     </Col>
                 </Row>
 
-                <Row  style={{textAlign: 'left', fontSize: 'x-large', marginTop: '3%'}}>
-                    <Col xl={3}>
+                <Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    <Col xl={3} style={{fontSize: 'x-large'}}>
                         <Form.Label style={{color: 'gray', marginRight: '2%'}}>Clinical System:</Form.Label>
                     </Col>
-                    <Col xl={2}>
-                        <select style={{fontSize: 'x-large'}} onChange={(e) => setType(e.target.value)} value={type}>
-                            <option key="Select Clinical System" value="" label="Select Clinical System"/>
-                            {types.map((mappingType) => (
-                                <option
-                                    key={mappingType}
-                                    value={mappingType}
-                                    label={mappingType}
-                                />
-                            ))}
-                        </select>
+                    <Col xl={3}>
+                        <Select value={types.filter(option => option.value === type)}
+                                options={types}
+                                onChange={(e) => setType(e.value)}
+                                menuPortalTarget={document.body}/>
                     </Col>
                 </Row>
             </Form>
+
 
             <Row  style={{textAlign: 'left', fontSize: 'x-large'}}>
                 <Col>

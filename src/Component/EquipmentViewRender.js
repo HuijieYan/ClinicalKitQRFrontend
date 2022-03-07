@@ -1,7 +1,7 @@
 import {Accordion, Form, Row} from "react-bootstrap";
 
 
-const EquipmentViewRender = ({name, type, category, description}) => {
+const EquipmentViewRender = ({name, type, category, manufacturer, model, description}) => {
     const content = parseContent(description);
 
     function parseContent(description){
@@ -14,13 +14,20 @@ const EquipmentViewRender = ({name, type, category, description}) => {
         for (let i = 0; i < tabNum; i++) {
             const tabHeader = tabs[0].getElementsByClassName('tabHeader');
             let headerTag = [];
-            headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
-            tabs[0].removeChild(tabHeader[0]);
-            tabs[0].removeChild(tabHeader[0]);
-            tabs[0].removeChild(tabHeader[0]);
+
+            if(tabHeader.length === 3){
+                headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
+            }
+
+            const headerLength = tabHeader.length;
+            for(let index = 0; index < headerLength; index++){
+                tabs[0].removeChild(tabHeader[0])
+            }
+
             let bodyTag = [];
             bodyTag.push(<Accordion.Body>{parse(tabs[0].innerHTML)}</Accordion.Body>);
             content.push(<Accordion.Item eventKey={i+1}>{headerTag}{bodyTag}</Accordion.Item>);
+
             tmp.removeChild(tabs[0]);
         }
         content.push(
@@ -44,6 +51,14 @@ const EquipmentViewRender = ({name, type, category, description}) => {
 
             <Row>
                 <Form.Label style={{color: 'gray'}}>Equipment Category: {category}</Form.Label>
+            </Row>
+
+            <Row>
+                <Form.Label style={{color: 'gray'}}>Manufacturer: {manufacturer}</Form.Label>
+            </Row>
+
+            <Row>
+                <Form.Label style={{color: 'gray'}}>Equipment Model: {model}</Form.Label>
             </Row>
 
             <Accordion alwaysOpen>

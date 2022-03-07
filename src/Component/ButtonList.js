@@ -6,6 +6,8 @@ import { HiOutlineDocumentReport } from "react-icons/hi";
 import "./HomePageActionCards.css";
 import {getLevel} from "../Functions/UserStatus";
 import {FaRegHospital} from "react-icons/fa";
+import {FaSearch} from "react-icons/fa";
+import {FaQuestion} from "react-icons/fa";
 
 const ButtonList = () => {
   const history = useHistory();
@@ -28,6 +30,23 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+
+          <div className="col-md">
+            <div
+                className="card bg-dark d-flex text-light h-100 "
+                onClick={() => history.push("/search")}
+            >
+              <div className="card-body justify-content-center d-flex align-items-center">
+                <div>
+                  <div className="h1 mb-3">
+                    <FaSearch />
+                  </div>
+                  <h3 className="card-title mb-3">Search Equipment</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {parseInt(getLevel()) === 3 &&
             <div className="col-md">
               <div
@@ -61,6 +80,7 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
@@ -76,6 +96,7 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
@@ -91,6 +112,7 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
@@ -108,12 +130,31 @@ const ButtonList = () => {
           </div>
 
           <div className="col-md">
-            <div className="card bg-dark text-light h-100" onClick={() => history.push("/reports")}>
+            <div
+                className="card bg-dark text-light h-100"
+                onClick={() => history.push("/reports")}
+            >
               <div className="card-body text-center">
                 <div className="h1 mb-3">
                   <HiOutlineDocumentReport />
                 </div>
                 <h3 className="card-title mb-3">Produce Report</h3>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md">
+            <div
+                className="card bg-dark d-flex text-light h-100 "
+                onClick={() => history.push("/faq")}
+            >
+              <div className="card-body justify-content-center d-flex align-items-center">
+                <div>
+                  <div className="h1 mb-3">
+                    <FaQuestion />
+                  </div>
+                  <h3 className="card-title mb-3">FAQs</h3>
+                </div>
               </div>
             </div>
           </div>
