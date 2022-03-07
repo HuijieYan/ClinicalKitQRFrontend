@@ -29,9 +29,7 @@ const SearchResult = ({name,category,type,manufacturer,model}) => {
                 {results.length>0?
                     results.map((equipment)=>{
                     return(
-                        <ListItem key={equipment.id} secondaryAction={
-                            <Button edge="end" onClick={(e)=>{handleOpen(equipment.equipmentId)}}>OPEN</Button>
-                        } disablePadding>
+                        <ListItem key={equipment.id} onClick={(e)=> {handleOpen(equipment.equipmentId)}} disablePadding>
                             <ListItemButton>
                                 <ListItemIcon>
                                     <ArticleIcon/>
