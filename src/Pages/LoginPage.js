@@ -8,7 +8,6 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.css";
 import { useEffect, useState } from "react";
 import {
   setLevel,

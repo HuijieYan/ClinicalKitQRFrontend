@@ -1,5 +1,4 @@
 import ButtonList from "../Component/ButtonList";
-import "bootstrap/dist/css/bootstrap.css";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { logout } from "../Functions/LoginFunctions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";

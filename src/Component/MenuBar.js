@@ -1,5 +1,5 @@
 import defaultProfile from "../Picture/defaultProfile.png";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './MenuBar.css';
 import { Container, Form, FormControl, Button, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
