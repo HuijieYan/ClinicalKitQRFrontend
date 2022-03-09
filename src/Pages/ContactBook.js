@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 import GetData from "../Functions/GetData";
-import { IconButton, Tooltip } from "@mui/material";
 import { getUserName } from "../Functions/UserStatus";
-import {ImShare} from 'react-icons/im';
 
 //ContactBook is a table contains some of user's data for contacting user
 
@@ -28,11 +26,6 @@ const ContactBook = () => {
                         role:group[2],
                         hospitalId:group[3],
                         email:group[4],
-                        /*share:  <Tooltip title={"Share Equipment"}>
-                                    <IconButton>
-                                        <ImShare/>
-                                    </IconButton>
-                                </Tooltip>*/
                     });
                 }
             }
@@ -84,15 +77,6 @@ const ContactBook = () => {
                 viewColumns: false,
             }
         },
-
-        /*{
-            name: "share",
-            label: "share",
-            options: {
-                filterOptions: { fullWidth: true },
-                viewColumns: false
-            }
-        },*/
     ]);
 
     const options = {

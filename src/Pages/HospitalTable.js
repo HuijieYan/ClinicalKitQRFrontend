@@ -108,10 +108,9 @@ const HospitalTable = () => {
 
     function deleting(){
         const rowLs = rows;
-        for (let i = 0;i<selected.length;i++){
-            const index = selected[i];
+        for (let i = 0; i < selected.length; i++){
+            const index = selected[i] - i;
             DeleteData.deleteHospital(rows[index].hospitalId);
-
             rowLs.splice(index,1);
         }
         setRows(rowLs);
@@ -123,7 +122,6 @@ const HospitalTable = () => {
         height: "100%",
         jumpToPage: true,
         onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
-            console.log(rowsSelected);
             setSelected(rowsSelected);
         },
         onRowsDelete:function(){

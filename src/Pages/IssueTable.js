@@ -176,8 +176,8 @@ const IssueTable = () => {
         onRowsDelete:function(){
             const rowLs = rows;
             for (let i = 0;i<selected.length;i++){
-                const index = selected[i];
-                DeleteData.deleteIssue(rowLs[index]);
+                const index = selected[i] - i;
+                DeleteData.deleteIssue(rowLs[index].id);
                 rowLs.splice(index,1);
                 solvedLs.splice(index,1);
             }

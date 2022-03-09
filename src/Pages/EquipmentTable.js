@@ -180,7 +180,7 @@ const EquipmentTable = () => {
     onRowsDelete: function () {
       const rowLs = rows;
       for (let i = 0; i < selected.length; i++) {
-        const index = selected[i];
+        const index = selected[i] - i;
         DeleteData.deleteEquipment(rowLs[index].id);
         rowLs.splice(index, 1);
       }

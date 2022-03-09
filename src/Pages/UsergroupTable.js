@@ -185,11 +185,8 @@ const UsergroupTable = () => {
     onRowsDelete: function () {
       const rowLs = rows;
       for (let i = 0; i < selected.length; i++) {
-        const index = selected[i];
-        DeleteData.deleteUsergroup(
-          rowLs[index].hospitalId,
-          rowLs[index].username
-        );
+        const index = selected[i] - i;
+        DeleteData.deleteUsergroup(rowLs[index].hospitalId, rowLs[index].username);
         rowLs.splice(index, 1);
       }
       setRows(rowLs);
