@@ -6,6 +6,7 @@ import {Box} from "@mui/system";
 import {Button, Divider, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
 import {FormGroup, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
+import MessageModal from "../Component/MessageModal";
 
 //FAQ page, built in modal for edit
 
@@ -19,6 +20,9 @@ const FAQ = () => {
     const [currentQuestion, setCurrentQuestion] = useState({});
     const userLevel = parseInt(getLevel());
 
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
+
     useEffect(()=>{
         GetData.getAllQuestions().then((data) => {
             setQuestions(data);
@@ -27,12 +31,14 @@ const FAQ = () => {
     }, []);
 
     function addQuestion(){
-        Uploader.addNewQuestion(question, answer);
-        cancelAdd();
-        window.location.reload();
+        if(isValidQuestion()) {
+            Uploader.addNewQuestion(question, answer);
+            resetAdd();
+            window.location.reload();
+        }
     }
 
-    function cancelAdd(){
+    function resetAdd(){
         setShowAddQuestion(false);
         setQuestion("");
         setAnswer("");
@@ -50,7 +56,7 @@ const FAQ = () => {
         setCurrentQuestion(question);
     }
 
-    function cancelEdit(){
+    function resetEdit(){
         setShowEditQuestion(false);
         setCurrentQuestion({});
         setQuestion("");
@@ -58,16 +64,33 @@ const FAQ = () => {
     }
 
     function updateQuestion(){
-        Uploader.updateQuestion(currentQuestion.id, question, answer);
-        cancelEdit();
-        window.location.reload();
+        if(isValidQuestion()){
+            Uploader.updateQuestion(currentQuestion.id, question, answer);
+            resetEdit();
+            window.location.reload();
+        }
+    }
+
+    function isValidQuestion(){
+        if(question === ""){
+            setShowMessage(true);
+            setMessage("Error: Question is empty");
+            return false;
+        }else if(answer === ""){
+            setShowMessage(true);
+            setMessage("Error: Answer is empty");
+            return false;
+        }
+        return true;
     }
 
     return(
         <Box sx={{borderStyle: 'solid', margin: '1%', borderWidth: '1px', padding: '2%'}}>
+            <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
             <Modal
                 show={showAddQuestion}
-                onHide={cancelAdd}
+                onHide={resetAdd}
                 size="lg"
                 centered
             >
@@ -92,13 +115,13 @@ const FAQ = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={addQuestion}>Submit</Button>
-                    <Button onClick={cancelAdd}>Close</Button>
+                    <Button onClick={resetAdd}>Close</Button>
                 </Modal.Footer>
             </Modal>
 
             <Modal
                 show={showEditQuestion}
-                onHide={cancelEdit}
+                onHide={resetEdit}
                 size="lg"
                 centered
             >
@@ -125,7 +148,7 @@ const FAQ = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={updateQuestion}>Update</Button>
-                    <Button onClick={cancelEdit}>Close</Button>
+                    <Button onClick={resetEdit}>Close</Button>
                 </Modal.Footer>
             </Modal>
 

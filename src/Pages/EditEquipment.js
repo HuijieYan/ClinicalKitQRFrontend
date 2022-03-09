@@ -8,12 +8,12 @@ import {useHistory} from "react-router-dom";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
+import MessageModal from "../Component/MessageModal";
 
 //This page is used for adding new equipment or edit exit equipment
 
 const EditEquipment = ({id}) => {
     const [content,setContent] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [name, setName] = useState("");
 
     //the clinical system of an equipment
@@ -31,6 +31,9 @@ const EditEquipment = ({id}) => {
 
     const [modalShow, setModalShow] = useState(false);
     const editorRef = useRef(null);
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
 
     function PreviewWindow() {
         return (
@@ -99,13 +102,19 @@ const EditEquipment = ({id}) => {
     const history = useHistory();
     const log = () => {
         if(category === ""){
-            setErrorMessage("Error: Patient demographic not selected");
+            setShowMessage(true);
+            setMessage("Error: Patient demographic not selected");
+            return;
+        }else if(type === ""){
+            setShowMessage(true);
+            setMessage("Error: Clinical system not selected");
+            return;
+        }else if(manufacturer === ""){
+            setShowMessage(true);
+            setMessage("Error: Manufacturer not selected");
             return;
         }
-        if(type === ""){
-            setErrorMessage("Error: Clinical system not selected");
-            return;
-        }
+
         const saveName = name;
         const saveType = type;
         const saveCategory = category;
@@ -115,20 +124,21 @@ const EditEquipment = ({id}) => {
 
         if (id == null){
             Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
-                if(response === "Equipment Saved Successfully"){
+                if(response === ""){
                     history.push("/home");
+                }else{
+                    setShowMessage(true);
+                    setMessage(response.data);
                 }
-                setErrorMessage(response.data);
             });
         }else{
             Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
-                if(response === "Equipment Updated Successfully"){
+                if(response === ""){
                     history.push("/home");
+                }else{
+                    setShowMessage(true);
+                    setMessage(response.data);
                 }
-                console.log(saveManufacturer)
-                console.log(response)
-                console.log(response.data)
-                setErrorMessage(response.data);
             });
         }
     };
@@ -142,6 +152,7 @@ const EditEquipment = ({id}) => {
 
     return (
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
+            <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
             <PreviewWindow />
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
                 <Row style={{textAlign: 'left'}}>
@@ -363,8 +374,6 @@ const EditEquipment = ({id}) => {
             />
 
             <Button style={{marginTop: "3%", marginBottom: "1%"}} onClick={log}>Save</Button>
-
-            <p>{errorMessage}</p>
         </Container>
     );
 }

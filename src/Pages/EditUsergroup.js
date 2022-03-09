@@ -1,9 +1,10 @@
 import { Checkbox, FormControlLabel } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
+import MessageModal from "../Component/MessageModal";
 
 const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   const [name, setName] = useState("");
@@ -15,7 +16,9 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   const [specialty, setSpecialty] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [trustHospitalId, setTrustHospitalId] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const level = parseInt(getLevel());
@@ -54,7 +57,14 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
         password,
         email,
         specialty
-      );
+      ).then((response) => {
+          if(response === ""){
+              window.location.reload();
+          }else{
+              setShowMessage(true);
+              setMessage(response.data);
+          }
+      });
     }
   }
 
@@ -67,6 +77,8 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
 
   return (
     <div>
+      <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
       {hospitals.length > 1 && (
         <Form>
           <Form.Label>Hostpital</Form.Label>
@@ -162,7 +174,6 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
       <Button id="submitButton" type="submit" onClick={() => submit()}>
         Submit
       </Button>
-      <span>{errorMessage}</span>
     </div>
   );
 };

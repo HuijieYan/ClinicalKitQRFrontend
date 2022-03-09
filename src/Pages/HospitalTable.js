@@ -10,6 +10,7 @@ import { getLevel, getTrustId } from "../Functions/UserStatus";
 import {Button, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
 import Uploader from "../Functions/Uploader";
+import MessageModal from "../Component/MessageModal";
 
 //Hospital Table is a table contains hospital data and it's corresponding operations
 
@@ -22,6 +23,9 @@ const HospitalTable = () => {
     const [selectedId, setSelectedId] = useState(-1);
     const [placeHolder, setPlaceHolder] = useState("");
     const [name, setName] = useState("");
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
     //array of indexes of selected rows
 
     useEffect(()=>{
@@ -39,6 +43,7 @@ const HospitalTable = () => {
                                 onClick={
                                     (e) => {e.preventDefault();
                                     setPlaceHolder(hospital.hospitalName);
+                                    setName(hospital.hospitalName);
                                     setModalShow(true);
                                     setSelectedId(hospital.hospitalId)}
                                 }>
@@ -55,6 +60,12 @@ const HospitalTable = () => {
     //renders only once for fetching selection options
 
     function submitHospital(){
+        if(name === ""){
+            setShowMessage(true);
+            setMessage("Error: Hospital Name is empty");
+            return;
+        }
+
         if(selectedId !== -1){
             Uploader.updateHospital(selectedId,name);
         }else {
@@ -131,11 +142,17 @@ const HospitalTable = () => {
         customToolbar: customToolbar,
     };
 
+    function handleClose(){
+        setModalShow(false);
+        setName("");
+    }
+
     return (
         <ThemeProvider theme={createTheme()}>
+            <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
             <Modal
                 show={modalShow}
-                onHide={() => setModalShow(false)}
+                onHide={handleClose}
                 size="lg"
                 centered
             >
@@ -150,8 +167,8 @@ const HospitalTable = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {submitHospital(); setModalShow(false)}}>Submit</Button>
-                    <Button onClick={() => setModalShow(false)}>Close</Button>
+                    <Button onClick={() => {submitHospital(); handleClose();}}>Submit</Button>
+                    <Button onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
 

@@ -6,6 +6,7 @@ import {logout} from "../Functions/LoginFunctions";
 import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 import DeleteData from "../Functions/DeleteData";
+import MessageModal from "../Component/MessageModal";
 
 //User Profile is used for edit the user group information and trust information, only used by admins
 
@@ -14,9 +15,8 @@ const UserProfile = () => {
     const [showGroupDeletion, setShowGroupDeletion] = useState(false);
     const [showTrustEditor, setShowTrustEditor] = useState(false);
     const [showDeleteTrust, setShowDeleteTrust] = useState(false);
-    const [show,setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const [message,setMessage] = useState("");
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
     const [currentData,setCurrentData] = useState({
         trust: "",
         hospital: "",
@@ -39,7 +39,6 @@ const UserProfile = () => {
         email: "",
         specialty: "",
     });
-    const [errorMessage, setErrorMessage] = useState("");
     const history = useHistory();
 
     useEffect(()=>{
@@ -66,8 +65,8 @@ const UserProfile = () => {
     },[]);
 
     function updateUsergroup(){
-        Uploader.updateUsergroup(getHospitalId(),getUserName(),updateData.name,updateData.password,updateData.email,updateData.specialty).then((succeed)=>{
-            if(succeed){
+        Uploader.updateUsergroup(getHospitalId(),getUserName(),updateData.name,updateData.password,updateData.email,updateData.specialty).then((response)=>{
+            if(response === ""){
                 setShowGroupEditor(false);
                 setCurrentData(prevState => ({
                     ...prevState,
@@ -77,38 +76,45 @@ const UserProfile = () => {
                     specialty: updateData.specialty,
                 }));
             }else{
-                setShow(true);
-                setMessage("Error occurred, changes not saved");
+                setShowMessage(true);
+                setMessage(response.data);
             }
         });
     }
 
     function deleteUsergroup(){
-        DeleteData.deleteUsergroup(getHospitalId(), getUserName());
-        logout();
+        DeleteData.deleteUsergroup(getHospitalId(), getUserName()).then((response)=>{
+            if (response === ""){
+                logout();
+                history.push("/login");
+            }else{
+                setShowMessage(true);
+                setMessage(response.data);
+            }
+        });
     }
 
     function addTrust(){
         //post newTrustData
-        Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((succeed)=>{
-            if(succeed){
+        Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((response)=>{
+            if(response === ""){
                 setShowGroupEditor(false);
             }else{
-                setShow(true);
-                setMessage("Error occurred, changes not saved");
+                setShowMessage(true);
+                setMessage(response.data);
             }
         });
     }
 
     function deleteTrust(){
         //delete trust by id
-        DeleteData.deleteTrust(getTrustId()).then((succeed)=>{
-            if (succeed){
+        DeleteData.deleteTrust(getTrustId()).then((response)=>{
+            if (response === ""){
                 logout();
                 history.push("/login");
             }else{
-                setShow(true);
-                setMessage("Error occurred, Trust not deleted");
+                setShowMessage(true);
+                setMessage(response.data);
             }
         });
     }
@@ -131,13 +137,7 @@ const UserProfile = () => {
 
     return(
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>Message</Modal.Header>
-                <Modal.Body>{message}</Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={handleClose}>Close</Button>
-                </Modal.Footer>
-            </Modal>`
+            <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
 
             <Modal
                 show={showGroupEditor}
@@ -396,7 +396,6 @@ const UserProfile = () => {
                         </Col>
                     </>
                     }
-                    <Form.Label style={{color: 'red', margin: '2%'}}>{errorMessage}</Form.Label>
                 </Row>
             </Form>
         </Container>

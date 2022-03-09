@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import GetData from "../Functions/GetData";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 import Uploader from "../Functions/Uploader";
+import MessageModal from "../Component/MessageModal";
 
 //This is equipment display page for user, and it contains the corresponding report modal
 
@@ -16,6 +17,8 @@ const ViewEquipment = ({id}) => {
     const [modalShow, setModalShow] = useState(false);
     const [issue, setIssue] = useState("");
 
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         if(id !== null){
@@ -32,14 +35,18 @@ const ViewEquipment = ({id}) => {
     }, []);
 
     function submitIssue() {
-        if(issue.length===0){
-            return;
-        }
-        Uploader.submitIssue(issue,id);
+        Uploader.submitIssue(issue,id).then((response) => {
+            if(response !== ""){
+                setShowMessage(true);
+                setMessage(response.data);
+            }
+        })
     }
 
     return(
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", paddingTop: '1%', borderColor: "grey", textAlign: 'left', fontSize: 'x-large'}}>
+            <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
             <Button variant="primary" style={{float: 'right'}} onClick={() => setModalShow(true)}>Report Issue</Button>
 
             <Modal
