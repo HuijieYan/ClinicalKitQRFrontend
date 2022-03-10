@@ -16,6 +16,7 @@ import { Button, Modal, Row, Col, Tabs, Tab } from "react-bootstrap";
 import { createGraphData } from "../../Functions/ReportFunctions";
 import BarChart from "./BarChart";
 import PieChart from "./PieChart";
+import { Typography } from "@mui/material";
 
 const EquipmentReportsTab = () => {
   const [tableBodyHeight] = useState("100%");
@@ -203,14 +204,14 @@ const EquipmentReportsTab = () => {
       </Row>
       <Tabs defaultActiveKey={"barChart"}>
         <Tab eventKey={"barChart"} title="Bar Chart">
-          {graphData.datasets[0].data.length !== 0 && (
+          {graphData.datasets[0].data.length !== 0 ? (
             <BarChart data={graphData} />
-          )}
+          ):<Typography>No data found on the selected date of this equipment</Typography>}
         </Tab>
         <Tab eventKey={"pieChart"} title="Pie Chart">
-          {graphData.datasets[0].data.length !== 0 && (
+          {graphData.datasets[0].data.length !== 0 ? (
             <PieChart data={graphData} />
-          )}
+          ):<Typography>No data found on the selected date of this equipment</Typography>}
         </Tab>
       </Tabs>
 

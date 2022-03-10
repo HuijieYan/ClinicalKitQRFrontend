@@ -11,11 +11,18 @@ import {FaQuestion} from "react-icons/fa";
 
 const ButtonList = () => {
   const history = useHistory();
+  const level = parseInt(getLevel());
+  //level 3 (trust admins) can access everything
+  //level 2 (hospital admins) cannot access hospital section
+  //level 1 (normal user) can only access search equipment and FAQ
+
   return (
     <section className="p-5">
       <div className="container">
         <div className="row text-center g-4">
-          <div className="col-md">
+
+          {level >= 2 &&
+            <div className="col-md">
             <div
               className="card bg-dark d-flex text-light h-100 "
               onClick={() => history.push("/equipmentTable")}
@@ -30,6 +37,7 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+          }
 
           <div className="col-md">
             <div
@@ -47,7 +55,7 @@ const ButtonList = () => {
             </div>
           </div>
 
-          {parseInt(getLevel()) === 3 &&
+          {level === 3 &&
             <div className="col-md">
               <div
                   className="card bg-dark d-flex text-light h-100 "
@@ -65,6 +73,8 @@ const ButtonList = () => {
             </div>
           }
 
+          {
+          level >= 2 && 
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
@@ -80,23 +90,29 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
-
+          }
+          
+          {
+          level >= 2 && 
           <div className="col-md">
-            <div
-              className="card bg-dark text-light h-100"
-              onClick={() => history.push("/issueTable")}
-            >
-              <div className="card-body justify-content-center d-flex align-items-center">
-                <div>
-                  <div className="h1 mb-3">
-                    <GoReport />
-                  </div>
-                  <h3 className="card-title mb-3">Reported Issues</h3>
+          <div
+            className="card bg-dark text-light h-100"
+            onClick={() => history.push("/issueTable")}
+          >
+            <div className="card-body justify-content-center d-flex align-items-center">
+              <div>
+                <div className="h1 mb-3">
+                  <GoReport />
                 </div>
+                <h3 className="card-title mb-3">Reported Issues</h3>
               </div>
             </div>
           </div>
-
+        </div>
+          }
+          
+          {
+          level>= 2 && 
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
@@ -112,7 +128,10 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
-
+          }
+          
+          {
+          level>= 2 && 
           <div className="col-md">
             <div
               className="card bg-dark text-light h-100"
@@ -128,7 +147,10 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+          }
 
+          {
+          level>= 2 && 
           <div className="col-md">
             <div
                 className="card bg-dark text-light h-100"
@@ -142,6 +164,9 @@ const ButtonList = () => {
               </div>
             </div>
           </div>
+          } 
+
+          
 
           <div className="col-md">
             <div

@@ -77,6 +77,5 @@ const InboxSideBar = () => {
     </>
   );
 };
-//<InboxNewShareModal show={showModal} onHide={() => setModalShow(false)} />
 
 export default InboxSideBar;

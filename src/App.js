@@ -43,11 +43,11 @@ function App() {
               <div>
                 <MenuBar />
                 <Switch>
-                  <GuardedRoute component={<IndexMain />} path="/home" />
+                  <GuardedRoute component={<IndexMain />} path="/home" requireLevel={1} />
 
-                  <GuardedRoute component={<FAQ />} path="/faq" />
+                  <GuardedRoute component={<FAQ />} path="/faq" requireLevel={1} />
 
-                  <GuardedRoute component={<UserProfile />} path="/user" />
+                  <GuardedRoute component={<UserProfile />} path="/user" requireLevel={1} />
 
                   <GuardedRoute
                     render={(props) => {
@@ -60,29 +60,34 @@ function App() {
                     }}
                     path="/editUserGroup/username=:username/hospitalId=:hospitalId"
                     component={null}
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
                     component={<EditUsergroup />}
                     path="/editUserGroup"
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
                     component={<EquipmentTable />}
                     path="/equipmentTable"
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
                     component={<UsergroupTable />}
                     path="/usergroupTable"
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
                     component={<HospitalTable />}
                     path="/hospitalTable"
+                    requireLevel={3}
                   />
 
-                  <GuardedRoute component={<IssueTable />} path="/issueTable" />
+                  <GuardedRoute component={<IssueTable />} path="/issueTable" requireLevel={2}/>
 
                   <GuardedRoute
                     render={(props) => {
@@ -90,21 +95,24 @@ function App() {
                     }}
                     path="/editEquipment/id=:id"
                     component={null}
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
                     component={<EditEquipment />}
                     path="/editEquipment"
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
                     component={<ContactBook />}
                     path="/contactBook"
+                    requireLevel={2}
                   />
 
-                  <GuardedRoute component={<Inbox />} path="/inbox" />
+                  <GuardedRoute component={<Inbox />} path="/inbox" requireLevel={2}/>
 
-                  <GuardedRoute component={<Reports />} path="/reports" />
+                  <GuardedRoute component={<Reports />} path="/reports" requireLevel={2}/>
 
                   <GuardedRoute
                     render={(props) => {
@@ -112,6 +120,7 @@ function App() {
                     }}
                     path="/equipment/qrcode/id=:id"
                     component={null}
+                    requireLevel={2}
                   />
 
                   <GuardedRoute
@@ -120,6 +129,7 @@ function App() {
                     }}
                     path="/viewEquipment/id=:id"
                     component={null}
+                    requireLevel={1}
                   />
 
                   <GuardedRoute
@@ -128,9 +138,10 @@ function App() {
                     }}
                     path="/previewEquipment/id=:id"
                     component={null}
+                    requireLevel={2}
                   />
 
-                  <GuardedRoute component={<SearchPage />} path="/search" />
+                  <GuardedRoute component={<SearchPage />} path="/search" requireLevel={1}/>
 
                   <GuardedRoute
                     render={(props) => {
@@ -146,6 +157,7 @@ function App() {
                     }}
                     path={"/result/name=:name/category=:category/type=:type/manufacturer=:manufacturer/model=:model"}
                     component={null}
+                    requireLevel={1}
                   />
                 </Switch>
               </div>
