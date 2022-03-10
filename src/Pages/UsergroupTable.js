@@ -7,7 +7,7 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import { useHistory } from "react-router-dom";
-import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
+import { getHospitalId, getLevel, getTrustId, getUserName } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
 
 //User Group table display information about user, and corresponding operations
@@ -87,21 +87,23 @@ const UsergroupTable = () => {
     const rowsData = [];
     for (let i = 0; i < data.length; i++) {
       const group = data[i];
-      rowsData.push({
-        name: group[0],
-        username: group[1],
-        role: group[2],
-        hospital: group[3],
-        operation: (
-          <a
-            href={editURL + group[1] + "/hospitalId=" + group[4]}
-            style={{ textDecoration: "none" }}
-          >
-            Edit
-          </a>
-        ),
-        hospitalId: group[4],
-      });
+      if(group[1]!==getUserName()||group[4]!==getHospitalId()){
+        rowsData.push({
+          name: group[0],
+          username: group[1],
+          role: group[2],
+          hospital: group[3],
+          operation: (
+            <a
+              href={editURL + group[1] + "/hospitalId=" + group[4]}
+              style={{ textDecoration: "none" }}
+            >
+              Edit
+            </a>
+          ),
+          hospitalId: group[4],
+        });
+      }
     }
     setRows(rowsData);
   }

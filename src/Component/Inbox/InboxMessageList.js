@@ -57,11 +57,18 @@ const InboxMessageList = memo(({selected,clicked}) => {
         for (let i = 0;i<data.length;i++){
             const mail = data[i][0];
             const sender = data[i][1];
-            let senderinfo = sender.name;
-            const descriptionSlice = String(mail.description).substring(0, 48);
-            if (sender.specialty !== null){
-                senderinfo = sender.name + "-"+sender.specialty.specialty;
+            var senderinfo = "";
+            if(sender === null){
+                senderinfo = "Deleted User";
+            }else{
+                senderinfo = sender.name;
+                if (sender.specialty !== null){
+                    senderinfo = sender.name + "-"+sender.specialty.specialty;
+                }
             }
+            
+            const descriptionSlice = String(mail.description).substring(0, 48);
+           
             rows.push(
                 <ListItem alignItems="flex-start" key={i}>
                 <ListItemButton key={i} onClick={()=>{handleOpenMail(i)}}>
