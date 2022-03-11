@@ -107,7 +107,7 @@ const EditEquipment = ({id}) => {
 
         if (id == null){
             Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
-                if(response === "Equipment Updated Successfully"){
+                if(response === "Equipment Saved Successfully"){
                     history.push("/equipmentTable");
                 }else{
                     setShowMessage(true);
