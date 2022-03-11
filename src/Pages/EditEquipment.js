@@ -1,19 +1,19 @@
-import {Form, Container, Button, Row, Col, Modal} from "react-bootstrap";
-import { Editor } from '@tinymce/tinymce-react';
-import React, {useEffect, useRef, useState} from "react";
+import {Form, Container, Row, Col, Modal, Accordion, Card, useAccordionButton} from "react-bootstrap";
+import {useEffect, useState} from "react";
 import Uploader from "../Functions/Uploader";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GetData from "../Functions/GetData";
 import {useHistory} from "react-router-dom";
-import EquipmentViewRender from "../Component/EquipmentViewRender";
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import MessageModal from "../Component/MessageModal";
+import EquipmentEditor from "../Component/EquipmentEditor";
+import {Button} from "@mui/material";
+import EquipmentViewRender from "../Component/EquipmentViewRender";
 
 //This page is used for adding new equipment or edit exit equipment
 
 const EditEquipment = ({id}) => {
-    const [content,setContent] = useState("");
     const [name, setName] = useState("");
 
     //the clinical system of an equipment
@@ -29,37 +29,17 @@ const EditEquipment = ({id}) => {
     const [manufacturers,setManufacturers] = useState([]);
     const [model,setModel] = useState("");
 
-    const [modalShow, setModalShow] = useState(false);
-    const editorRef = useRef(null);
-
     const [showMessage, setShowMessage] = useState(false);
     const [message, setMessage] = useState("");
 
-    function PreviewWindow() {
-        return (
-            <Modal
-                show={modalShow}
-                onHide={() => setModalShow(false)}
-                size="lg"
-                scrollable={true}
-                centered
-            >
-                <Modal.Header closeButton/>
-                <Modal.Body>
-                    <EquipmentViewRender name={name} type={type} category={category} description={content}/>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={() => setModalShow(false)}>Close</Button>
-                </Modal.Footer>
-            </Modal>
-        );
-    }
+    const [tabNames, setTabNames] = useState( ["Announcement"]);
+    const [tabContents, setTabContents] = useState( ["<p>Enter announcement here.</p>"]);
 
-    function image_upload_handler (blobInfo, success, failure, progress) {
-        return Uploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
-            return success(responese.location);
-        });
-    }
+    const [showPreview, setShowPreview] = useState(false);
+
+    const [showAddTab, setShowAddTab] = useState(false);
+    const [tabName, setTabName] = useState("");
+    const [currentTab, setCurrentTab] = useState("");
 
     useEffect(() => {
         GetData.getTypes().then((types) => {
@@ -88,19 +68,22 @@ const EditEquipment = ({id}) => {
 
         if(id != null){
             GetData.getEquipmentById(id).then((data) => {
-                console.log(data.name);
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);
-                setContent(data.content);
+
+                const tabs = JSON.parse(data.content);
+                setTabNames(Object.keys(tabs));
+                setTabContents(Object.values(tabs));
+
                 setModel(data.model.modelName);
                 setManufacturer(data.model.manufacturer.manufacturerName);
             })
         }
-    }, [id]);
+    }, []);
 
     const history = useHistory();
-    const log = () => {
+    function save(){
         if(category === ""){
             setShowMessage(true);
             setMessage("Error: Patient demographic not selected");
@@ -118,14 +101,14 @@ const EditEquipment = ({id}) => {
         const saveName = name;
         const saveType = type;
         const saveCategory = category;
-        const saveDescription = editorRef.current.getContent();
+        const saveDescription = JSON.stringify(descriptionToJSON());
         const saveManufacturer = manufacturer;
         const saveModel = model;
 
         if (id == null){
             Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
-                if(response === ""){
-                    history.push("/home");
+                if(response === "Equipment Updated Successfully"){
+                    history.push("/equipmentTable");
                 }else{
                     setShowMessage(true);
                     setMessage(response.data);
@@ -133,15 +116,21 @@ const EditEquipment = ({id}) => {
             });
         }else{
             Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
-                if(response === ""){
-                    history.push("/home");
+                if(response === "Equipment Updated Successfully"){
+                    history.push("/equipmentTable");
                 }else{
                     setShowMessage(true);
                     setMessage(response.data);
                 }
             });
         }
-    };
+    }
+
+    function descriptionToJSON(){
+        let saveDescription = {};
+        tabNames.map((key, index) => saveDescription[key] = tabContents[index]);
+        return saveDescription;
+    }
 
     function createManufacturer(e){
         if(e.__isNew__ === true){
@@ -150,10 +139,89 @@ const EditEquipment = ({id}) => {
         setManufacturer(e.value)
     }
 
+
+    function CustomAccordionBar({ children, eventKey }) {
+        const decoratedOnClick = useAccordionButton(eventKey);
+
+        return (
+            <>
+                <Form.Label style={{float: 'left'}}>{children}</Form.Label>
+                <Form.Group style={{textAlign: 'right'}}>
+                    <Button onClick={() => {setShowAddTab(true); setCurrentTab(children)}}>Rename</Button>
+                    <Button onClick={() => deleteTab(children)}>Delete</Button>
+                    <Button onClick={decoratedOnClick} >Open</Button>
+                </Form.Group>
+            </>
+        );
+    }
+
+    function resetTabModal(){
+        setShowAddTab(false);
+        setTabName("");
+        setCurrentTab("");
+    }
+
+    function deleteTab(tabName){
+        const index = tabNames.indexOf(tabName);
+        tabNames.splice(index, 1);
+        setTabNames([...tabNames])
+        tabContents.splice(index, 1);
+    }
+
+    function addTab(){
+        if(tabName === ""){
+            setShowMessage(true);
+            setMessage("Error: tab name can not be empty");
+        }else{
+            if(tabNames.indexOf(tabName) !== -1){
+                setShowMessage(true);
+                setMessage("Error: tab name already exist");
+            }else {
+                if(currentTab === ""){
+                    setTabNames([...tabNames, tabName]);
+                    setTabContents([...tabContents, ""]);
+
+                }else {
+                    const index = tabNames.indexOf(currentTab);
+                    tabNames[index] = tabName;
+                }
+            }
+        }
+        resetTabModal();
+    }
+
+    function PreviewWindow() {
+        const saveDescription = descriptionToJSON();
+
+        return (
+            <Modal
+                show={showPreview}
+                onHide={() => setShowPreview(false)}
+                size="lg"
+                scrollable={true}
+                centered
+            >
+                <Modal.Header closeButton/>
+                <Modal.Body>
+                    <EquipmentViewRender
+                        name={name}
+                        type={type}
+                        category={category}
+                        manufacturer={manufacturer}
+                        model={model}
+                        description={saveDescription}
+                    />
+                </Modal.Body>
+            </Modal>
+        );
+    }
+
     return (
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
             <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
-            <PreviewWindow />
+
+            <PreviewWindow/>
+
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
                 <Row style={{textAlign: 'left'}}>
                     <Col xl={3} style={{color: 'gray', fontSize: 'x-large'}}>
@@ -228,152 +296,51 @@ const EditEquipment = ({id}) => {
 
 
             <Row  style={{textAlign: 'left', fontSize: 'x-large'}}>
-                <Col>
-                    <Form.Label style={{color: 'gray'}}>Page Data:</Form.Label>
-                </Col>
+                <Form.Group style={{textAlign: 'right'}}>
+                    <Form.Label style={{color: 'gray', float: 'left'}}>Page Data:</Form.Label>
+                    <Button variant="contained" onClick={() => setShowPreview(true)}>Preview</Button>
+                    <Button style={{marginLeft: '2%'}} variant="contained" onClick={() => setShowAddTab(true)}>Add Tab</Button>
+                </Form.Group>
             </Row>
 
-            <Editor
-                onInit={(evt, editor) => editorRef.current = editor}
-                apiKey="ss9xuyjb5f9h3evt41gz1yxf2nqw2ovqjcr5sozwce6p64dy"
-                initialValue={content}
-                init={{
-                    height: 500,
-                    menubar: false,
-                    plugins: [
-                        'advlist autolink lists link image charmap print anchor help',
-                        'searchreplace insertdatetime media table paste wordcount noneditable'
-                    ],
+            <Modal
+                show={showAddTab}
+                onHide={resetTabModal}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton/>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>Tab Name:</Form.Label>
+                        <Form.Control
+                            placeholder="Enter the description here."
+                            onChange={(e) => setTabName(e.target.value)}
+                        />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={addTab}>Submit</Button>
+                    <Button onClick={resetTabModal}>Close</Button>
+                </Modal.Footer>
+            </Modal>
 
-                    toolbar:
-                        'undo redo | formatselect | bold italic | alignleft aligncenter alignright | ' +
-                        'bullist numlist outdent indent | table | link image media fileUploader | ' +
-                        'insertNewTab | previewButton | print | help',
+            <Accordion alwaysOpen>
+            {tabNames.map((key, index) => (
+                <Card>
+                    <Card.Header>
+                        <CustomAccordionBar eventKey={index}>{key}</CustomAccordionBar>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey={index}>
+                        <Card.Body>
+                            <EquipmentEditor index={index} content={tabContents[index]} tabContents={tabContents}/>
+                        </Card.Body>
+                    </Accordion.Collapse>
+                </Card>
+            ))}
+            </Accordion>
 
-                    images_upload_handler: image_upload_handler,
-
-                    file_picker_callback: function(callback, value, meta) {
-                        const input = document.createElement('input');
-                        input.setAttribute('type', 'file');
-
-                        input.onchange = function() {
-                            const file = this.files;
-                            const reader = new FileReader();
-
-                            reader.onload = function () {
-                                return Uploader.uploadFiles(file).then((responese)=>{
-                                    callback(responese.location);
-                                });
-                            };
-                            reader.readAsDataURL(this.files[0]);
-                        };
-
-                        input.click();
-                    },
-
-                    noneditable_noneditable_class: "tabHeader",
-
-                    setup: function (editor) {
-                        editor.ui.registry.addButton("insertNewTab", {
-                            tooltip: "Add Tab",
-                            icon: "comment-add",
-                            onAction: function() {
-                                editor.windowManager.open({
-                                    title: 'Add Tab',
-                                    body: {
-                                        type: 'panel',
-                                        items: [
-                                            {
-                                                type: 'input',
-                                                name: 'tabTitle',
-                                                label: 'Tab Title',
-                                            },
-                                            {
-                                                type: 'textarea',
-                                                name: 'tabContent',
-                                                label: 'Tab Content',
-                                            },
-
-                                        ]
-                                    },
-                                    buttons: [
-                                        {
-                                            text: 'Close',
-                                            type: 'cancel',
-                                            onclick: 'close'
-                                        },
-                                        {
-                                            text: 'Add',
-                                            type: 'submit',
-                                            primary: true,
-                                            enabled: false
-                                        }
-                                    ],
-
-                                    onSubmit: function (api) {
-                                        const data = api.getData();
-                                        //This is a nonEditable Tab
-                                        editor.insertContent('<div class="tab" style="background-color: #484848"><h3 class="tabHeader">Tab Title:</h3><h2 class="tabHeader">' + data.tabTitle + '</h2><h3 class="tabHeader">Content:</h3><p>' + data.tabContent + '</p></div><p></p>');
-                                        api.close();
-                                    },
-                                });
-                            },
-                        });
-
-                        //urlinput will call filepicker
-
-                        editor.ui.registry.addButton("fileUploader", {
-                            tooltip: "Upload Files",
-                            icon: "new-document",
-                            onAction: function() {
-                                editor.windowManager.open({
-                                    title: 'Upload Files',
-                                    body: {
-                                        type: 'panel',
-                                        items: [
-                                            {
-                                                type: 'urlinput',
-                                                name: 'fileUploader',
-                                                label: 'File Uploader',
-                                                filetype: 'file',
-                                            },
-                                        ]
-                                    },
-                                    buttons: [
-                                        {
-                                            text: 'Close',
-                                            type: 'cancel',
-                                            onclick: 'close'
-                                        },
-                                        {
-                                            text: 'Upload',
-                                            type: 'submit',
-                                            primary: true,
-                                            enabled: false
-                                        }
-                                    ],
-
-                                    onSubmit: function (api) {
-                                        const data = api.getData();
-                                        editor.insertContent('<p><img src="https://i.ibb.co/8rfqJw1/icons8-file-16.png" alt="file"/><a href="'+ data.fileUploader.value +'">file</a></p>');
-                                        api.close();
-                                    },
-                                });
-                            },
-                        });
-
-                        editor.ui.registry.addButton('previewButton', {
-                            icon: 'preview',
-                            tooltip: 'Preview Equipment Page',
-                            onAction: () => {setContent(editor.getContent()); setModalShow(true)},
-                        });
-
-                    },
-
-                }}
-            />
-
-            <Button style={{marginTop: "3%", marginBottom: "1%"}} onClick={log}>Save</Button>
+            <Button style={{marginTop: "3%", marginBottom: "1%"}} variant="contained" onClick={save}>Save</Button>
         </Container>
     );
 }

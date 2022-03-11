@@ -11,7 +11,7 @@ const PreviewEquipment = (props) => {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     const [category, setCategory] = useState("");
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState({});
 
     useEffect(() => {
         if(id != null){
@@ -19,7 +19,7 @@ const PreviewEquipment = (props) => {
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);
-                setDescription(data.content);
+                setDescription(JSON.parse(data.content));
             });
         }
 

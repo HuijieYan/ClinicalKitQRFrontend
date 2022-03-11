@@ -1,44 +1,9 @@
 import {Accordion, Form, Row} from "react-bootstrap";
+import React from "react";
+import Parser from 'html-react-parser';
 
 
 const EquipmentViewRender = ({name, type, category, manufacturer, model, description}) => {
-    const content = parseContent(description);
-
-    function parseContent(description){
-        const tmp = document.createElement("DIV");
-        tmp.innerHTML = description;
-        const tabs = tmp.getElementsByClassName('tab');
-        let content = [];
-        const tabNum = tabs.length;
-        const parse = require('html-react-parser');
-        for (let i = 0; i < tabNum; i++) {
-            const tabHeader = tabs[0].getElementsByClassName('tabHeader');
-            let headerTag = [];
-
-            if(tabHeader.length === 3){
-                headerTag.push(<Accordion.Header>{parse(tabHeader[1].innerHTML)}</Accordion.Header>);
-            }
-
-            const headerLength = tabHeader.length;
-            for(let index = 0; index < headerLength; index++){
-                tabs[0].removeChild(tabHeader[0])
-            }
-
-            let bodyTag = [];
-            bodyTag.push(<Accordion.Body>{parse(tabs[0].innerHTML)}</Accordion.Body>);
-            content.push(<Accordion.Item eventKey={i+1}>{headerTag}{bodyTag}</Accordion.Item>);
-
-            tmp.removeChild(tabs[0]);
-        }
-        content.push(
-            <Accordion.Item eventKey={0}>
-                <Accordion.Header>Additional Description</Accordion.Header>
-                <Accordion.Body>{parse(tmp.innerHTML)}</Accordion.Body>
-            </Accordion.Item>);
-
-        return content;
-    }
-
     return(
         <>
             <Row>
@@ -62,7 +27,14 @@ const EquipmentViewRender = ({name, type, category, manufacturer, model, descrip
             </Row>
 
             <Accordion alwaysOpen>
-                {content}
+            {Object.keys(description).map((key, index) => (
+                <Accordion.Item eventKey={index}>
+                    <Accordion.Header>{key}</Accordion.Header>
+                    <Accordion.Body>
+                        {Parser(description[key])}
+                    </Accordion.Body>
+                </Accordion.Item>
+            ))}
             </Accordion>
         </>
     );

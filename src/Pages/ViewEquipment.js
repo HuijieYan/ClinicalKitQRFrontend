@@ -1,5 +1,5 @@
-import {Button, Container, Form, Modal} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
+import { Button, Container, Form, Modal } from "react-bootstrap";
+import { useEffect, useState} from "react";
 import GetData from "../Functions/GetData";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 import Uploader from "../Functions/Uploader";
@@ -13,7 +13,7 @@ const ViewEquipment = ({id}) => {
     const [category, setCategory] = useState("");
     const [manufacturer, setManufacturer] = useState("");
     const [model, setModel] = useState("");
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState({});
     const [modalShow, setModalShow] = useState(false);
     const [issue, setIssue] = useState("");
 
@@ -26,7 +26,7 @@ const ViewEquipment = ({id}) => {
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);
-                setDescription(data.content);
+                setDescription(JSON.parse(data.content));
                 setManufacturer(data.model.manufacturer.manufacturerName)
                 setModel(data.model.modelName)
             });
@@ -53,11 +53,10 @@ const ViewEquipment = ({id}) => {
                 show={modalShow}
                 onHide={() => setModalShow(false)}
                 size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
+                    <Modal.Title>
                         {name}
                     </Modal.Title>
                 </Modal.Header>
