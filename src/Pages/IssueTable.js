@@ -15,6 +15,7 @@ const IssueTable = () => {
     const [selected, setSelected] = useState([]);
     //array of indexes of selected rows
     const[solvedLs,setSolvedLs] = useState([]);
+    const viewURL = process.env.REACT_APP_FRONTEND_URL + "viewEquipment/id=";
 
     useEffect(()=>{
         const level = parseInt(getLevel());
@@ -43,6 +44,7 @@ const IssueTable = () => {
                     label: "Description",
                     options: {
                         filter: false,
+                        sort: false,
                     }
                 },
 
@@ -51,6 +53,15 @@ const IssueTable = () => {
                     label: "Equipment",
                     options: {
                         filterOptions: { fullWidth: true },
+                    }
+                },
+
+                {
+                    name: "view",
+                    label: "View",
+                    options: {
+                        filter: false,
+                        sort: false,
                     }
                 },
 
@@ -91,13 +102,20 @@ const IssueTable = () => {
     function initialiseRow(data){
         const solved = [];
         const rowsData = [];
-        for (let i = 0;i<data.length;i++){
+        for (let i = 0; i<data.length; i++){
             const issue = data[i];
             solved.push(issue.solved);
             setSolvedLs(solved);
-            rowsData.push({id:issue.issueId,date:issue.date,description:issue.description,equipment:issue.equipmentId.name,
-                hospital:issue.userGroupName.hospitalId.hospitalName,usergroup:issue.userGroupName.name,
-                solved:<Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>});
+            rowsData.push({
+                id: issue.issueId,
+                date: issue.date,
+                description: issue.description,
+                equipment: issue.equipmentId.name,
+                view: <a href={viewURL + issue.equipmentId.equipmentId} style={{ textDecoration: "none", marginRight: '8%'}}>View</a>,
+                hospital: issue.userGroupName.hospitalId.hospitalName,
+                usergroup: issue.userGroupName.name,
+                solved: <Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>
+            });
             //decoding issue's json
         }
         setRows(rowsData);
@@ -130,6 +148,7 @@ const IssueTable = () => {
             label: "Description",
             options: {
                 filter: false,
+                sort: false,
             }
         },
 
@@ -138,6 +157,15 @@ const IssueTable = () => {
             label: "Equipment",
             options: {
                 filterOptions: { fullWidth: true },
+            }
+        },
+
+        {
+            name: "view",
+            label: "View",
+            options: {
+                filter: false,
+                sort: false,
             }
         },
 

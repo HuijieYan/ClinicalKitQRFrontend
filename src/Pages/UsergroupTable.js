@@ -27,14 +27,14 @@ const UsergroupTable = () => {
           name: "name",
           label: "Group Name",
           options: {
-            filter: false,
+            filterOptions: { fullWidth: true },
           },
         },
         {
           name: "username",
           label: "Username",
           options: {
-            filter: false,
+            filterOptions: { fullWidth: true },
           },
         },
         {
@@ -59,6 +59,7 @@ const UsergroupTable = () => {
           options: {
             viewColumns: false,
             filter: false,
+            sort: false,
           },
         },
         {
@@ -113,14 +114,14 @@ const UsergroupTable = () => {
       name: "name",
       label: "Group Name",
       options: {
-        filter: false,
+        filterOptions: { fullWidth: true },
       },
     },
     {
       name: "username",
       label: "Username",
       options: {
-        filter: false,
+        filterOptions: { fullWidth: true },
       },
     },
     {
@@ -143,6 +144,7 @@ const UsergroupTable = () => {
       options: {
         viewColumns: false,
         filter: false,
+        sort: false,
       },
     },
     {

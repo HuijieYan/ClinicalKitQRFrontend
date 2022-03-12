@@ -1,6 +1,7 @@
 import Uploader from "../Functions/Uploader";
 import {Editor} from "@tinymce/tinymce-react";
 import {useRef} from "react";
+import fileIcon from "../Picture/fileIcon.png";
 
 const EquipmentEditor = ({ index, content, tabContents }) => {
     const editorRef = useRef(null);
@@ -86,7 +87,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
 
                                 onSubmit: function (api) {
                                     const data = api.getData();
-                                    editor.insertContent('<p><img src="https://i.ibb.co/8rfqJw1/icons8-file-16.png" alt="file"/><a href="'+ data.fileUploader.value +'">file</a></p>');
+                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="'+ data.fileUploader.value +'">file</a></p>');
                                     api.close();
                                 },
                             });
