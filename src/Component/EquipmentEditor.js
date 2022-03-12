@@ -6,12 +6,6 @@ import fileIcon from "../Picture/fileIcon.png";
 const EquipmentEditor = ({ index, content, tabContents }) => {
     const editorRef = useRef(null);
 
-    function image_upload_handler (blobInfo, success, failure, progress) {
-        return Uploader.uploadFiles([blobInfo.blob()]).then((responese)=>{
-            return success(responese.location);
-        });
-    }
-
     return(
         <Editor
             onInit={(evt, editor) => editorRef.current = editor}
@@ -21,6 +15,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
             init={{
                 height: 300,
                 menubar: false,
+                automatic_uploads: false,
                 plugins: [
                     'advlist autolink lists link image charmap print anchor help',
                     'searchreplace insertdatetime media table paste wordcount'
@@ -31,22 +26,22 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                     'bullist numlist outdent indent | table | link image media fileUploader | ' +
                     'print | help',
 
-                images_upload_handler: image_upload_handler,
-
-                file_picker_callback: function(callback, value, meta) {
+                file_picker_callback: function(callback) {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
 
                     input.onchange = function() {
                         const file = this.files;
                         const reader = new FileReader();
-
+                        reader.readAsDataURL(this.files[0]);
                         reader.onload = function () {
                             return Uploader.uploadFiles(file).then((responese)=>{
-                                callback(responese.location);
+                                console.log("uploadFile")
+                                console.log(file[0].name)
+                                console.log(responese.location)
+                                callback(responese.location, {fileName: file[0].name});
                             });
                         };
-                        reader.readAsDataURL(this.files[0]);
                     };
 
                     input.click();
@@ -81,13 +76,12 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                                         text: 'Upload',
                                         type: 'submit',
                                         primary: true,
-                                        enabled: false
                                     }
                                 ],
 
                                 onSubmit: function (api) {
-                                    const data = api.getData();
-                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="'+ data.fileUploader.value +'">file</a></p>');
+                                    const fileData = api.getData().fileUploader;
+                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="'+ fileData.value +'">' + fileData.meta.fileName + '</a></p>');
                                     api.close();
                                 },
                             });
