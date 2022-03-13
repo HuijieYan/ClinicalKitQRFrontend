@@ -81,7 +81,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
 
                                 onSubmit: function (api) {
                                     const fileData = api.getData().fileUploader;
-                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="'+ fileData.value +'">' + fileData.meta.fileName + '</a></p>');
+                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="#/'+ fileData.value +'">' + fileData.meta.fileName + '</a></p>');
                                     api.close();
                                 },
                             });

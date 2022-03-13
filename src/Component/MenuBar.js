@@ -21,42 +21,42 @@ const MenuBar = () => {
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container fluid>
-                <Navbar.Brand href="/home">NHS Icon</Navbar.Brand>
+                <Navbar.Brand href="#/home">NHS Icon</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/home">Home</Nav.Link>
+                        <Nav.Link href="#/home">Home</Nav.Link>
 
-                        {level>=2 && <Nav.Link href="/equipmentTable">Equipments</Nav.Link>}
+                        {level>=2 && <Nav.Link href="#/equipmentTable">Equipments</Nav.Link>}
 
-                        <Nav.Link href="/search">Search</Nav.Link>
+                        <Nav.Link href="#/search">Search</Nav.Link>
 
                         {level>=2 && 
                         <NavDropdown title="Operations">
-                            <NavDropdown.Item href="/search">Search</NavDropdown.Item>
+                            <NavDropdown.Item href="#/search">Search</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/reports">Produce Report</NavDropdown.Item>
+                            <NavDropdown.Item href="#/reports">Produce Report</NavDropdown.Item>
                         </NavDropdown>
                         }
 
                         {level>=2 &&
                         <NavDropdown title="Tables">
-                            <NavDropdown.Item href="/equipmentTable">Equipments</NavDropdown.Item>
+                            <NavDropdown.Item href="#/equipmentTable">Equipments</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            {level===3&&<NavDropdown.Item href="/hospitalTable">Hospitals</NavDropdown.Item>}
+                            {level===3&&<NavDropdown.Item href="#/hospitalTable">Hospitals</NavDropdown.Item>}
                             <NavDropdown.Divider/>
-                            <NavDropdown.Item href="/usergroupTable">User Groups</NavDropdown.Item>
+                            <NavDropdown.Item href="#/usergroupTable">User Groups</NavDropdown.Item>
                             <NavDropdown.Divider/>
-                            <NavDropdown.Item href="/issueTable">Reported Issues</NavDropdown.Item>
+                            <NavDropdown.Item href="#/issueTable">Reported Issues</NavDropdown.Item>
                             <NavDropdown.Divider/>
-                            <NavDropdown.Item href="/contactBook">Contact Book</NavDropdown.Item>
+                            <NavDropdown.Item href="#/contactBook">Contact Book</NavDropdown.Item>
                         </NavDropdown>
                         }
                         
 
                         {level>=2 && <Nav.Link href="/inbox">Share Inbox</Nav.Link>}
 
-                        <Nav.Link href="/faq">FAQs</Nav.Link>
+                        <Nav.Link href="#/faq">FAQs</Nav.Link>
                     </Nav>
                     <Form className="d-flex">
                         <FormControl
