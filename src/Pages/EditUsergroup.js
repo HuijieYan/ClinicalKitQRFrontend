@@ -10,7 +10,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [hospitalId, setHospitalId] = useState("");
+  const [hospitalId, setHospitalId] = useState(-1);
   const [hospitals, setHospitals] = useState([]);
   const [email, setEmail] = useState("");
   const [specialty, setSpecialty] = useState("");
@@ -48,8 +48,30 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   async function submit() {
     if (groupUsername === undefined) {
         //add new usergroup
+        if(username===""||parseInt(hospitalId)===-1||name===""||password===""){
+          setShowMessage(true);
+          setMessage("Required fields are empty");
+        }
+        console.log(hospitalId);
+        Uploader.addUserGroup(
+          hospitalId,
+          username,
+          name,
+          password,
+          email,
+          specialty,
+          isAdmin
+        ).then((response) => {
+            if(response){
+                window.location.reload();
+            }
+        });
     } else {
       //we do update here, need a new url and a backend post mapping
+      if(name===""||password===""){
+        setShowMessage(true);
+        setMessage("Required fields are empty");
+      }
       Uploader.updateUsergroup(
         hospitalId,
         groupUsername,
@@ -101,7 +123,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
 
       <Form>
         <Form.Group id="username">
-          <Form.Label>Departmental Username</Form.Label>
+          <Form.Label>Departmental Username*</Form.Label>
           <Form.Control
             type="groupUsername"
             placeholder="Enter Departmental Username"
@@ -114,7 +136,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
 
       <Form>
         <Form.Group id="groupName">
-          <Form.Label>Group Name</Form.Label>
+          <Form.Label>Group Name*</Form.Label>
           <Form.Control
             type="groupName"
             placeholder="Enter Usergroup's name"
@@ -126,7 +148,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
 
       <Form>
         <Form.Group id="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>Password*</Form.Label>
           <Form.Control
             type="password"
             placeholder="Enter Password"

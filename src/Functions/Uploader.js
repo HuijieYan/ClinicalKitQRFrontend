@@ -108,6 +108,21 @@ class Uploader {
     });
   }
 
+  addUserGroup(id, username, name, password, email, specialty,isAdmin) {
+    const url = URL + "usergroup/register";
+    const data = new FormData();
+    data.append("hospitalId", id);
+    data.append("username", username);
+    data.append("name", name);
+    data.append("password", password);
+    data.append("email", email);
+    data.append("specialty", specialty);
+    data.append("isAdmin",isAdmin);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
   addNewTrust(trustName, id, username, name, password, email, specialty) {
     const url = URL + "usergroup/addTrust";
     const data = new FormData();
