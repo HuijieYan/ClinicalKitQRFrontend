@@ -36,8 +36,6 @@ const SharingEquipmentItem = ({data}) => {
         
         hospitals.push({label:currentHospital.hospitalName,value:String(specialIndex),children:equipments});
         tree["children"] = hospitals;
-        console.log("IH");
-        console.log(tree);
         return tree;
     }
 

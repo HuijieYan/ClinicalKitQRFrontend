@@ -26,9 +26,9 @@ const ViewEquipment = ({id}) => {
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);
+                setManufacturer(data.model.manufacturer.manufacturerName);
+                setModel(data.model.modelName);
                 setDescription(JSON.parse(data.content));
-                setManufacturer(data.model.manufacturer.manufacturerName)
-                setModel(data.model.modelName)
             });
         }
 

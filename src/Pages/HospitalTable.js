@@ -167,8 +167,8 @@ const HospitalTable = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {submitHospital(); handleClose();}}>Submit</Button>
                     <Button onClick={handleClose}>Close</Button>
+                    <Button onClick={() => {submitHospital(); handleClose();}}>Submit</Button>
                 </Modal.Footer>
             </Modal>
 

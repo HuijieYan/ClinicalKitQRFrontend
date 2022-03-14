@@ -5,6 +5,7 @@ import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 import MessageModal from "../Component/MessageModal";
+import { useHistory } from "react-router-dom";
 
 const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   const [name, setName] = useState("");
@@ -20,6 +21,8 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState("");
 
+  const history = useHistory();
+
   useEffect(() => {
     const level = parseInt(getLevel());
     if (level === 3) {
@@ -33,13 +36,19 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
       });
     }
 
+
     if (groupUsername !== undefined) {
       setUsername(groupUsername);
       //get usergroup information by username and hospitalId and trustId
       //so we could get the placeholder while editing
       setHospitalId(selectedHospitalId);
 
-      GetData.getGroup(selectedHospitalId, groupUsername).then((data) => setIsAdmin(data.isAdmin));
+      GetData.getGroup(selectedHospitalId, groupUsername).then((data) => {
+        setIsAdmin(data.isAdmin);
+        setName(data.name);
+        setEmail(data.email);
+        setSpecialty(data.specialty);
+      });
     }
   }, []);
 
@@ -49,10 +58,10 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
     if (groupUsername === undefined) {
         //add new usergroup
         if(username===""||parseInt(hospitalId)===-1||name===""||password===""){
-          setShowMessage(true);
           setMessage("Required fields are empty");
+          setShowMessage(true);
+          return;
         }
-        console.log(hospitalId);
         Uploader.addUserGroup(
           hospitalId,
           username,
@@ -62,15 +71,19 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
           specialty,
           isAdmin
         ).then((response) => {
-            if(response){
-                window.location.reload();
+            if(response === ""){
+              history.push("/usergroupTable");
+            }else{
+              setShowMessage(true);
+              setMessage(response);
             }
         });
     } else {
       //we do update here, need a new url and a backend post mapping
-      if(name===""||password===""){
-        setShowMessage(true);
+      if(name===""){
         setMessage("Required fields are empty");
+        setShowMessage(true);
+        return;
       }
       Uploader.updateUsergroup(
         hospitalId,
@@ -81,10 +94,10 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
         specialty
       ).then((response) => {
           if(response === ""){
-              window.location.reload();
+              history.push("/usergroupTable");
           }else{
               setShowMessage(true);
-              setMessage(response.data);
+              setMessage(response);
           }
       });
     }
@@ -148,7 +161,7 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
 
       <Form>
         <Form.Group id="password">
-          <Form.Label>Password*</Form.Label>
+          <Form.Label>{groupUsername===undefined?"Password*":"New Password (Optional)"}</Form.Label>
           <Form.Control
             type="password"
             placeholder="Enter Password"
@@ -193,6 +206,9 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
         disabled={hospitalId === trustHospitalId}
         label="Is Administrator"
       />
+      <Button id="submitButton" type="submit" onClick={() => history.push("/usergroupTable")}>
+        Back
+      </Button>
       <Button id="submitButton" type="submit" onClick={() => submit()}>
         Submit
       </Button>

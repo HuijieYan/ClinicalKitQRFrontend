@@ -96,6 +96,10 @@ const EditEquipment = ({id}) => {
             setShowMessage(true);
             setMessage("Error: Manufacturer not selected");
             return;
+        }else if(name === ""){
+            setShowMessage(true);
+            setMessage("Error: Equipment Name not selected");
+            return;
         }
 
         const saveName = name;
@@ -226,7 +230,7 @@ const EditEquipment = ({id}) => {
                 <Row style={{textAlign: 'left'}}>
                     <Col xl={3} style={{color: 'gray', fontSize: 'x-large'}}>
                         <Form.Group>
-                            <Form.Label>Equipment Name:</Form.Label>
+                            <Form.Label>Equipment Name*:</Form.Label>
                         </Form.Group>
                     </Col>
                     <Col xl={3}>
@@ -241,7 +245,7 @@ const EditEquipment = ({id}) => {
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
                     <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Manufacturer:</Form.Label>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Manufacturer*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <CreatableSelect
@@ -271,7 +275,7 @@ const EditEquipment = ({id}) => {
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
                     <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Patient Demographic:</Form.Label>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Patient Demographic*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <Select value={categories.filter(option => option.value === category)}
@@ -283,7 +287,7 @@ const EditEquipment = ({id}) => {
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
                     <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Clinical System:</Form.Label>
+                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Clinical System*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <Select value={types.filter(option => option.value === type)}

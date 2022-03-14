@@ -117,11 +117,11 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
                     <div style={{margin: '2%'}}>
                         <InboxButtonList selected={selected} setSelected={setSelected} currentMailIndex={index}/>
                         <span style={{marginLeft: '3%', marginRight: '3%'}}/>
-                        <Button onClick={()=>{handleDelete(id)}}>Delete The Sharing</Button>
+                        <Button onClick={()=>{handleDelete(id)}}>Delete This Sharing</Button>
                     </div>
                 )}
                 {Number(option)===1&&buttons && (
-                        <Button onClick={()=>{handleDelete(id)}}>Delete The Sharing</Button>
+                        <Button onClick={()=>{handleDelete(id)}}>Delete This Sharing</Button>
                 )}
             </Box>
          );
