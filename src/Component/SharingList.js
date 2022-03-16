@@ -27,7 +27,7 @@ const SharingList = ({title,buttonText,component}) => {
 
     return ( 
         <>
-        <MUIButton onClick={handleOpen}>
+        <MUIButton variant="outlined" onClick={handleOpen}>
             {buttonText}
         </MUIButton>
     

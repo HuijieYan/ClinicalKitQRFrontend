@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
-import { Form, Modal } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import Uploader from "../../Functions/Uploader";
@@ -12,11 +12,12 @@ import SharingUsergroupList from "../SharingUsergroupList";
 import InboxNewSharingEquipmentList from "./InboxNewSharingEquipmentList";
 import InboxNewSharingUserGroupList from "./InboxNewSharingUserGroupList";
 import MessageModal from "../MessageModal";
+import {Box} from "@mui/system";
 
 const usergroupStore = createStore(selectionReducer,[]);
 const equipmentStore = createStore(selectionReducer,[]);
 
-const InboxNewSharingComponent = ({display}) => {
+const InboxNewSharingComponent = () => {
     const [title,setTitle] = useState("");
     const [description,setDescription] = useState("");
     const [showMessage, setShowMessage] = useState(false);
@@ -69,44 +70,61 @@ const InboxNewSharingComponent = ({display}) => {
         setShowMessage(true);
     }
 
-    if(display){
-        return (  
-            <div>
-                <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+    return (
+        <Box sx={{width: '1', padding: '1%', overflow: 'auto'}}>
+            <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
 
-                <Provider store={usergroupStore}>
-                    <SharingUsergroupList/>
+            <Provider store={usergroupStore}>
+                <SharingUsergroupList/>
+                <Box sx={{
+                    padding: '1%',
+                    overflow: 'auto',
+                    minHeight: '15%',
+                    maxHeight: '50%',
+                    border: 'solid',
+                    borderWidth: '1px',
+                    marginTop: '1%',
+                    marginBottom: '1%'
+                }}>
                     <InboxNewSharingUserGroupList />
-                </Provider>
-                <Provider store={equipmentStore}>
-                    <SharingEquipmentList/>
+                </Box>
+            </Provider>
+
+            <Provider store={equipmentStore}>
+                <SharingEquipmentList/>
+                <Box sx={{
+                    padding: '1%',
+                    overflow: 'auto',
+                    minHeight: '15%',
+                    maxHeight: '50%',
+                    border: 'solid',
+                    borderWidth: '1px',
+                    marginTop: '1%',
+                    marginBottom: '1%'
+                }}>
                     <InboxNewSharingEquipmentList />
-                </Provider>
-            
-                <Form>
-                    <Form.Group id="title">
-                        <Form.Control type="title"
-                                    placeholder="Title"
-                                    value={title}
-                                    onChange={(e)=>setTitle(e.target.value)}/>
-                    </Form.Group>
-                </Form>
+                </Box>
+            </Provider>
 
-                <Form>
-                    <Form.Group id="Description">
-                        <Form.Control type="description"
-                                    placeholder="Description"
-                                    value={description}
-                                    onChange={(e)=>setDescription(e.target.value)}/>
-                    </Form.Group>
-                </Form>
+            <Form.Group>
+                <Form.Control type="title"
+                              placeholder="Title"
+                              style={{marginTop: '1%', marginBottom: '1%'}}
+                              value={title}
+                              onChange={(e) => setTitle(e.target.value)}/>
 
-                <Button onClick={send}>Send</Button>
-            </div>
-        );
-    }else{
-        return null;
-    }
+                <Form.Control type="description"
+                              placeholder="Description"
+                              as="textarea"
+                              rows={5}
+                              style={{marginTop: '1%', marginBottom: '1%'}}
+                              value={description}
+                              onChange={(e)=>setDescription(e.target.value)}/>
+            </Form.Group>
+
+            <Button variant="outlined" style={{marginTop: '1%'}} onClick={send}>Send</Button>
+        </Box>
+    );
 }
  
 export default InboxNewSharingComponent;

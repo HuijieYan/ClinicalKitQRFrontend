@@ -35,12 +35,25 @@ const ViewEquipment = ({id}) => {
     }, []);
 
     function submitIssue() {
-        Uploader.submitIssue(issue,id).then((response) => {
-            if(response !== ""){
-                setShowMessage(true);
-                setMessage(response.data);
-            }
-        })
+        if(issue === ""){
+            setModalShow(false);
+            setShowMessage(true);
+            setMessage("Error: empty issue");
+        }else {
+            Uploader.submitIssue(issue,id).then((response) => {
+                if(response !== ""){
+                    setModalShow(false);
+                    setShowMessage(true);
+                    setMessage(response.data);
+                }
+            })
+            resetIssue();
+        }
+    }
+
+    function resetIssue(){
+        setModalShow(false);
+        setIssue("");
     }
 
     return(
@@ -51,7 +64,7 @@ const ViewEquipment = ({id}) => {
 
             <Modal
                 show={modalShow}
-                onHide={() => setModalShow(false)}
+                onHide={resetIssue}
                 size="lg"
                 centered
             >
@@ -72,8 +85,8 @@ const ViewEquipment = ({id}) => {
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {submitIssue(); setModalShow(false)}}>Submit</Button>
-                    <Button onClick={() => setModalShow(false)}>Close</Button>
+                    <Button onClick={submitIssue}>Submit</Button>
+                    <Button onClick={resetIssue}>Close</Button>
                 </Modal.Footer>
             </Modal>
 

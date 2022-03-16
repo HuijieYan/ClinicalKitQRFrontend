@@ -54,7 +54,7 @@ const MenuBar = () => {
                         }
                         
 
-                        {level>=2 && <Nav.Link href="/inbox">Share Inbox</Nav.Link>}
+                        {level>=2 && <Nav.Link href="#/inbox">Share Inbox</Nav.Link>}
 
                         <Nav.Link href="#/faq">FAQs</Nav.Link>
                     </Nav>

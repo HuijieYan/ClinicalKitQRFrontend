@@ -50,10 +50,10 @@ const FAQ = () => {
     }
 
     function editQuestion(question){
-        setShowEditQuestion(true);
         setQuestion("" + question.question);
         setAnswer("" + question.answer);
         setCurrentQuestion(question);
+        setShowEditQuestion(true);
     }
 
     function resetEdit(){
@@ -175,7 +175,10 @@ const FAQ = () => {
 
             <FormGroup style={{marginBottom: '1%'}}>
                 {userLevel === 3 &&
-                <Button style={{marginRight: '10%', float: 'right'}} onClick={() => setShowAddQuestion(true)}>Add New</Button>
+                    <Button style={{marginRight: '10%', float: 'right'}}
+                            variant="outlined"
+                            onClick={() => setShowAddQuestion(true)
+                            }>Add New</Button>
                 }
                 <Form.Label>FAQs</Form.Label>
             </FormGroup>

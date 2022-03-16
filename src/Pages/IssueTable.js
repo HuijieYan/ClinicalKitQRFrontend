@@ -1,11 +1,12 @@
 import MUIDataTable from "mui-datatables";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 import GetData from "../Functions/GetData";
 import { Checkbox } from "@mui/material";
 import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
+import {Button, Modal} from "react-bootstrap";
 
 //Issue Table is a table contains reported issues and it's corresponding operations
 
@@ -16,6 +17,9 @@ const IssueTable = () => {
     //array of indexes of selected rows
     const[solvedLs,setSolvedLs] = useState([]);
     const viewURL = process.env.REACT_APP_FRONTEND_URL + "viewEquipment/id=";
+
+    const [showIssue, setShowIssue] = useState(false);
+    const [currentIssue, setCurrentIssue] = useState("");
 
     useEffect(()=>{
         const level = parseInt(getLevel());
@@ -57,15 +61,6 @@ const IssueTable = () => {
                 },
 
                 {
-                    name: "view",
-                    label: "View",
-                    options: {
-                        filter: false,
-                        sort: false,
-                    }
-                },
-
-                {
                     name: "hospital",
                     options: {
                         filter: false,
@@ -87,6 +82,7 @@ const IssueTable = () => {
                     label: "Solved",
                     options: {
                         filter: false,
+                        sort: false,
                         viewColumns: false,
                     }
                 },
@@ -109,9 +105,17 @@ const IssueTable = () => {
             rowsData.push({
                 id: issue.issueId,
                 date: issue.date,
-                description: issue.description,
+                description:
+                    <>
+                        <a href="/" onClick={(e) => {
+                            e.preventDefault();
+                            setShowIssue(true);
+                            setCurrentIssue(issue.description);
+                        }} style={{ textDecoration: "none", marginRight: '8%'}}>View Issue</a>
+                        <a href={viewURL + issue.equipmentId.equipmentId}
+                           style={{ textDecoration: "none"}}>View Equipment</a>
+                    </>,
                 equipment: issue.equipmentId.name,
-                view: <a href={viewURL + issue.equipmentId.equipmentId} style={{ textDecoration: "none", marginRight: '8%'}}>View</a>,
                 hospital: issue.userGroupName.hospitalId.hospitalName,
                 usergroup: issue.userGroupName.name,
                 solved: <Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>
@@ -143,12 +147,14 @@ const IssueTable = () => {
                 filterOptions: { fullWidth: true },
             }
         },
+
         {
             name: "description",
             label: "Description",
             options: {
                 filter: false,
                 sort: false,
+                viewColumns: false,
             }
         },
 
@@ -157,15 +163,6 @@ const IssueTable = () => {
             label: "Equipment",
             options: {
                 filterOptions: { fullWidth: true },
-            }
-        },
-
-        {
-            name: "view",
-            label: "View",
-            options: {
-                filter: false,
-                sort: false,
             }
         },
 
@@ -189,6 +186,7 @@ const IssueTable = () => {
             label: "Solved",
             options: {
                 filter: false,
+                sort: false,
                 viewColumns: false,
             }
         },
@@ -218,6 +216,21 @@ const IssueTable = () => {
 
     return (
         <ThemeProvider theme={createTheme()}>
+            <Modal
+                show={showIssue}
+                onHide={() => setShowIssue(false)}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton/>
+                <Modal.Body>
+                    <p style={{whiteSpace: 'pre-wrap'}}>{currentIssue}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setShowIssue(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
             <MUIDataTable
                 title={"User Groups"}
                 data={rows}

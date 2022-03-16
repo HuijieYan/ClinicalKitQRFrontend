@@ -15,17 +15,10 @@ import InboxMessage from "./InboxMessage";
 
 //list of buttons a the side of inbox
 const InboxSideBar = () => {
-  const [selected, setSelected] = useState(0);
-  const [clickedNewShare, setClickedNewShare] = useState(false);
-  const [showModal, setModalShow] = useState(false);
+  const [selected, setSelected] = useState(-1);
 
-  const handleSelect = (event, index) => {
+  const handleSelect = (index) => {
     setSelected(index);
-  };
-
-  const handleClick = () => {
-    setClickedNewShare(!clickedNewShare);
-    setModalShow(true);
   };
 
   return (
@@ -39,31 +32,29 @@ const InboxSideBar = () => {
           minWidth: "150px",
         }}
       >
-        <div style={{ textAlign: "left" }}>
-          <Button
-            style={{ margin: "2%" }}
-            onClick={(e) => {
-              handleClick();
-            }}
-          >
-            <CreateNewFolderIcon /> New Share
+
+        <div style={{ textAlign: "left", marginBottom: '5%' }}>
+          <Button onClick={() => handleSelect(0)}>
+              <CreateNewFolderIcon />New Share
           </Button>
         </div>
 
         <Divider />
+
         <List component="nav">
           <ListItemButton
-            selected={selected === 0}
-            onClick={(e) => handleSelect(e, 0)}
+            selected={selected === 1}
+            onClick={() => handleSelect(1)}
           >
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
             <ListItemText primary="Inbox" />
           </ListItemButton>
+
           <ListItemButton
-            selected={selected === 1}
-            onClick={(e) => handleSelect(e, 1)}
+            selected={selected === 2}
+            onClick={() => handleSelect(2)}
           >
             <ListItemIcon>
               <SendIcon />
@@ -71,9 +62,11 @@ const InboxSideBar = () => {
             <ListItemText primary="Sent" />
           </ListItemButton>
         </List>
+
         <Divider />
+
       </Box>
-      <InboxMessage selected={selected} clicked={clickedNewShare} />
+      <InboxMessage selected={selected} />
     </>
   );
 };

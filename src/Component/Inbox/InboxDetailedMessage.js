@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { storeMailData } from "../../Storage/Actions/actions";
 
-const InboxDetailedMessage = ({option,index,vacant,display}) => {
+const InboxDetailedMessage = ({option, index, vacant}) => {
     
     const history = useHistory();
     const data = useSelector((state)=>state);
@@ -53,7 +53,7 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
 
     useEffect(()=>{
         function rendering(){
-            if(vacant||index>=data.length){
+            if(vacant || index >= data.length){
                 setTitle("");
                 setDescription("Select a Sharing");
                 setEquipments([]);
@@ -77,58 +77,52 @@ const InboxDetailedMessage = ({option,index,vacant,display}) => {
         rendering();
     },[vacant,index,data]);
 
-    if (display){
-        return ( 
-            <Box sx={{width: '1', padding: '1%', overflow: 'scroll', paddingTop: '2%'}}>
-                <Typography style={{marginBottom: '1%'}}>{title}</Typography>
-                {divider}
-                <List>
+    return (
+        <Box sx={{width: '1', padding: '1%', overflow: 'auto', paddingTop: '2%'}}>
+            <Typography style={{marginBottom: '1%'}}>{title}</Typography>
+            {divider}
+            <List>
                 {
                     equipments.map((equipment,index)=>{
-                    return(
-                        <ListItem key={equipment.id} secondaryAction={
-                            <Button edge="end" onClick={()=>{handleOpen(equipment.id)}}>OPEN</Button>
-                        } disablePadding>
-                            <ListItemButton onClick={handleSelected(index,equipment.saved)}>
-                                <ListItemIcon>
-                                    <Checkbox
-                                        checked={selected.indexOf(index) !== -1||equipment.saved}
-                                        edge="start"
-                                        tabIndex={-1}
-                                        disableRipple
-                                        disabled={equipment.saved}
-                                    />
-                                </ListItemIcon>
-                                <ListItemIcon>
-                                    <ArticleIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={equipment.name}/>
-                                
-                            </ListItemButton>
-                        </ListItem>
-                    );
-                })}
-                </List>
-    
-                {divider}
-                <Typography style={{margin:'3%'}}>{description}</Typography>
-                {divider}
-                {Number(option)===0&&buttons && (
-                    <div style={{margin: '2%'}}>
-                        <InboxButtonList selected={selected} setSelected={setSelected} currentMailIndex={index}/>
-                        <span style={{marginLeft: '3%', marginRight: '3%'}}/>
-                        <Button onClick={()=>{handleDelete(id)}}>Delete This Sharing</Button>
-                    </div>
-                )}
-                {Number(option)===1&&buttons && (
-                        <Button onClick={()=>{handleDelete(id)}}>Delete This Sharing</Button>
-                )}
-            </Box>
-         );
-    }else{
-        return null;
-    }
-    
+                        return(
+                            <ListItem key={equipment.id} secondaryAction={
+                                <Button edge="end" onClick={()=>{handleOpen(equipment.id)}}>OPEN</Button>
+                            } disablePadding>
+                                <ListItemButton onClick={handleSelected(index,equipment.saved)}>
+                                    <ListItemIcon>
+                                        <Checkbox
+                                            checked={selected.indexOf(index) !== -1||equipment.saved}
+                                            edge="start"
+                                            tabIndex={-1}
+                                            disableRipple
+                                            disabled={equipment.saved}
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemIcon>
+                                        <ArticleIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={equipment.name}/>
+
+                                </ListItemButton>
+                            </ListItem>
+                        );
+                    })}
+            </List>
+
+            {divider}
+            <Typography style={{margin:'3%', whiteSpace: 'pre-wrap'}}>{description}</Typography>
+            {divider}
+
+            <div style={{margin: '2%'}}>
+                {Number(option) === 1 && buttons &&
+                <>
+                    <InboxButtonList selected={selected} setSelected={setSelected} currentMailIndex={index}/>
+                    <span style={{marginLeft: '3%', marginRight: '3%'}}/>
+                </>}
+                {buttons && <Button variant="outlined" onClick={()=>{handleDelete(id)}}>Delete This Sharing</Button>}
+            </div>
+        </Box>
+    );
 }
  
 export default InboxDetailedMessage;

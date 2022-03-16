@@ -9,24 +9,22 @@ import InboxMessageList from "./InboxMessageList";
 
 const store = createStore(mailDataReducer);
 
-const InboxMessage = ({ selected, clicked }) => {
+const InboxMessage = ({selected}) => {
   useEffect(() => {
-    if (selected === 0) {
-      GetData.getReceivedSharings(getHospitalId(), getUserName()).then(
-        (data) => {
+    if(selected === 1){
+      GetData.getReceivedSharings(getHospitalId(), getUserName()).then((data) => {
           store.dispatch(storeMailData(data));
-        }
-      );
-    } else {
+      });
+    }else if(selected === 2){
       GetData.getSentSharings(getHospitalId(), getUserName()).then((data) => {
-        store.dispatch(storeMailData(data));
+            store.dispatch(storeMailData(data));
       });
     }
   }, [selected]);
 
   return (
     <Provider store={store}>
-      <InboxMessageList selected={selected} clicked={clicked} />
+      <InboxMessageList selected={selected} />
     </Provider>
   );
 };

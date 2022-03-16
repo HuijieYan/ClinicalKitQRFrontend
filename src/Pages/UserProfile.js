@@ -56,7 +56,7 @@ const UserProfile = () => {
             });
             setUpdateData({
                 name: getName(),
-                password: getPassword(),
+                password: "",
                 email: group.email,
                 specialty: group.specialty,
             });
@@ -76,10 +76,21 @@ const UserProfile = () => {
                     specialty: updateData.specialty,
                 }));
             }else{
+                resetUsergroup();
                 setShowMessage(true);
                 setMessage(response.data);
             }
         });
+    }
+
+    function resetUsergroup(){
+        setShowGroupEditor(false);
+        setUpdateData({
+            name: currentData.name,
+            password: "",
+            email: currentData.email,
+            specialty: currentData.specialty,
+        })
     }
 
     function deleteUsergroup(){
@@ -97,12 +108,23 @@ const UserProfile = () => {
     function addTrust(){
         //post newTrustData
         Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((response)=>{
-            if(response === ""){
-                setShowGroupEditor(false);
-            }else{
+            if(response !== ""){
                 setShowMessage(true);
                 setMessage(response.data);
             }
+        });
+        resetNewTrust();
+    }
+
+    function resetNewTrust(){
+        setShowTrustEditor(false);
+        setNewTrustData({
+            trustName: "",
+            username: "",
+            name: "",
+            password: "",
+            email: "",
+            specialty: "",
         });
     }
 
@@ -141,7 +163,7 @@ const UserProfile = () => {
 
             <Modal
                 show={showGroupEditor}
-                onHide={() => setShowGroupEditor(false)}
+                onHide={resetUsergroup}
                 size="lg"
                 centered
             >
@@ -164,7 +186,6 @@ const UserProfile = () => {
                     <Form.Control
                         as="input"
                         placeholder="Enter Password Here:"
-                        defaultValue={currentData.password}
                         onChange={handleUpdate}
                         name="password"
                     />
@@ -188,11 +209,8 @@ const UserProfile = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {
-                        updateUsergroup();
-                        setShowGroupEditor(false)
-                    }}>Submit</Button>
-                    <Button onClick={() => setShowGroupEditor(false)}>Close</Button>
+                    <Button onClick={updateUsergroup}>Submit</Button>
+                    <Button onClick={resetUsergroup}>Close</Button>
                 </Modal.Footer>
             </Modal>
 
@@ -220,7 +238,7 @@ const UserProfile = () => {
 
             <Modal
                 show={showTrustEditor}
-                onHide={() => setShowTrustEditor(false)}
+                onHide={resetNewTrust}
                 size="lg"
                 centered
             >
@@ -277,11 +295,8 @@ const UserProfile = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {
-                        addTrust();
-                        setShowTrustEditor(false)
-                    }}>Submit</Button>
-                    <Button onClick={() => setShowTrustEditor(false)}>Close</Button>
+                    <Button onClick={addTrust}>Submit</Button>
+                    <Button onClick={resetNewTrust}>Close</Button>
                 </Modal.Footer>
             </Modal>
 

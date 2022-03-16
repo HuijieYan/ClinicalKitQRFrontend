@@ -34,14 +34,12 @@ const ContactBook = () => {
     },[]);
     //renders only once for fetching selection options
 
-    const [columns,setColumns] = useState([
+    const columns = [
         {
             name: "name",
             label: "Name",
             options: {
-                filter: false,
-                display: false,
-                viewColumns: false
+                filterOptions: { fullWidth: true },
             }
         },
 
@@ -77,7 +75,7 @@ const ContactBook = () => {
                 viewColumns: false,
             }
         },
-    ]);
+    ];
 
     const options = {
         height: "100%",
