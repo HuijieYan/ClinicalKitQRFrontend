@@ -211,7 +211,7 @@ const UserProfile = () => {
                         name="name"
                     />
 
-                    <h4>Enter Password:</h4>
+                    <h4>Enter Password (Use old password if empty):</h4>
                     <Form.Control
                         as="input"
                         placeholder="Enter Password Here:"
@@ -354,46 +354,34 @@ const UserProfile = () => {
             <Container style={{marginTop: '3%', marginBottom: '3%', textAlign: 'left', fontSize: 'x-large'}}>
                 <Row>
                     <Col xl={2}>
-                        <Form.Group>
-                            <Form.Label style={{color: 'gray'}}>Trust:</Form.Label>
-                        </Form.Group>
+                        <Form.Label style={{color: 'gray'}}>Trust:</Form.Label>
                     </Col>
                     <Col xl={2}>
-                        <Form.Group>
-                            <Form.Label>{currentData.trust}</Form.Label>
-                        </Form.Group>
+                        <Form.Label>{currentData.trust}</Form.Label>
                     </Col>
                 </Row>
 
                 <Row  style={{marginTop: '3%'}}>
                     <Col xl={2}>
-                        <Form.Group>
-                            <Form.Label style={{color: 'gray'}}>Hospital:</Form.Label>
-                        </Form.Group>
+                        <Form.Label style={{color: 'gray'}}>Hospital:</Form.Label>
                     </Col>
                     <Col xl={2}>
-                        <Form.Group>
-                            <Form.Label>{currentData.hospital}</Form.Label>
-                        </Form.Group>
+                        <Form.Label>{currentData.hospital}</Form.Label>
                     </Col>
                 </Row>
 
                 <Row  style={{marginTop: '3%'}}>
                     <Col xl={2}>
-                        <Form.Group>
-                            <Form.Label style={{color: 'gray'}}>Username:</Form.Label>
-                        </Form.Group>
+                        <Form.Label style={{color: 'gray'}}>Username:</Form.Label>
                     </Col>
                     <Col xl={2}>
-                        <Form.Group>
-                            <Form.Label>{currentData.username}</Form.Label>
-                        </Form.Group>
+                        <Form.Label>{currentData.username}</Form.Label>
                     </Col>
                 </Row>
 
                 <Row  style={{marginTop: '3%'}}>
                     <Col xl={2}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Group Name:</Form.Label>
+                        <Form.Label style={{color: 'gray'}}>Group Name:</Form.Label>
                     </Col>
                     <Col xl={2}>
                         <Form.Label>{currentData.name}</Form.Label>
@@ -402,7 +390,7 @@ const UserProfile = () => {
 
                 <Row  style={{marginTop: '3%'}}>
                     <Col xl={2}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Email:</Form.Label>
+                        <Form.Label style={{color: 'gray'}}>Email:</Form.Label>
                     </Col>
                     <Col xl={2}>
                         <Form.Label>{currentData.email}</Form.Label>
@@ -411,7 +399,7 @@ const UserProfile = () => {
 
                 <Row  style={{marginTop: '3%'}}>
                     <Col xl={2}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Specialty:</Form.Label>
+                        <Form.Label style={{color: 'gray'}}>Specialty:</Form.Label>
                     </Col>
                     <Col xl={2}>
                         <Form.Label>{currentData.specialty}</Form.Label>
@@ -447,7 +435,6 @@ const UserProfile = () => {
                         }
                     </Col>
                 </Row>
-
             </Container>
         </Container>
     );

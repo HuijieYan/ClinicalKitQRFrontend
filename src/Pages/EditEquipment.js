@@ -228,10 +228,8 @@ const EditEquipment = ({id}) => {
 
             <Form style={{marginTop: '3%', marginBottom: '3%'}}>
                 <Row style={{textAlign: 'left'}}>
-                    <Col xl={3} style={{color: 'gray', fontSize: 'x-large'}}>
-                        <Form.Group>
-                            <Form.Label>Equipment Name*:</Form.Label>
-                        </Form.Group>
+                    <Col xl={3}>
+                        <Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Equipment Name*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <Form.Control
@@ -244,8 +242,8 @@ const EditEquipment = ({id}) => {
                 </Row>
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
-                    <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Manufacturer*:</Form.Label>
+                    <Col xl={3}>
+                        <Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Manufacturer*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <CreatableSelect
@@ -258,10 +256,8 @@ const EditEquipment = ({id}) => {
                 </Row>
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
-                    <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Group style={{textAlign: 'left', fontSize: 'x-large'}}>
-                            <Form.Label style={{color: 'gray', textAlign: 'left', fontSize: 'x-large'}}>Equipment Model Name:</Form.Label>
-                        </Form.Group>
+                    <Col xl={3}>
+                        <Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Equipment Model Name:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <Form.Control
@@ -274,8 +270,8 @@ const EditEquipment = ({id}) => {
                 </Row>
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
-                    <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Patient Demographic*:</Form.Label>
+                    <Col xl={3}>
+                        <Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Patient Demographic*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <Select value={categories.filter(option => option.value === category)}
@@ -286,8 +282,8 @@ const EditEquipment = ({id}) => {
                 </Row>
 
                 <Row  style={{textAlign: 'left', marginTop: '3%'}}>
-                    <Col xl={3} style={{fontSize: 'x-large'}}>
-                        <Form.Label style={{color: 'gray', marginRight: '2%'}}>Clinical System*:</Form.Label>
+                    <Col xl={3}>
+                        <Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Clinical System*:</Form.Label>
                     </Col>
                     <Col xl={3}>
                         <Select value={types.filter(option => option.value === type)}
