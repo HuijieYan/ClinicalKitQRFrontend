@@ -10,11 +10,10 @@ const MenuBar = () => {
     const history = useHistory();
     const level = parseInt(getLevel());
 
-    const search = () =>{
+    function search(){
         if(searchStr === ""){
             return;
         }
-
         history.push("/result/name="+searchStr+"/category=None/type=None");
     }
 
@@ -23,7 +22,7 @@ const MenuBar = () => {
             <Container fluid>
                 <Navbar.Brand href="#/home">NHS Icon</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
+                <Navbar.Collapse>
                     <Nav className="me-auto">
                         <Nav.Link href="#/home">Home</Nav.Link>
 
@@ -52,23 +51,24 @@ const MenuBar = () => {
                             <NavDropdown.Item href="#/contactBook">Contact Book</NavDropdown.Item>
                         </NavDropdown>
                         }
-                        
 
                         {level>=2 && <Nav.Link href="#/inbox">Share Inbox</Nav.Link>}
 
                         <Nav.Link href="#/faq">FAQs</Nav.Link>
                     </Nav>
-                    <Form className="d-flex">
-                        <FormControl
-                            type="search"
-                            placeholder="Search Equipment"
-                            className="me-2"
-                            aria-label="Search"
-                            value={searchStr}
-                            onChange={(e)=>{setSearchStr(e.target.value)}}
-                        />
-                        <Button variant="outline-success" onClick={search}>Search</Button>
-                    </Form>
+
+                    <Container style={{maxWidth: '350px'}}>
+                        <Form className="d-flex">
+                            <FormControl
+                                type="search"
+                                placeholder="Search Equipment"
+                                className="me-2"
+                                onChange={(e) => {setSearchStr(e.target.value)}}
+                            />
+                            <Button variant="outline-success" onClick={search}>Search</Button>
+                        </Form>
+                    </Container>
+
                     <img
                         id = "profilePic"
                         src = {defaultProfile}
@@ -76,7 +76,6 @@ const MenuBar = () => {
                         onClick={() => history.push("/user")}
                         height={70}
                         width={70}
-                        style={{marginLeft: '5%'}}
                     />
                 </Navbar.Collapse>
             </Container>

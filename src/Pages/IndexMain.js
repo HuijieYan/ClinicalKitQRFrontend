@@ -1,15 +1,8 @@
 import ButtonList from "../Component/ButtonList";
 import { Button, Container, Row, Col } from "react-bootstrap";
-import { logout } from "../Functions/LoginFunctions";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import LogOut from "../Component/LogOut";
 
 const IndexMain = () => {
-  const history = useHistory();
-  const handleLogout = () => {
-    logout();
-    history.push("/login");
-  };
-
   return (
     <div className="indexMain" id="mainContent">
 
@@ -25,20 +18,7 @@ const IndexMain = () => {
         <ButtonList />
       </Row>
 
-      <Button
-        onClick={() => {
-          handleLogout();
-        }}
-      >Log Out</Button>
-
-      <img
-        className="images"
-        src={
-          process.env.REACT_APP_BACKEND_URL +
-          "file/download/bb5fa948-db14-4543-a8aa-fc4198d81747.png"
-        }
-        alt={""}
-      />
+     <LogOut/>
     </div>
   );
 };

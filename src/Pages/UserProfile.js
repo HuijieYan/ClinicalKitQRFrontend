@@ -7,6 +7,7 @@ import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 import DeleteData from "../Functions/DeleteData";
 import MessageModal from "../Component/MessageModal";
+import LogOut from "../Component/LogOut";
 
 //User Profile is used for edit the user group information and trust information, only used by admins
 
@@ -22,6 +23,7 @@ const UserProfile = () => {
         hospital: "",
         username: "",
         name: "",
+        password: "",
         email: "",
         specialty: "",
     });
@@ -40,6 +42,7 @@ const UserProfile = () => {
         specialty: "",
     });
     const history = useHistory();
+    const level = parseInt(getLevel());
 
     useEffect(()=>{
         //getUserGroup by trustId and hospitalId and username and get trustName by Trust Id
@@ -51,6 +54,7 @@ const UserProfile = () => {
                 hospital: hospital.hospitalName,
                 username: getUserName(),
                 name: getName(),
+                password: getPassword(),
                 email: group.email,
                 specialty: group.specialty,
             });
@@ -65,22 +69,33 @@ const UserProfile = () => {
     },[]);
 
     function updateUsergroup(){
-        Uploader.updateUsergroup(getHospitalId(),getUserName(),updateData.name,updateData.password,updateData.email,updateData.specialty).then((response)=>{
-            if(response === ""){
-                setShowGroupEditor(false);
-                setCurrentData(prevState => ({
-                    ...prevState,
-                    name: updateData.name,
-                    password: updateData.password,
-                    email: updateData.email,
-                    specialty: updateData.specialty,
-                }));
-            }else{
-                resetUsergroup();
-                setShowMessage(true);
-                setMessage(response.data);
-            }
-        });
+        const newName = updateData.name;
+        const newPassword = updateData.password === "" ? currentData.password : updateData.password;
+        const newEmail = updateData.email;
+        const newSpecialty = updateData.specialty;
+
+        setShowMessage(true);
+        if(newName === ""){
+            resetUsergroup();
+            setMessage("Error: group name can not be empty!");
+        }else {
+            Uploader.updateUsergroup(getHospitalId(),getUserName(), newName, newPassword, newEmail, newSpecialty).then((response)=>{
+                if(response === ""){
+                    setShowGroupEditor(false);
+                    setCurrentData(prevState => ({
+                        ...prevState,
+                        name: newName,
+                        password: newPassword,
+                        email: newEmail,
+                        specialty: newSpecialty,
+                    }));
+                    setMessage("User Group updated!");
+                }else{
+                    resetUsergroup();
+                    setMessage(response.data);
+                }
+            });
+        }
     }
 
     function resetUsergroup(){
@@ -106,13 +121,27 @@ const UserProfile = () => {
     }
 
     function addTrust(){
-        //post newTrustData
-        Uploader.addNewTrust(newTrustData.trustName,getHospitalId(),getUserName(),newTrustData.name,newTrustData.password,newTrustData.email,newTrustData.specialty).then((response)=>{
-            if(response !== ""){
-                setShowMessage(true);
-                setMessage(response.data);
-            }
-        });
+        const newTrustName = newTrustData.trustName;
+        const newTrustUsername = newTrustData.username;
+        const newTrustGroupName = newTrustData.name;
+        const newTrustPassword = newTrustData.password;
+        const newTrustEmail = newTrustData.email;
+        const newTrustSpecialty = newTrustData.specialty;
+
+        setShowMessage(true);
+        if(newTrustName === "" || newTrustUsername === "" || newTrustGroupName === "" || newTrustPassword === ""){
+            setMessage("Error: Please fill in all the required sections.");
+        }else {
+            //post newTrustData
+            Uploader.addNewTrust(newTrustName,getHospitalId(),newTrustUsername,newTrustGroupName,newTrustPassword,newTrustEmail,newTrustSpecialty).then((response)=>{
+                if(response === ""){
+                    setMessage("New Trust added!");
+                }else {
+                    setMessage(response.data);
+                }
+            });
+        }
+
         resetNewTrust();
     }
 
@@ -141,7 +170,7 @@ const UserProfile = () => {
         });
     }
 
-    function handleUpdate(e){
+    function handleUpdateUsergroup(e){
         const { name, value } = e.target;
         setUpdateData(prevState => ({
             ...prevState,
@@ -178,7 +207,7 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Group Name Here:"
                         defaultValue={currentData.name}
-                        onChange={handleUpdate}
+                        onChange={handleUpdateUsergroup}
                         name="name"
                     />
 
@@ -186,7 +215,7 @@ const UserProfile = () => {
                     <Form.Control
                         as="input"
                         placeholder="Enter Password Here:"
-                        onChange={handleUpdate}
+                        onChange={handleUpdateUsergroup}
                         name="password"
                     />
 
@@ -195,7 +224,7 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Email Here:"
                         defaultValue={currentData.email}
-                        onChange={handleUpdate}
+                        onChange={handleUpdateUsergroup}
                         name="email"
                     />
 
@@ -204,7 +233,7 @@ const UserProfile = () => {
                         as="input"
                         placeholder="Enter Specialty Here:"
                         defaultValue={currentData.specialty}
-                        onChange={handleUpdate}
+                        onChange={handleUpdateUsergroup}
                         name="specialty"
                     />
                 </Modal.Body>
@@ -322,7 +351,7 @@ const UserProfile = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Form style={{marginTop: '3%', marginBottom: '3%', textAlign: 'left', fontSize: 'x-large'}}>
+            <Container style={{marginTop: '3%', marginBottom: '3%', textAlign: 'left', fontSize: 'x-large'}}>
                 <Row>
                     <Col xl={2}>
                         <Form.Group>
@@ -390,29 +419,36 @@ const UserProfile = () => {
                 </Row>
 
                 <Row  style={{marginTop: '3%'}}>
-                    {parseInt(getLevel()) >= 2 &&
-                    <>
-                        <Col xl={3} style={{textAlign: "center"}}>
+                    <Col style={{textAlign: "right"}}>
+                        {level >= 2 &&
                             <Button onClick={() => setShowGroupEditor(true)}>Edit</Button>
-                        </Col>
-                        <Col xl={3} style={{textAlign: "center"}}>
-                            <Button onClick={() => setShowGroupDeletion(true)}>Delete Group</Button>
-                        </Col>
-                    </>
-                    }
+                        }
+                    </Col>
 
-                    {parseInt(getLevel()) === 3 &&
-                    <>
-                        <Col xl={2} style={{textAlign: "center"}}>
+                    <Col style={{textAlign: "left"}}>
+                        {level >= 2 &&
+                            <Button onClick={() => setShowGroupDeletion(true)}>Delete Group</Button>
+                        }
+                    </Col>
+
+                    <Col style={{textAlign: 'center'}}>
+                        <LogOut/>
+                    </Col>
+
+                    <Col style={{textAlign: "right"}}>
+                        {level === 3 &&
                             <Button onClick={() => setShowTrustEditor(true)}>Add New Trust</Button>
-                        </Col>
-                        <Col xl={2} style={{textAlign: "center"}}>
+                        }
+                    </Col>
+
+                    <Col style={{textAlign: "left"}}>
+                        {level === 3 &&
                             <Button onClick={() => setShowDeleteTrust(true)}>Delete Trust</Button>
-                        </Col>
-                    </>
-                    }
+                        }
+                    </Col>
                 </Row>
-            </Form>
+
+            </Container>
         </Container>
     );
 }

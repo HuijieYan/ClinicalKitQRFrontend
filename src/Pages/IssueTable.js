@@ -61,6 +61,16 @@ const IssueTable = () => {
                 },
 
                 {
+                    name: "viewEquipment",
+                    label: "View Equipment",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        viewColumns: false,
+                    }
+                },
+
+                {
                     name: "hospital",
                     options: {
                         filter: false,
@@ -105,17 +115,14 @@ const IssueTable = () => {
             rowsData.push({
                 id: issue.issueId,
                 date: issue.date,
-                description:
-                    <>
-                        <a href="/" onClick={(e) => {
-                            e.preventDefault();
-                            setShowIssue(true);
-                            setCurrentIssue(issue.description);
-                        }} style={{ textDecoration: "none", marginRight: '8%'}}>View Issue</a>
-                        <a href={viewURL + issue.equipmentId.equipmentId}
-                           style={{ textDecoration: "none"}}>View Equipment</a>
-                    </>,
+                description: <a href="/" onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowIssue(true);
+                                    setCurrentIssue(issue.description);
+                                }} style={{ textDecoration: "none", marginRight: '8%'}}>View Issue</a>,
                 equipment: issue.equipmentId.name,
+                viewEquipment: <a href={viewURL + issue.equipmentId.equipmentId}
+                                  style={{ textDecoration: "none"}}>View Equipment</a>,
                 hospital: issue.userGroupName.hospitalId.hospitalName,
                 usergroup: issue.userGroupName.name,
                 solved: <Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>
@@ -163,6 +170,16 @@ const IssueTable = () => {
             label: "Equipment",
             options: {
                 filterOptions: { fullWidth: true },
+            }
+        },
+
+        {
+            name: "viewEquipment",
+            label: "View Equipment",
+            options: {
+                filter: false,
+                sort: false,
+                viewColumns: false,
             }
         },
 

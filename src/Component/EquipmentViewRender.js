@@ -11,11 +11,11 @@ const EquipmentViewRender = ({name, type, category, manufacturer, model, descrip
             </Row>
 
             <Row>
-                <Form.Label style={{color: 'gray'}}>Equipment Type: {type}</Form.Label>
+                <Form.Label style={{color: 'gray'}}>Clinical System: {type}</Form.Label>
             </Row>
 
             <Row>
-                <Form.Label style={{color: 'gray'}}>Equipment Category: {category}</Form.Label>
+                <Form.Label style={{color: 'gray'}}>Patient Demographic: {category}</Form.Label>
             </Row>
 
             <Row>
@@ -26,7 +26,7 @@ const EquipmentViewRender = ({name, type, category, manufacturer, model, descrip
                 <Form.Label style={{color: 'gray'}}>Equipment Model: {model}</Form.Label>
             </Row>
 
-            <Accordion alwaysOpen>
+            <Accordion alwaysOpen style={{marginBottom: '2%', marginTop: '2%'}}>
             {Object.keys(description).map((key, index) => (
                 <Accordion.Item eventKey={index}>
                     <Accordion.Header>{key}</Accordion.Header>

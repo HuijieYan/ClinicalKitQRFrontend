@@ -19,7 +19,7 @@ const SharingUsergroupItem = ({data}) => {
 
         function generateDisplayName(group){
             let displayStr = "";
-            if(group.specialty===null){
+            if(group.specialty===""){
               displayStr = group.name;
             }else{
               displayStr = group.name+"-"+group.specialty;
