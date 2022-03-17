@@ -35,8 +35,8 @@ const InboxMessageList = memo(({selected}) => {
                 senderinfo = "Deleted User";
             }else{
                 senderinfo = sender.name;
-                if (sender.specialty !== null){
-                    senderinfo = sender.name + "-"+sender.specialty.specialty;
+                if (sender.specialty !== ""){
+                    senderinfo = sender.name + "-"+sender.specialty;
                 }
             }
             

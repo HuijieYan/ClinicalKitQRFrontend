@@ -123,3 +123,16 @@ export const storeMailData = (mails) => {
         data: mails
     }
 }
+
+export const getRedirection = () => {
+    return{
+        type: 'GET_REDIRECTION'
+    }
+}
+
+export const storeRedirection = (url) => {
+    return{
+        type: 'SET_REDIRECTION',
+        data: url
+    }
+}

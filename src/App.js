@@ -35,7 +35,7 @@ function App() {
               <Route exact path="/">
                 <Redirect to="/login"/>
               </Route>
-
+                
               <Route exact path="/login">
                 <LoginPage />
               </Route>

@@ -1,7 +1,7 @@
 import { Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
 import { checkLogIn } from "../Functions/LoginFunctions";
-import { getLevel } from "../Functions/UserStatus";
+import { getLevel, setRedirection } from "../Functions/UserStatus";
 
 const GuardedRoute = ({path, component,render,requireLevel}) => {
     const level = parseInt(getLevel());
@@ -18,6 +18,7 @@ const GuardedRoute = ({path, component,render,requireLevel}) => {
         }
         
     }else{
+        setRedirection(path);
         return (<Redirect to="/login"/>);
     }
 }

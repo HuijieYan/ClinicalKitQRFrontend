@@ -17,6 +17,8 @@ import {
   setName,
   setPassword,
   setExpireTime,
+  getRedirection,
+  setRedirection,
 } from "../Functions/UserStatus";
 import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
@@ -66,7 +68,14 @@ const LoginPage = () => {
         setName(resultArray[3]);
         setExpireTime(expireTime.valueOf());
         setPassword(password);
-        history.push("/home");
+
+        var path = getRedirection();
+        if(path === ""){
+          history.push("/home");
+        }else{
+          setRedirection("");
+          history.push(path);
+        }
       } else {
         setMessage("Wrong Username or Password");
         setFormUserName("");

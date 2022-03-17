@@ -1,4 +1,4 @@
-import { storeExpireTime, storeHospitalId, storeLevel, storeName, storePassword, storeTrustId, storeUsername } from "../Storage/Actions/actions";
+import { storeExpireTime, storeHospitalId, storeLevel, storeName, storePassword, storeRedirection, storeTrustId, storeUsername } from "../Storage/Actions/actions";
 import { store } from "../Storage/storeConfiguration";
 
 //Controller for dispatch the local stored information
@@ -33,6 +33,10 @@ export function setPassword(pwd){
     store.dispatch(storePassword(pwd));
 }
 
+export function setRedirection(url){
+    store.dispatch(storeRedirection(url));
+}
+
 export function getLevel(){
     return store.getState().level;
 }
@@ -59,4 +63,8 @@ export function getExpireTime(){
 
 export function getPassword(){
     return store.getState().password;
+}
+
+export function getRedirection(){
+    return store.getState().redirection;
 }

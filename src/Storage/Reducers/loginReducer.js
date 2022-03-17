@@ -6,6 +6,7 @@ import trustIdReducer from "./trustIdReducer";
 import nameReducer from "./nameReducer";
 import expireTimeReducer from "./expireTimeReducer";
 import passwordReducer from "./passwordReducer";
+import redirectionReducer from "./redirectionReducer";
 
 //reducers are responsible for set and get the local stored data
 
@@ -16,5 +17,6 @@ export const loginReducer = combineReducers({
     trustId:trustIdReducer,
     hospitalId:hospitalIdReducer,
     expireTime: expireTimeReducer,
-    password: passwordReducer
+    password: passwordReducer,
+    redirection: redirectionReducer
 });
