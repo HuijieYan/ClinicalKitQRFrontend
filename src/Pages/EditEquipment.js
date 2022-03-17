@@ -320,8 +320,8 @@ const EditEquipment = ({id}) => {
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={addTab}>Submit</Button>
                     <Button onClick={resetTabModal}>Close</Button>
+                    <Button onClick={addTab}>Submit</Button>
                 </Modal.Footer>
             </Modal>
 

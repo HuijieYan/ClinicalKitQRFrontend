@@ -94,7 +94,7 @@ class Uploader {
     });
   }
 
-  updateUsergroup(id, username, name, password, email, specialty) {
+  updateUsergroup(id, username, name, password, email, specialty,isAdmin) {
     const url = URL + "usergroup/update";
     const data = new FormData();
     data.append("hospitalId", id);
@@ -103,6 +103,7 @@ class Uploader {
     data.append("password", password);
     data.append("email", email);
     data.append("specialty", specialty);
+    data.append("isAdmin",isAdmin);
     return axios.post(url, data).then((response) => {
       return response.data;
     });

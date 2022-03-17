@@ -98,7 +98,8 @@ const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
         name,
         password,
         email,
-        specialty
+        specialty,
+        isAdmin
       ).then((response) => {
           if(response === ""){
               history.push("/usergroupTable");
