@@ -1,5 +1,5 @@
 import ButtonList from "../Component/ButtonList";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import LogOut from "../Component/LogOut";
 
 const IndexMain = () => {
