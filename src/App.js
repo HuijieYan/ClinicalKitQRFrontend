@@ -23,6 +23,7 @@ import HospitalTable from "./Pages/HospitalTable";
 import UserProfile from "./Pages/UserProfile";
 import FAQ from "./Pages/FAQ";
 import "./_theme.scss";
+import {checkLogIn} from "./Functions/LoginFunctions";
 
 //This page is responsible for matching path with pages
 function App() {
@@ -33,7 +34,7 @@ function App() {
           <Router>
             <Switch>
               <Route exact path="/">
-                <Redirect to="/login"/>
+                {checkLogIn() ? <Redirect to="/login"/> : <Redirect to="/home"/>}
               </Route>
                 
               <Route exact path="/login">

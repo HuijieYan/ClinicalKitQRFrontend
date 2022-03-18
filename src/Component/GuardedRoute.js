@@ -12,7 +12,7 @@ const GuardedRoute = ({path, component,render,requireLevel}) => {
             return(<Redirect to="/home"/>);
         }
         if (component === null){
-            return(<Route exact path={path} render={render}></Route>);
+            return(<Route exact path={path} render={render}/>);
         }else{
             return(<Route exact path={path}>{component}</Route>);
         }
