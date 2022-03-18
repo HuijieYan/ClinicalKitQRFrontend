@@ -34,12 +34,8 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                         const file = this.files;
                         const reader = new FileReader();
                         reader.readAsDataURL(this.files[0]);
-
-                        console.log(file[0].name)
-
                         reader.onload = function () {
                             return Uploader.uploadFiles(file).then((responese)=>{
-                                console.log(responese.location)
                                 callback(responese.location, {fileName: file[0].name});
                             });
                         };
