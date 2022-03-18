@@ -125,7 +125,7 @@ class Uploader {
   }
 
   addNewTrust(trustName, id, username, name, password, email, specialty) {
-    const url = URL + "usergroup/addTrust";
+    const url = URL + "trusts/addTrust";
     const data = new FormData();
     data.append("trustName", trustName);
     data.append("hospitalId", id);
