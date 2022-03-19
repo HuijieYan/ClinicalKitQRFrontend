@@ -14,7 +14,7 @@ class Uploader {
     data.append("username", getUserName());
     data.append("hospitalId", getHospitalId());
     return axios.post(url, data).then((response) => {
-      return response.data;
+      return URL + "file/download/" + response.data;
     });
   }
 

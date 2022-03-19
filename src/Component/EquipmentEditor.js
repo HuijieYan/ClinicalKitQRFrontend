@@ -29,18 +29,16 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                 file_picker_callback: function(callback) {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
-
                     input.onchange = function() {
                         const file = this.files;
                         const reader = new FileReader();
                         reader.readAsDataURL(this.files[0]);
                         reader.onload = function () {
-                            return Uploader.uploadFiles(file).then((responese)=>{
-                                callback(responese.location, {fileName: file[0].name});
+                            return Uploader.uploadFiles(file).then((response)=>{
+                                callback(response, {fileName: file[0].name});
                             });
                         };
                     };
-
                     input.click();
                 },
 
