@@ -107,7 +107,7 @@ const LoginPage = () => {
                         key={trust.trustId}
                         value={trust.trustId}
                         label={trust.trustName}
-                      />
+                      >{trust.trustName}</option>
                     ))}
                   </Form.Select>
                 </FloatingLabel>
@@ -129,7 +129,7 @@ const LoginPage = () => {
                         key={hospital.hospitalId}
                         value={hospital.hospitalId}
                         label={hospital.hospitalName}
-                      />
+                      >{hospital.hospitalName}</option>
                     ))}
                   </Form.Select>
                 </FloatingLabel>
