@@ -14,7 +14,7 @@ class Uploader {
     data.append("username", getUserName());
     data.append("hospitalId", getHospitalId());
     return axios.post(url, data).then((response) => {
-      return URL + "file/download/" + response.data;
+      return "http://13.87.78.62:8080/file/download/" + response.data;
     });
   }
 
