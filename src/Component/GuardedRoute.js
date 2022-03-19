@@ -1,9 +1,11 @@
 import { Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { checkLogIn } from "../Functions/LoginFunctions";
 import { getLevel, setRedirection } from "../Functions/UserStatus";
 
 const GuardedRoute = ({path, component,render,requireLevel}) => {
+    const location = useLocation();
     const level = parseInt(getLevel());
 
     if (checkLogIn()){
@@ -18,7 +20,7 @@ const GuardedRoute = ({path, component,render,requireLevel}) => {
         }
         
     }else{
-        setRedirection(path);
+        setRedirection(location.pathname);
         return (<Redirect to="/login"/>);
     }
 }
