@@ -155,11 +155,14 @@ class GetData {
 
   async getFile(id) {
     const url = URL + "file/download/" + id;
-    const data = new FormData();
-    data.append("username", getUserName());
-    data.append("hospitalId", getHospitalId());
-    const response = await axios.get(url, data);
-    return response.data;
+    axios.get(url, {responseType: 'blob'}).then((response) => {
+      let url = window.URL.createObjectURL(response.data);
+      let link = document.createElement('a');
+      link.href = url;
+      link.download = id;
+      link.click();
+      window.close();
+    });
   }
 
   async login(hospitalId, username, password) {

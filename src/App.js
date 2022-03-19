@@ -24,6 +24,7 @@ import UserProfile from "./Pages/UserProfile";
 import FAQ from "./Pages/FAQ";
 import "./_theme.scss";
 import {checkLogIn} from "./Functions/LoginFunctions";
+import DownloadFile from "./Component/DownloadFile";
 
 //This page is responsible for matching path with pages
 function App() {
@@ -40,6 +41,13 @@ function App() {
               <Route exact path="/login">
                 <LoginPage />
               </Route>
+
+              <GuardedRoute
+                  render={(props) => {return (<DownloadFile id={props.match.params.id}/>);}}
+                  path="/file/download/:id"
+                  component={null}
+                  requireLevel={1}
+              />
 
               <div>
                 <MenuBar />
