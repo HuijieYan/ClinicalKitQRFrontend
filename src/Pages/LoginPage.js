@@ -43,6 +43,7 @@ const LoginPage = () => {
     GetData.getAllHospitalsByTrust(trustId).then((data) => {
       setFormHospitals(data);
     });
+    console.log(history);
   }, [trustId]);
   //renders only once for fetching selection options
 
