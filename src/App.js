@@ -34,9 +34,9 @@ function App() {
         <div className="App" id="app" style={{textAlign: "center"}}>
           <Router>
             <Switch>
-              /*<Route exact path="/">
+              <Route exact path="/">
                 {checkLogIn() ? <Redirect to="/login"/> : <Redirect to="/home"/>}
-              </Route>*/
+              </Route>
                 
               <Route exact path="/login">
                 <LoginPage />
