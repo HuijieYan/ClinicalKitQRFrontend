@@ -85,7 +85,7 @@ const FAQ = () => {
     }
 
     return(
-        <Box sx={{borderStyle: 'solid', margin: '1%', borderWidth: '1px', padding: '2%'}}>
+        <Box sx={{borderStyle: 'solid', margin: '1%', borderWidth: '1px', padding: '2%', minHeight: '600px'}}>
             <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
 
             <Modal
@@ -213,8 +213,6 @@ const FAQ = () => {
                     })
                 }
             </List>
-
-            <Divider/>
         </Box>
     );
 }

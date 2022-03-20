@@ -42,12 +42,12 @@ function App() {
                 <LoginPage />
               </Route>
 
-              <GuardedRoute
+              {/*<GuardedRoute
                   render={(props) => {return (<DownloadFile id={props.match.params.id}/>);}}
                   path="/file/download/:id"
                   component={null}
                   requireLevel={1}
-              />
+              />*/}
 
               <div>
                 <MenuBar />
