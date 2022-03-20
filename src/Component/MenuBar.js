@@ -26,9 +26,9 @@ const MenuBar = () => {
                     <Nav className="me-auto">
                         <Nav.Link href="home">Home</Nav.Link>
 
-                        {level>=2 && <Nav.Link href="#/equipmentTable">Equipments</Nav.Link>}
+                        {level>=2 && <Nav.Link href="equipmentTable">Equipments</Nav.Link>}
 
-                        <Nav.Link href="#/search">Search</Nav.Link>
+                        <Nav.Link href="search">Search</Nav.Link>
 
                         {level>=2 && 
                         <NavDropdown title="Operations">
