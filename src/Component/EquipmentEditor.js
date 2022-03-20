@@ -16,6 +16,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                 height: 300,
                 menubar: false,
                 automatic_uploads: false,
+                relative_urls: false,
                 plugins: [
                     'advlist autolink lists link image charmap print anchor help',
                     'searchreplace insertdatetime media table paste wordcount'
@@ -76,7 +77,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
 
                                 onSubmit: function (api) {
                                     const fileData = api.getData().fileUploader;
-                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="/#' + fileData.value + '">' + fileData.meta.fileName + '</a></p>');
+                                    editor.insertContent('<p><img src = "' + fileIcon + '" alt="file"/><a href="' + process.env.REACT_APP_FRONTEND_URL + fileData.value + '">' + fileData.meta.fileName + '</a></p>');
                                     api.close();
                                 },
                             });
