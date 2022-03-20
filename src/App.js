@@ -1,4 +1,4 @@
-import {HashRouter as Router, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import IndexMain from "./Pages/IndexMain";
 import LoginPage from "./Pages/LoginPage";
 import EditUsergroup from "./Pages/EditUsergroup";
