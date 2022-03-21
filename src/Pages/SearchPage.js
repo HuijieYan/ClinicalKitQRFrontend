@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Row, Col } from "react-bootstrap";
+import {Button, Form, Row, Col, Container} from "react-bootstrap";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import GetData from "../Functions/GetData";
 import Select from 'react-select'
@@ -74,53 +74,52 @@ const SearchPage = () => {
     },[selectedManufacturer]);
 
     return ( 
-        <div>
-        <Form onSubmit={search}>
-            <Row className="mb-3">
-                <Col>
-                    <Form.Label>Patient Demographic</Form.Label>
-                    <Select value={categories.filter(option => option.value === selectedCategory)}
-                            options={categories}
-                            onChange={(e)=>setSelectedCategory(e.value)}/>
-                </Col>
-                
+        <Container>
+            <Form onSubmit={search}>
+                <Row className="mb-3">
+                    <Col>
+                        <Form.Label>Patient Demographic</Form.Label>
+                        <Select value={categories.filter(option => option.value === selectedCategory)}
+                                options={categories}
+                                onChange={(e)=>setSelectedCategory(e.value)}/>
+                    </Col>
 
-                <Col>
-                    <Form.Label>Clinical System</Form.Label>
-                    <Select value={types.filter(option => option.value === selectedType)}
-                            options={types}
-                            onChange={(e)=>setSelectedType(e.value)}/>
-                </Col>
 
-                <Col>
-                    <Form.Label>Manufacturer</Form.Label>
-                    <Select value={manufacturers.filter(option => option.value === selectedManufacturer)}
-                            options={manufacturers}
-                            onChange={(e)=>setSelectedManufacturer(e.value)}/>
-                </Col>
+                    <Col>
+                        <Form.Label>Clinical System</Form.Label>
+                        <Select value={types.filter(option => option.value === selectedType)}
+                                options={types}
+                                onChange={(e)=>setSelectedType(e.value)}/>
+                    </Col>
 
-                <Col>
-                    <Form.Label>Model</Form.Label>
-                    <Select value={models.filter(option => option.value === selectedModel)}
-                            options={models}
-                            onChange={(e)=>setSelectedModel(e.value)}/>
-                </Col>
-            </Row>
+                    <Col>
+                        <Form.Label>Manufacturer</Form.Label>
+                        <Select value={manufacturers.filter(option => option.value === selectedManufacturer)}
+                                options={manufacturers}
+                                onChange={(e)=>setSelectedManufacturer(e.value)}/>
+                    </Col>
 
-            <Row className="mb-3 justify-content-center">
-                <Col xs={12} md={8} lg={14}>
-                    <Form.Group id="searchbar">
+                    <Col>
+                        <Form.Label>Model</Form.Label>
+                        <Select value={models.filter(option => option.value === selectedModel)}
+                                options={models}
+                                onChange={(e)=>setSelectedModel(e.value)}/>
+                    </Col>
+                </Row>
+
+                <Row className="mb-3 justify-content-center">
+                    <Col>
                         <Form.Control type="searchbar"
-                                    placeholder="Enter Equipment Name or 9-Digit Code"
-                                    value={name}
-                                    onChange={(e)=>setName(e.target.value)}/>
-                    </Form.Group>
-                </Col>
-                <Col><Button type="submit">Search</Button></Col>
-            </Row>
-        </Form>
-        
-        </div>
+                                      placeholder="Enter Equipment Name or 9-Digit Code"
+                                      value={name}
+                                      onChange={(e)=>setName(e.target.value)}/>
+                    </Col>
+                    <Col xs="auto">
+                        <Button type="submit">Search</Button>
+                    </Col>
+                </Row>
+            </Form>
+        </Container>
      );
 }
  

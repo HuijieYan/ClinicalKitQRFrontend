@@ -14,7 +14,7 @@ const MenuBar = () => {
         if(searchStr === ""){
             return;
         }
-        history.push("/result/name="+searchStr+"/category=None/type=None");
+        history.push("/result/name="+searchStr+"/category=all/type=all/manufacturer=all/model=all");
     }
 
     return (
@@ -58,14 +58,15 @@ const MenuBar = () => {
                     </Nav>
 
                     <Container style={{maxWidth: '350px'}}>
-                        <Form className="d-flex">
+                        <Form className="d-flex" onSubmit={search}>
                             <FormControl
                                 type="search"
                                 placeholder="Search Equipment"
                                 className="me-2"
+                                value={searchStr}
                                 onChange={(e) => {setSearchStr(e.target.value)}}
                             />
-                            <Button variant="outline-success" onClick={search}>Search</Button>
+                            <Button variant="outline-success" type="submit">Search</Button>
                         </Form>
                     </Container>
 
