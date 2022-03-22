@@ -15,7 +15,7 @@ class DeleteData {
   }
 
   deleteUsergroup(hospitalId, username) {
-    axios.delete(
+    return axios.delete(
       URL +
         "usergroup/delete/hospitalId=" +
         hospitalId +
