@@ -257,7 +257,7 @@ const UserProfile = () => {
                 <Modal.Body>
                     <h4>Your Group: {currentData.name} will be closed permanently</h4>
                     Once you delete your Group, your Group can not be retrieved.
-                    Be careful, if you are the only Trust Admin, once you delete your Group, your Trust will be deleted.
+                    Be careful, if you are the only Trust Admin, once you delete your Group, your Trust will not be able to add a new trust admin.
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={() => setShowGroupDeletion(false)}>Cancel</Button>
