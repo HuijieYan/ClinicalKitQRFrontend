@@ -238,8 +238,8 @@ const UserProfile = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={updateUsergroup}>Submit</Button>
                     <Button onClick={resetUsergroup}>Close</Button>
+                    <Button onClick={updateUsergroup}>Submit</Button>
                 </Modal.Footer>
             </Modal>
 
@@ -260,8 +260,8 @@ const UserProfile = () => {
                     Be careful, if you are the only Trust Admin, once you delete your Group, your Trust will be deleted.
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {deleteUsergroup();setShowGroupDeletion(false)}}>Delete</Button>
                     <Button onClick={() => setShowGroupDeletion(false)}>Cancel</Button>
+                    <Button onClick={() => {deleteUsergroup();setShowGroupDeletion(false)}}>Delete</Button>
                 </Modal.Footer>
             </Modal>
 
@@ -346,8 +346,8 @@ const UserProfile = () => {
                     Be careful, delete your Trust means all data in this trust will be lost.
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {deleteTrust();setShowDeleteTrust(false)}}>Delete</Button>
                     <Button onClick={() => setShowDeleteTrust(false)}>Cancel</Button>
+                    <Button onClick={() => {deleteTrust();setShowDeleteTrust(false)}}>Delete</Button>
                 </Modal.Footer>
             </Modal>
 
