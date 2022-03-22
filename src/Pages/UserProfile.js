@@ -319,8 +319,8 @@ const UserProfile = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={addTrust}>Submit</Button>
                     <Button onClick={resetNewTrust}>Close</Button>
+                    <Button onClick={addTrust}>Submit</Button>
                 </Modal.Footer>
             </Modal>
 
