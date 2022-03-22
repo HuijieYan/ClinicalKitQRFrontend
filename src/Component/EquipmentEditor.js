@@ -45,9 +45,9 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                         reader.onload = function () {
                             setShowProgress(true);
                             return Uploader.uploadFiles(file, (event) => setProgress(Math.round((100 * event.loaded) / event.total))).then((response)=>{
+                                callback(response, {fileName: file[0].name});
                                 setShowProgress(false);
                                 setProgress(0);
-                                callback(response, {fileName: file[0].name});
                             });
                         };
                     };
