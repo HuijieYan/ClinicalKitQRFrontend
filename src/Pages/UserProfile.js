@@ -110,13 +110,8 @@ const UserProfile = () => {
 
     function deleteUsergroup(){
         DeleteData.deleteUsergroup(getHospitalId(), getUserName()).then((response)=>{
-            if (response === ""){
-                logout();
-                history.push("/login");
-            }else{
-                setShowMessage(true);
-                setMessage(response.data);
-            }
+            logout();
+            history.push("/login");
         });
     }
 
