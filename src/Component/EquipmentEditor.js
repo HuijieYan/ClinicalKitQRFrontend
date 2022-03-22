@@ -31,9 +31,8 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                 ],
 
                 toolbar:
-                    'undo redo | formatselect | bold italic | alignleft aligncenter alignright | ' +
-                    'bullist numlist outdent indent | table | link image media fileUploader | ' +
-                    'print | help',
+                    'undo redo | formatselect | fontselect | fontsizeselect | bold italic | alignleft aligncenter alignright | ' +
+                    'bullist numlist outdent indent | table | link image media fileUploader | help',
 
                 file_picker_callback: function(callback) {
                     const input = document.createElement('input');
@@ -55,6 +54,27 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                 },
 
                 setup: function (editor) {
+                    editor.on('NodeChange', function(e) {
+                        if (e.element.nodeName.toLowerCase() === 'img') {
+                            let width = e.element.width;
+                            let height = e.element.height;
+                            if (width > 250) {
+                                height = "100%";
+                                width = "100%";
+                                editor.dom.setAttribs(e.element, {'width': width, 'height': height});
+                            }
+                        }else if(e.element.childElementCount > 0 &&
+                            (e.element.firstElementChild.nodeName.toLocaleLowerCase() === 'iframe' || e.element.firstElementChild.nodeName.toLocaleLowerCase() === 'video')){
+                            let width = e.element.firstElementChild.getAttribute('width');
+                            let height = e.element.firstElementChild.getAttribute('height');
+                            if (width > 250) {
+                                height = height / (width / 250);
+                                width = 250;
+                                editor.dom.setAttribs(e.element.firstElementChild, {'width': width, 'height': height});
+                            }
+                        }
+                    });
+
                     //urlinput will call filepicker
                     editor.ui.registry.addButton("fileUploader", {
                         tooltip: "Upload Files",
