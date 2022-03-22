@@ -7,10 +7,8 @@ const IndexMain = () => {
     <div className="indexMain" id="mainContent">
 
       <section className="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center ">
-        <Container>
-          <Col className="mb-3">
-          <h1>Welcome</h1>
-          </Col>
+        <Container style={{paddingBottom: '3%'}}>
+          <h1>Welcome to Clinical kit QR System</h1>
         </Container>
       </section>
 

@@ -6,14 +6,14 @@ import { getHospitalId, getUserName } from "./UserStatus";
 const URL = process.env.REACT_APP_BACKEND_URL;
 
 class Uploader {
-  uploadFiles(files) {
+  uploadFiles(files, onUploadProgress) {
     const file = files[0];
     const url = URL + "file/upload";
     const data = new FormData();
     data.append("file", file);
     data.append("username", getUserName());
     data.append("hospitalId", getHospitalId());
-    return axios.post(url, data).then((response) => {
+    return axios.post(url, data, {onUploadProgress}).then((response) => {
       return process.env.REACT_APP_IP + URL + "file/download/" + response.data;
     });
   }

@@ -1,12 +1,20 @@
 import Uploader from "../Functions/Uploader";
 import {Editor} from "@tinymce/tinymce-react";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import fileIcon from "../Picture/fileIcon.png";
+import MessageModal from "./MessageModal";
 
 const EquipmentEditor = ({ index, content, tabContents }) => {
     const editorRef = useRef(null);
+    const [progress, setProgress] = useState(0);
+    const [showProgress, setShowProgress] = useState(false);
 
     return(
+        <>
+        <MessageModal show={showProgress}
+                      message={"Uploading Files, dont close the window! Progress: " + progress + "%"}
+                      handleClose={() => setShowProgress(false)}/>
+
         <Editor
             onInit={(evt, editor) => editorRef.current = editor}
             onChange={() => tabContents[index] = editorRef.current.getContent()}
@@ -35,7 +43,10 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                         const reader = new FileReader();
                         reader.readAsDataURL(this.files[0]);
                         reader.onload = function () {
-                            return Uploader.uploadFiles(file).then((response)=>{
+                            setShowProgress(true);
+                            return Uploader.uploadFiles(file, (event) => setProgress(Math.round((100 * event.loaded) / event.total))).then((response)=>{
+                                setShowProgress(false);
+                                setProgress(0);
                                 callback(response, {fileName: file[0].name});
                             });
                         };
@@ -69,7 +80,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                                         onclick: 'close'
                                     },
                                     {
-                                        text: 'Upload',
+                                        text: 'Confirm',
                                         type: 'submit',
                                         primary: true,
                                     }
@@ -87,6 +98,7 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
 
             }}
         />
+        </>
     );
 }
 

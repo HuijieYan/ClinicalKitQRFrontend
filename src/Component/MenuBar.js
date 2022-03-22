@@ -1,4 +1,4 @@
-import defaultProfile from "../Picture/defaultProfile.png";
+import userProfile from "../Picture/userProfile.png";
 import './MenuBar.css';
 import { Container, Form, FormControl, Button, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useState } from 'react';
@@ -20,7 +20,7 @@ const MenuBar = () => {
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container fluid>
-                <Navbar.Brand href="/home">NHS Icon</Navbar.Brand>
+                <Navbar.Brand href="/home" style={{fontSize: 'xx-large'}}>NHS Neonatal</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse>
                     <Nav className="me-auto">
@@ -72,7 +72,7 @@ const MenuBar = () => {
 
                     <img
                         id = "profilePic"
-                        src = {defaultProfile}
+                        src = {userProfile}
                         alt="profileImg"
                         onClick={() => history.push("/user")}
                         height={70}
