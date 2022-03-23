@@ -25,7 +25,6 @@ const ViewEquipment = ({id}) => {
     useEffect(() => {
         if(id !== null){
             GetData.getEquipmentById(id).then((data)=>{
-                console.log(data)
                 if(data === ""){
                     setShowMessage(true);
                     setMessage("Error: You are not allowed to see this Equipment!")
