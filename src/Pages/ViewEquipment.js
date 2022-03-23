@@ -20,15 +20,24 @@ const ViewEquipment = ({id}) => {
     const [showMessage, setShowMessage] = useState(false);
     const [message, setMessage] = useState("");
 
+    const [authenticated, setAuthenticated] = useState(false);
+
     useEffect(() => {
         if(id !== null){
             GetData.getEquipmentById(id).then((data)=>{
-                setName(data.name);
-                setType(data.type);
-                setCategory(data.category);
-                setManufacturer(data.model.manufacturer.manufacturerName);
-                setModel(data.model.modelName);
-                setDescription(JSON.parse(data.content));
+                console.log(data)
+                if(data === ""){
+                    setShowMessage(true);
+                    setMessage("Error: You are not allowed to see this Equipment!")
+                }else {
+                    setName(data.name);
+                    setType(data.type);
+                    setCategory(data.category);
+                    setManufacturer(data.model.manufacturer.manufacturerName);
+                    setModel(data.model.modelName);
+                    setDescription(JSON.parse(data.content));
+                    setAuthenticated(true);
+                }
             });
         }
 
@@ -60,42 +69,46 @@ const ViewEquipment = ({id}) => {
         <Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", paddingTop: '1%', borderColor: "grey", textAlign: 'left', fontSize: 'x-large'}}>
             <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
 
-            <Button variant="primary" style={{float: 'right'}} onClick={() => setModalShow(true)}>Report Issue</Button>
+            {authenticated &&
+            <>
+                <Button variant="primary" style={{float: 'right'}} onClick={() => setModalShow(true)}>Report Issue</Button>
 
-            <Modal
-                show={modalShow}
-                onHide={resetIssue}
-                size="lg"
-                centered
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        {name}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <h4>Issue Description</h4>
-                    <Form.Group>
-                        <Form.Control
-                            as="textarea"
-                            rows={5}
-                            placeholder="Enter the description here."
-                            onChange={(e) => setIssue(e.target.value)}
-                        />
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={submitIssue}>Submit</Button>
-                    <Button onClick={resetIssue}>Close</Button>
-                </Modal.Footer>
-            </Modal>
+                <Modal
+                    show={modalShow}
+                    onHide={resetIssue}
+                    size="lg"
+                    centered
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            {name}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Issue Description</h4>
+                        <Form.Group>
+                            <Form.Control
+                                as="textarea"
+                                rows={5}
+                                placeholder="Enter the description here."
+                                onChange={(e) => setIssue(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={submitIssue}>Submit</Button>
+                        <Button onClick={resetIssue}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
 
-            <EquipmentViewRender name={name}
-                                 type={type}
-                                 category={category}
-                                 manufacturer={manufacturer}
-                                 model={model}
-                                 description={description}/>
+                <EquipmentViewRender name={name}
+                                     type={type}
+                                     category={category}
+                                     manufacturer={manufacturer}
+                                     model={model}
+                                     description={description}/>
+            </>
+            }
         </Container>
     );
 }

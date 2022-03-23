@@ -34,6 +34,10 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                     'undo redo | formatselect | fontselect | fontsizeselect | bold italic | alignleft aligncenter alignright | ' +
                     'bullist numlist outdent indent | table | link image media fileUploader | help',
 
+                audio_template_callback: function(data){
+                    return '<audio style="width: 100%;" controls><source src="' + data.source + '"' + (data.sourcemime ? ' type="' + data.sourcemime + '"' : '') + ' />\n' + (data.altsource ? '<source src="' + data.altsource + '"' + (data.altsourcemime ? ' type="' + data.altsourcemime + '"' : '') + ' />\n' : '') + '</audio>';
+                },
+
                 file_picker_callback: function(callback) {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
@@ -55,22 +59,34 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
 
                 setup: function (editor) {
                     editor.on('NodeChange', function(e) {
-                        if (e.element.nodeName.toLowerCase() === 'img') {
+                        if (e.element.nodeName.toLowerCase() === 'img' && !e.element.hasAttribute("initialized")) {
                             let width = e.element.width;
                             let height = e.element.height;
-                            if (width > 250) {
+                            if (width > 300) {
                                 height = "100%";
                                 width = "100%";
-                                editor.dom.setAttribs(e.element, {'width': width, 'height': height});
                             }
-                        }else if(e.element.childElementCount > 0 &&
-                            (e.element.firstElementChild.nodeName.toLocaleLowerCase() === 'iframe' || e.element.firstElementChild.nodeName.toLocaleLowerCase() === 'video')){
-                            let width = e.element.firstElementChild.getAttribute('width');
-                            let height = e.element.firstElementChild.getAttribute('height');
-                            if (width > 250) {
-                                height = height / (width / 250);
-                                width = 250;
-                                editor.dom.setAttribs(e.element.firstElementChild, {'width': width, 'height': height});
+                            editor.dom.setAttribs(e.element, {'width': width, 'height': height, 'initialized': 'true'});
+                        }else if(e.element.childElementCount > 0 && !e.element.firstElementChild.hasAttribute("initialized")){
+                            const element = e.element.firstElementChild;
+                            if(element.nodeName.toLocaleLowerCase() === 'iframe'){
+                                let width = element.getAttribute('width');
+                                let height = element.getAttribute('height');
+                                if (width > 300) {
+                                    height = height / (width / 300);
+                                    width = 300;
+                                }
+                                editor.dom.setAttribs(element, {'width': width, 'height': height, 'initialized': 'true'});
+                            }else if(element.nodeName.toLocaleLowerCase() === 'video'){
+                                let width = element.getAttribute('width');
+                                let height = element.getAttribute('height');
+                                if (width > 300) {
+                                    height = "100%";
+                                    width = "100%";
+                                }
+                                editor.dom.setAttribs(element, {'width': width, 'height': height, 'initialized': 'true'});
+                            }else if(element.nodeName.toLocaleLowerCase() === 'audio'){
+                                editor.dom.setAttribs(e.element, {'style': 'width: 100%', 'initialized': 'true'});
                             }
                         }
                     });
