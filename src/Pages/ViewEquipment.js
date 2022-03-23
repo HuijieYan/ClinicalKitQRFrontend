@@ -40,7 +40,6 @@ const ViewEquipment = ({id}) => {
                 }
             });
         }
-
     }, []);
 
     function submitIssue() {
