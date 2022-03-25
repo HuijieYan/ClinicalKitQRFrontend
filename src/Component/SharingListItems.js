@@ -20,6 +20,16 @@ const StyledTreeItem = styled((props) => (
     },
   }));
 
+/**
+ * This is the items in the inbox sharing list
+ * Node is checked in following conditions:
+ * 1.if the node is an end node and it is selected
+ * 2.if the node has children, its children are either selected end nodes or nodes that have children
+ *   (decided by the value of the node)
+ * @param {object} data list data
+ * @param {object} generateNodes data nodes
+ */
+
 const SharingListItems = ({data,generateNodes}) => {
     const [selected,setSelected] = useState([]);
     const [tree,setTree] = useState(null);
@@ -100,12 +110,6 @@ const SharingListItems = ({data,generateNodes}) => {
       const children = childrenLs;
       //delete the node itself from the list
       const isChecked = (children.length===0&&index!==-1)||(children.length>0&&children.every((childId) => (Number(childId)<0 || selected.indexOf(childId)!==-1)));
-      /**
-       * Node is checked in following conditions:
-       * 1.if the node is an end node and it is selected
-       * 2.if the node has children, its children are either selected end nodes or nodes that have children
-       *   (decided by the value of the node)
-       */
       const isIndeterminate =
       !isChecked && children.some((childId) => selected.indexOf(childId)!==-1);
       
