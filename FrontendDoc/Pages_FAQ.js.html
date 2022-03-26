@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/FAQ.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/FAQ.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useEffect, useState} from "react";
+import GetData from "../Functions/GetData";
+import Uploader from "../Functions/Uploader";
+import {getLevel} from "../Functions/UserStatus";
+import {Box} from "@mui/system";
+import {Button, Divider, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
+import {FormGroup, Form, Modal} from "react-bootstrap";
+import DeleteData from "../Functions/DeleteData";
+import MessageModal from "../Component/MessageModal";
+
+/**
+ * FAQ page, trust admins can edit questions, and this can be seen by all users
+ * @module FAQ
+ */
+
+/**
+ * @constructor
+ */
+const FAQ = () => {
+    const [questions, setQuestions] = useState([]);
+    const [showQuestion, setShowQuestion] = useState(false);
+    const [showAddQuestion, setShowAddQuestion] = useState(false);
+    const [question, setQuestion] = useState("");
+    const [answer, setAnswer] = useState("");
+    const [showEditQuestion, setShowEditQuestion] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState({});
+    const userLevel = parseInt(getLevel());
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
+
+    useEffect(getAllQuestion, []);
+
+    /**
+     * @property {Function} getAllQuestion -render only once, get all exit questions from backend
+     */
+    function getAllQuestion(){
+        GetData.getAllQuestions().then((data) => {
+            setQuestions(data);
+        })
+    }
+
+    /**
+     * @property {Function} addQuestion -Add Question to backend if the question is valid then reset the edit modal
+     */
+    function addQuestion(){
+        if(isValidQuestion()) {
+            Uploader.addNewQuestion(question, answer);
+            resetAdd();
+            window.location.reload();
+        }
+    }
+
+    function resetAdd(){
+        setShowAddQuestion(false);
+        setQuestion("");
+        setAnswer("");
+    }
+
+    function deleteQuestion(id){
+        DeleteData.deleteQuestion(id);
+        window.location.reload();
+    }
+
+    function editQuestion(question){
+        setQuestion("" + question.question);
+        setAnswer("" + question.answer);
+        setCurrentQuestion(question);
+        setShowEditQuestion(true);
+    }
+
+    function resetEdit(){
+        setShowEditQuestion(false);
+        setCurrentQuestion({});
+        setQuestion("");
+        setAnswer("");
+    }
+
+    function updateQuestion(){
+        if(isValidQuestion()){
+            Uploader.updateQuestion(currentQuestion.id, question, answer);
+            resetEdit();
+            window.location.reload();
+        }
+    }
+
+    function isValidQuestion(){
+        if(question === ""){
+            setShowMessage(true);
+            setMessage("Error: Question is empty");
+            return false;
+        }else if(answer === ""){
+            setShowMessage(true);
+            setMessage("Error: Answer is empty");
+            return false;
+        }
+        return true;
+    }
+
+    return(
+        &lt;Box sx={{borderStyle: 'solid', margin: '1%', borderWidth: '1px', padding: '2%', minHeight: '600px'}}>
+            &lt;MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
+            &lt;Modal
+                show={showAddQuestion}
+                onHide={resetAdd}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title>FAQs&lt;/Modal.Title>
+                &lt;/Modal.Header>
+
+                &lt;Modal.Body>
+                    &lt;h4>Question:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Question here"
+                        onChange={(e) => setQuestion(e.target.value)}
+                    />
+                    &lt;h4>Answer:&lt;/h4>
+                    &lt;Form.Control
+                        as="textarea"
+                        rows={5}
+                        placeholder="Enter Answer here"
+                        onChange={(e) => setAnswer(e.target.value)}
+                    />
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={addQuestion}>Submit&lt;/Button>
+                    &lt;Button onClick={resetAdd}>Close&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Modal
+                show={showEditQuestion}
+                onHide={resetEdit}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title>FAQs&lt;/Modal.Title>
+                &lt;/Modal.Header>
+
+                &lt;Modal.Body>
+                    &lt;h4>Question:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Question here"
+                        defaultValue={currentQuestion.question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                    />
+                    &lt;h4>Answer:&lt;/h4>
+                    &lt;Form.Control
+                        as="textarea"
+                        rows={5}
+                        placeholder="Enter Answer here"
+                        defaultValue={currentQuestion.answer}
+                        onChange={(e) => setAnswer(e.target.value)}
+                    />
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={updateQuestion}>Update&lt;/Button>
+                    &lt;Button onClick={resetEdit}>Close&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Modal
+                show={showQuestion}
+                onHide={() => setShowQuestion(false)}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title>FAQs&lt;/Modal.Title>
+                &lt;/Modal.Header>
+
+                &lt;Modal.Body>
+                    &lt;h4>Question:&lt;/h4>
+                    {currentQuestion.question}
+                    &lt;h4>Answer:&lt;/h4>
+                    {currentQuestion.answer}
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={() => setShowQuestion(false)}>Close&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;FormGroup style={{marginBottom: '1%'}}>
+                {userLevel === 3 &amp;&amp;
+                    &lt;Button style={{marginRight: '10%', float: 'right'}}
+                            variant="outlined"
+                            onClick={() => setShowAddQuestion(true)
+                            }>Add New&lt;/Button>
+                }
+                &lt;Form.Label>FAQs&lt;/Form.Label>
+            &lt;/FormGroup>
+
+            &lt;Divider/>
+
+            &lt;List>
+                {
+                    questions.map((question)=>{
+                        if(userLevel === 3){
+                            return(
+                                &lt;ListItem key={question.id} secondaryAction={
+                                    &lt;>
+                                        &lt;Button edge="end" onClick={() => editQuestion(question)}>Edit&lt;/Button>
+                                        &lt;Button edge="end" onClick={() => deleteQuestion(question.id)}>Delete&lt;/Button>
+                                    &lt;/>
+                                } disablePadding>
+                                    &lt;ListItemButton onClick={() => {setShowQuestion(true); setCurrentQuestion(question)}}>
+                                        &lt;ListItemText primary={question.question}/>
+                                    &lt;/ListItemButton>
+                                &lt;/ListItem>
+                            );
+                        }else {
+                            return(
+                                &lt;ListItem key={question.id} disablePadding>
+                                    &lt;ListItemButton onClick={() => {setShowQuestion(true); setCurrentQuestion(question)}}>
+                                        &lt;ListItemText primary={question.question}/>
+                                    &lt;/ListItemButton>
+                                &lt;/ListItem>
+                            );
+                        }
+                    })
+                }
+            &lt;/List>
+        &lt;/Box>
+    );
+}
+
+export default FAQ;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

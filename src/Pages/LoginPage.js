@@ -20,11 +20,16 @@ import {
   getRedirection,
   setRedirection,
 } from "../Functions/UserStatus";
-import Auxiliary from "../Functions/Auxiliary";
 import GetData from "../Functions/GetData";
 
-//Login page get trust and group from backend and save the user data in local host
+/**
+ * Login page get trust and group from backend and save the user data for 3 hours if login successfully
+ * @module LoginPage
+ */
 
+/**
+ * @constructor
+ */
 const LoginPage = () => {
   const history = useHistory();
   const [trusts, setFormTrusts] = useState([]);
@@ -35,7 +40,11 @@ const LoginPage = () => {
   const [password, setFormPassword] = useState("");
   const [failMessage, setMessage] = useState("");
 
-  useEffect(() => {
+  useEffect(initializeTrustsAndHospitals, [trustId]);
+  /**
+   * @property {Function} initializeTrustsAndHospitals -renders for fetching selection options
+   */
+  function initializeTrustsAndHospitals(){
     GetData.getAllTrusts().then((data) => {
       setFormTrusts(data);
     });
@@ -43,18 +52,14 @@ const LoginPage = () => {
     GetData.getAllHospitalsByTrust(trustId).then((data) => {
       setFormHospitals(data);
     });
-    console.log(history);
-  }, [trustId]);
-  //renders only once for fetching selection options
+  }
 
+  /**
+   * @property {Function} login -called when click login button, save the user data for 3 hours if login successfully
+   */
   async function login(e) {
     e.preventDefault();
-    if (
-      trustId === "-1" ||
-      hospitalId === "-1" ||
-      Auxiliary.isEmpty(username) ||
-      Auxiliary.isEmpty(password)
-    ) {
+    if (trustId === "-1" || hospitalId === "-1" || username === "" || password === ""){
       return;
     }
 
@@ -70,7 +75,7 @@ const LoginPage = () => {
         setExpireTime(expireTime.valueOf());
         setPassword(password);
 
-        var path = getRedirection();
+        const path = getRedirection();
         if(path === ""){
           history.push("/home");
         }else{

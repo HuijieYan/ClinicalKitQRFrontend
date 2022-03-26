@@ -4,8 +4,14 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import GetData from "../Functions/GetData";
 import Select from 'react-select'
 
-//Search page for equipment
+/**
+ * Search page for equipment, search equipment by it's attr
+ * @module SearchPage
+ */
 
+/**
+ * @constructor
+ */
 const SearchPage = () => {
     const [types,setTypes] = useState([]);
     const [categories,setCategories] = useState([]);
@@ -18,15 +24,21 @@ const SearchPage = () => {
     const [name,setName] = useState("");
     const history = useHistory();
     
-    const search = () =>{
+    const search = () => {
         let searchName = " ";
         if(name !== ""){
             searchName = name;
         }
         history.push("/result/name="+searchName+"/category="+selectedCategory+"/type="+selectedType+"/manufacturer="+selectedManufacturer+"/model="+selectedModel);
-    }
+    };
 
-    useEffect(()=>{
+    useEffect(initializeAttributeOptions,[]);
+
+    /**
+     * @property {Function} initializeAttributeOptions
+     * render only once, get all equipment options of type, category, manufacturer
+     */
+    function initializeAttributeOptions(){
         GetData.getTypes().then((types)=>{
             let typeOptions = [{ value: "all", label: "All" }]
             types.map((type) => {
@@ -50,9 +62,15 @@ const SearchPage = () => {
             })
             setManufacturers(manufacturerList)
         });
-    },[])
+    }
 
-    useEffect(()=>{
+    useEffect(setModelOptions,[selectedManufacturer]);
+
+    /**
+     * @property {Function} setModelOptions
+     * get equipment models depends on the selected Manufacturer
+     */
+    function setModelOptions(){
         if(selectedManufacturer === "all"){
             GetData.getAllModelsByUser().then((models)=>{
                 let modelList = [{ value: "all", label: "All" }]
@@ -71,7 +89,7 @@ const SearchPage = () => {
             });
         }
         setSelectedModel("all");
-    },[selectedManufacturer]);
+    }
 
     return ( 
         <Container>

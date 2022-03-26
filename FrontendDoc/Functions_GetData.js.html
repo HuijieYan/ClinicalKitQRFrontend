@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Functions/GetData.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Functions/GetData.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import { getHospitalId, getUserName, getLevel, getTrustId } from "./UserStatus";
+
+const URL = process.env.REACT_APP_BACKEND_URL;
+
+/**
+ * @memberof module:Functions
+ * @class Responsible for getting any data from backend
+ */
+class GetData {
+  async getAllTrusts() {
+    const url = URL + "trusts/all";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllHospitals() {
+    const url = URL + "hospitals/all";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllHospitalsByTrust(id) {
+    const url = URL + "hospitals/all/trustId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getEquipment() {
+    const level = getLevel();
+    if (level === 2) {
+      const data = await this.getAllEquipmentByHospital(getHospitalId());
+      return data;
+    } else if (level === 3) {
+      const data_1 = await this.getAllEquipmentByTrust(getTrustId());
+      return data_1;
+    }
+  }
+
+  async getAllEquipmentByHospital(id) {
+    const url = URL + "equipment/hospitalId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllEquipmentByTrust(id) {
+    const url = URL + "equipment/trustId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getGroups() {
+    const level = getLevel();
+    if (level === 2) {
+      const data = await this.getAllGroupsByHospital(getHospitalId());
+      return data;
+    } else if (level === 3) {
+      const data_1 = await this.getAllGroupsByTrust(getTrustId());
+      return data_1;
+    }
+  }
+
+  async getAllGroupsByTrust(id) {
+    const url = URL + "usergroup/trustId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllGroupsByHospital(id) {
+    const url = URL + "usergroup/hospitalId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getIssues() {
+    const level = getLevel();
+    if (level === 2) {
+      const data = await this.getAllIssuesByHospital(getHospitalId());
+      return data;
+    } else if (level === 3) {
+      const data_1 = await this.getAllIssuesByTrust(getTrustId());
+      return data_1;
+    }
+  }
+
+  async getAllIssuesByHospital(id) {
+    const url = URL + "issues/hospitalId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllIssuesByTrust(id) {
+    const url = URL + "issues/trustId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  setIssueSolved(id, solved) {
+    const url = URL + "issues/issueId=" + id;
+    const data = new FormData();
+    data.append("solved", solved);
+    return axios.post(url, data);
+  }
+
+  async getHospitalById(id) {
+    const url = URL + "hospitals/hospitalId=" + id;
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getTrustById(id) {
+    const url = URL + "trusts/";
+    const data = new FormData();
+    data.append("id", id);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+
+  async getGroup(hospitalId, username) {
+    const url = URL + "usergroup/get";
+    const data = new FormData();
+    data.append("hospitalId", hospitalId);
+    data.append("username", username);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+
+  async getAllAdmins() {
+    const url = URL + "usergroup/all/admins";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllAdminsInOrder() {
+    const url = URL + "trusts/all/admins";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getReceivedSharings(id, username) {
+    const url = URL + "mail/receiver";
+    const data = new FormData();
+    data.append("hospitalId", id);
+    data.append("username", username);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+
+  async getSentSharings(id, username) {
+    const url = URL + "mail/sender";
+    const data = new FormData();
+    data.append("hospitalId", id);
+    data.append("username", username);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+
+  async getFile(id) {
+    const url = URL + "file/download/" + id;
+    axios.get(url, {responseType: 'blob'}).then((response) => {
+      let url = window.URL.createObjectURL(response.data);
+      let link = document.createElement('a');
+      link.href = url;
+      link.download = id;
+      link.click();
+      window.close();
+    });
+  }
+
+  async login(hospitalId, username, password) {
+    const url = URL + "usergroup/login";
+    const data = new FormData();
+    const id = String(hospitalId);
+    data.append("hospitalId", id);
+    data.append("username", username);
+    data.append("password", password);
+
+    return await axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  async getTypes() {
+    const url = URL + "equipment/types";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getCategories() {
+    const url = URL + "equipment/categories";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async search(name, category, type,manufacturer,model) {
+    const url = URL + "equipment/search";
+    const data = new FormData();
+    if(name===" "){
+      name = "";
+    }
+    if(category==="all"){
+      category = "";
+    }
+    if(type==="all"){
+      type = "";
+    }
+    if(manufacturer==="all"){
+      manufacturer = "";
+    }
+    if(model==="all"){
+      model = "";
+    }
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("category", category);
+    data.append("type", type);
+    data.append("name", name);
+    data.append("manufacturer", manufacturer);
+    data.append("model", model);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+
+  async getEquipmentById(id) {
+    const url = URL + "equipment/get";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("id", id);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+
+  async getSentEquipmentById(id) {
+    const url = URL + "sentEquipment/get";
+    const data = new FormData();
+    data.append("id", id);
+    const response = await axios.post(url, data);
+    return response.data;
+  }
+  // Report and Viewing Getters
+
+  async getViewingsByUserGroup(hospitalId, usergroup) {
+    const url =
+        URL + "reports/hospitalId=" + hospitalId + "&amp;username=" + usergroup;
+    const response = await axios.get(url);
+    console.log("Got viewings by date", response.data);
+    return response.data;
+  }
+
+  async getViewingsByEquipmentIdAndDateBetween(id, startDate, endDate) {
+    const url =
+        URL +
+        "reports/equipmentId=" +
+        id +
+        "/startDate=" +
+        (startDate == null ? "" : startDate.toISOString()) +
+        "/endDate=" +
+        (endDate == null ? "" : endDate.toISOString());
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllQuestions() {
+    const url = URL + "question/all";
+    const response = await axios.get(url);
+    return response.data;
+  }
+
+  async getAllManufacturers() {
+    const url = URL + "equipment/manufacturers/all";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    const response = await axios.post(url,data);
+    return response.data;
+  }
+
+  async getAllModelsByUser() {
+    const url = URL + "equipment/models/getByUser";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    const response = await axios.post(url,data);
+    return response.data;
+  }
+
+  async getAllModelsByManufacturer(manufacturer) {
+    const url = URL + "equipment/models/getByManufacturer";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("manufacturer",manufacturer);
+    const response = await axios.post(url,data);
+    return response.data;
+  }
+}
+
+export default new GetData();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -11,8 +11,15 @@ import EquipmentEditor from "../Component/EquipmentEditor";
 import {Button} from "@mui/material";
 import EquipmentViewRender from "../Component/EquipmentViewRender";
 
-//This page is used for adding new equipment or edit exit equipment
+/**
+ * This page is used for adding new equipment or edit exit equipment
+ * @module EditEquipment
+ */
 
+/**
+ * @param {number} id -The equipment id, null if adding new equipment
+ * @constructor
+ */
 const EditEquipment = ({id}) => {
     const [name, setName] = useState("");
 
@@ -41,7 +48,14 @@ const EditEquipment = ({id}) => {
     const [tabName, setTabName] = useState("");
     const [currentTab, setCurrentTab] = useState("");
 
-    useEffect(() => {
+    useEffect(initializeEquipmentData, []);
+
+    /**
+     * @property {Function} initializeEquipmentData
+     * render only once when initialize selections from backend,
+     * if the equipment id is not null, also get current equipment information from backend
+     */
+    function initializeEquipmentData(){
         GetData.getTypes().then((types) => {
             let typeOptions = [{ value: "", label: "Select Clinical System" }]
             types.map((type) => {
@@ -80,10 +94,14 @@ const EditEquipment = ({id}) => {
                 setManufacturer(data.model.manufacturer.manufacturerName);
             })
         }
-    }, []);
+    }
 
     const history = useHistory();
-    function save(){
+    /**
+     * @property {Function} saveEquipment -Called when user click save, if the user input data is valid,
+     * then add or update equipment, else pop up error message
+     */
+    function saveEquipment(){
         if(category === ""){
             setShowMessage(true);
             setMessage("Error: Patient demographic not selected");
@@ -130,12 +148,19 @@ const EditEquipment = ({id}) => {
         }
     }
 
+    /**
+     * @property {Function} descriptionToJSON
+     * Used to zip two list to a json object for saving to backend
+     */
     function descriptionToJSON(){
         let saveDescription = {};
         tabNames.map((key, index) => saveDescription[key] = tabContents[index]);
         return saveDescription;
     }
 
+    /**
+     * @property {Function} createManufacturer -Creating new Manufacturer
+     */
     function createManufacturer(e){
         if(e.__isNew__ === true){
             setManufacturers([...manufacturers, { value: e.value, label: e.value }])
@@ -143,7 +168,12 @@ const EditEquipment = ({id}) => {
         setManufacturer(e.value)
     }
 
-
+    /**
+     * @property {Function} CustomAccordionBar
+     * Creating new tab for equipment description, every tab has unique name and a inside text editor
+     * @param {string} children -tab name
+     * @param {string} eventKey -tab index
+     */
     function CustomAccordionBar({ children, eventKey }) {
         const decoratedOnClick = useAccordionButton(eventKey);
 
@@ -172,6 +202,10 @@ const EditEquipment = ({id}) => {
         tabContents.splice(index, 1);
     }
 
+    /**
+     * @property {Function} addTab
+     * add new tab if no current tab selected, or edit current tab name
+     */
     function addTab(){
         if(tabName === ""){
             setShowMessage(true);
@@ -194,6 +228,10 @@ const EditEquipment = ({id}) => {
         resetTabModal();
     }
 
+    /**
+     * @property {Function} PreviewWindow
+     * Show the preview of view equipment in a pop up window
+     */
     function PreviewWindow() {
         const saveDescription = descriptionToJSON();
 
@@ -340,7 +378,7 @@ const EditEquipment = ({id}) => {
             ))}
             </Accordion>
 
-            <Button style={{marginTop: "3%", marginBottom: "1%"}} variant="contained" onClick={save}>Save</Button>
+            <Button style={{marginTop: "3%", marginBottom: "1%"}} variant="contained" onClick={saveEquipment}>Save</Button>
         </Container>
     );
 }

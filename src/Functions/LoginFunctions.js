@@ -13,8 +13,10 @@ import {
 } from "./UserStatus";
 import GetData from "./GetData";
 
-//Login Controller provide api for check and log out
-
+/**
+ * @memberof module:Functions
+ * @class Login Controller provide api for check user status and log out
+ */
 export function checkLogIn() {
   const hospitalId = getHospitalId();
   const username = getUserName();

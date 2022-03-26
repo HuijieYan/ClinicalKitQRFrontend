@@ -9,12 +9,18 @@ import {FaRegHospital} from "react-icons/fa";
 import {FaSearch} from "react-icons/fa";
 import {FaQuestion} from "react-icons/fa";
 
+/**
+ * ButtonList contains available operations for different user,
+ * level 3 (trust admins) can access everything,
+ * level 2 (hospital admins) cannot access hospital section,
+ * level 1 (normal user) can only access search equipment and FAQ,
+ * @class ButtonList
+ * @memberof module:IndexMain
+ */
+
 const ButtonList = () => {
   const history = useHistory();
   const level = parseInt(getLevel());
-  //level 3 (trust admins) can access everything
-  //level 2 (hospital admins) cannot access hospital section
-  //level 1 (normal user) can only access search equipment and FAQ
 
   return (
     <section className="p-5">

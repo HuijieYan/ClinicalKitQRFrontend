@@ -2,6 +2,18 @@ import {Accordion, Form, Row} from "react-bootstrap";
 import React from "react";
 import Parser from 'html-react-parser';
 
+/**
+ * Equipment viewing render, render all equipment data in a container
+ * @class EquipmentViewRender
+ * @memberof module:ViewEquipment
+ * @param {string} name -name of equipment
+ * @param {string} type -type of equipment
+ * @param {string} category -category of equipment
+ * @param {string} manufacturer -manufacturer of equipment
+ * @param {string} model -model name of equipment
+ * @param {array<JSON>} description -a list of JSON, keys are tab names, values are tab contents
+ * @constructor
+ */
 
 const EquipmentViewRender = ({name, type, category, manufacturer, model, description}) => {
     return(

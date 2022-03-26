@@ -5,6 +5,13 @@ import App from './App';
 import reportWebVitals from './Component/reportWebVitals';
 import { CookiesProvider } from 'react-cookie';
 
+/**
+ * @file index.js This is React default start page,
+ * user access the web page through router.
+ * All web page documentations are in the Modules, Classes contain all components used in the web page
+ * @see {@link module:Router}
+ */
+
 //This is React default start setting
 ReactDOM.render(
   <CookiesProvider>

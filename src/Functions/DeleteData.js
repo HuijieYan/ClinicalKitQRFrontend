@@ -1,10 +1,16 @@
 import axios from "axios";
 import { getHospitalId, getUserName } from "./UserStatus";
 
-//responsible for post delete data
+/**
+ * Functions contains all universal functions used in frontend
+ * @module Functions
+ */
 
 const URL = process.env.REACT_APP_BACKEND_URL;
 
+/**
+ * @class Responsible for post deletion of any data to backend
+ */
 class DeleteData {
   deleteEquipment(id) {
     axios.delete(URL + "equipment/delete/id=" + id);

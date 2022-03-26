@@ -8,8 +8,14 @@ import {FormGroup, Form, Modal} from "react-bootstrap";
 import DeleteData from "../Functions/DeleteData";
 import MessageModal from "../Component/MessageModal";
 
-//FAQ page, built in modal for edit
+/**
+ * FAQ page, trust admins can edit questions, and this can be seen by all users
+ * @module FAQ
+ */
 
+/**
+ * @constructor
+ */
 const FAQ = () => {
     const [questions, setQuestions] = useState([]);
     const [showQuestion, setShowQuestion] = useState(false);
@@ -23,13 +29,20 @@ const FAQ = () => {
     const [showMessage, setShowMessage] = useState(false);
     const [message, setMessage] = useState("");
 
-    useEffect(()=>{
+    useEffect(getAllQuestion, []);
+
+    /**
+     * @property {Function} getAllQuestion -render only once, get all exit questions from backend
+     */
+    function getAllQuestion(){
         GetData.getAllQuestions().then((data) => {
             setQuestions(data);
         })
+    }
 
-    }, []);
-
+    /**
+     * @property {Function} addQuestion -Add Question to backend if the question is valid then reset the edit modal
+     */
     function addQuestion(){
         if(isValidQuestion()) {
             Uploader.addNewQuestion(question, answer);

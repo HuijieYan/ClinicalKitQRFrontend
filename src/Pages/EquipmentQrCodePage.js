@@ -1,5 +1,15 @@
 //QR code image, get by id
 
+/**
+ * This page is used for showing equipment QR code, a picture downloaded from backend
+ * @module EquipmentQrCodePage
+ */
+
+/**
+ * @param {number} props -The equipment id for downloading
+ * @constructor
+ */
+
 const EquipmentQrCodePage = (props) => {
   const { id } = props;
 

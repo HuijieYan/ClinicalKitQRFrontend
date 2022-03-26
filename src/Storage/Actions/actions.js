@@ -1,5 +1,7 @@
-//provide api for accessing local stored information
-
+/**
+ * @memberof module:Functions
+ * @class provide api for accessing local stored information
+ */
 export const storeUsername = (name) => {
     return{
         type: 'SET_USERNAME',

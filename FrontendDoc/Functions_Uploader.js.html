@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Functions/Uploader.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Functions/Uploader.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import { getHospitalId, getUserName } from "./UserStatus";
+
+const URL = process.env.REACT_APP_BACKEND_URL;
+
+/**
+ * @memberof module:Functions
+ * @class Responsible for posting data to update an exist entity or create a new one
+ */
+class Uploader {
+  uploadFiles(files, onUploadProgress) {
+    const file = files[0];
+    const url = URL + "file/upload";
+    const data = new FormData();
+    data.append("file", file);
+    data.append("username", getUserName());
+    data.append("hospitalId", getHospitalId());
+    return axios.post(url, data, {onUploadProgress}).then((response) => {
+      return process.env.REACT_APP_IP + URL + "file/download/" + response.data;
+    });
+  }
+
+  submitEquipmentData(name, content, category, type,manufacturer,model) {
+    const data = new FormData();
+    const url = URL + "equipment/save";
+    data.append("name", name);
+    data.append("content", content);
+    data.append("category", category);
+    data.append("type", type);
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("model",model);
+    data.append("manufacturer",manufacturer);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  updateEquipmentData(id, name, content, category, type,manufacturer,model) {
+    const data = new FormData();
+    const url = URL + "equipment/update";
+    data.append("equipmentId", id);
+    data.append("name", name);
+    data.append("content", content);
+    data.append("category", category);
+    data.append("type", type);
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("model",model);
+    data.append("manufacturer",manufacturer);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  sendSharings(
+    senderHospitalId,
+    senderUsername,
+    equipmentIds,
+    receivers,
+    title,
+    description,
+    time
+  ) {
+    const url = URL + "mail/sending";
+    const data = new FormData();
+    data.append("senderHospitalId", senderHospitalId);
+    data.append("senderUsername", senderUsername);
+    data.append("receivers", receivers);
+    data.append("title", title);
+    data.append("description", description);
+    data.append("equipmentIds", equipmentIds);
+    data.append("time", time);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  saveEquipments(ids) {
+    const url = URL + "sentEquipment/saving";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("ids", ids);
+    axios.post(url, data);
+  }
+
+  submitIssue(issue, equipmentId) {
+    const url = URL + "issues/new";
+    const data = new FormData();
+    data.append("hospitalId", getHospitalId());
+    data.append("username", getUserName());
+    data.append("description", issue);
+    data.append("equipmentId", equipmentId);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  updateUsergroup(id, username, name, password, email, specialty,isAdmin) {
+    const url = URL + "usergroup/update";
+    const data = new FormData();
+    data.append("hospitalId", id);
+    data.append("username", username);
+    data.append("name", name);
+    data.append("password", password);
+    data.append("email", email);
+    data.append("specialty", specialty);
+    data.append("isAdmin",isAdmin);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  addUserGroup(id, username, name, password, email, specialty,isAdmin) {
+    const url = URL + "usergroup/register";
+    const data = new FormData();
+    data.append("hospitalId", id);
+    data.append("username", username);
+    data.append("name", name);
+    data.append("password", password);
+    data.append("email", email);
+    data.append("specialty", specialty);
+    data.append("isAdmin",isAdmin);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  addNewTrust(trustName, id, username, name, password, email, specialty) {
+    const url = URL + "trusts/addTrust";
+    const data = new FormData();
+    data.append("trustName", trustName);
+    data.append("hospitalId", id);
+    data.append("username", username);
+    data.append("name", name);
+    data.append("password", password);
+    data.append("email", email);
+    data.append("specialty", specialty);
+    return axios.post(url, data).then((response) => {
+      return response.data;
+    });
+  }
+
+  addNewHospital(trustId, name) {
+    const url = URL + "hospitals/new";
+    const data = new FormData();
+    data.append("id", trustId);
+    data.append("name", name);
+    axios.post(url, data);
+  }
+
+  updateHospital(hospitalId, name) {
+    const url = URL + "hospitals/update";
+    const data = new FormData();
+    data.append("id", hospitalId);
+    data.append("name", name);
+    axios.post(url, data);
+  }
+
+  addNewQuestion(question, answer) {
+    const url = URL + "question/new";
+    const data = new FormData();
+    data.append("question", question);
+    data.append("answer", answer);
+    axios.post(url, data);
+  }
+
+  updateQuestion(id, question, answer) {
+    const url = URL + "question/update";
+    const data = new FormData();
+    data.append("id", id);
+    data.append("question", question);
+    data.append("answer", answer);
+    axios.post(url, data);
+  }
+}
+
+export default new Uploader();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

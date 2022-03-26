@@ -25,9 +25,11 @@ const StyledTreeItem = styled((props) => (
  * Node is checked in following conditions:
  * 1.if the node is an end node and it is selected
  * 2.if the node has children, its children are either selected end nodes or nodes that have children
- *   (decided by the value of the node)
+ * (decided by the value of the node)
+ * @class SharingListItems
  * @param {object} data list data
  * @param {object} generateNodes data nodes
+ * @constructor
  */
 
 const SharingListItems = ({data,generateNodes}) => {
@@ -115,12 +117,12 @@ const SharingListItems = ({data,generateNodes}) => {
       
 
       return (
-      <StyledTreeItem key={id} nodeId={id} label={<FormControlLabel onClick={(e) => e.stopPropagation()} label={label} labelPlacement="start" control={<Checkbox onClick={(e) => e.stopPropagation()} size="small" checked={isChecked} indeterminate={isIndeterminate} onChange={(e)=>{handleSelected(node.value,isChecked)}}/>}/>}>
-        {Array.isArray(node.children)?
-          node.children.map((nodes)=>{
-            return(renderItems(nodes));
-          }):null}
-      </StyledTreeItem>
+          <StyledTreeItem key={id} nodeId={id} label={<FormControlLabel onClick={(e) => e.stopPropagation()} label={label} labelPlacement="start" control={<Checkbox onClick={(e) => e.stopPropagation()} size="small" checked={isChecked} indeterminate={isIndeterminate} onChange={(e)=>{handleSelected(node.value,isChecked)}}/>}/>}>
+            {Array.isArray(node.children)?
+              node.children.map((nodes)=>{
+                return(renderItems(nodes));
+              }):null}
+          </StyledTreeItem>
       );
     }
 
@@ -133,7 +135,7 @@ const SharingListItems = ({data,generateNodes}) => {
 
     return (
       <>
-        {data.length>0&&tree!==null?rendering():null}
+        {data.length > 0 && tree !== null ? rendering() : null}
       </>
      );
 }

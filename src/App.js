@@ -25,6 +25,12 @@ import FAQ from "./Pages/FAQ";
 import "./_theme.scss";
 import {checkLogIn} from "./Functions/LoginFunctions";
 
+/**
+ * This page is responsible for matching path (url) with pages,
+ * authentication is verified by GuardedRoute, and log
+ * @module Router
+ */
+
 //This page is responsible for matching path with pages
 function App() {
   return (

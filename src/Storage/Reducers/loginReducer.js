@@ -8,8 +8,10 @@ import expireTimeReducer from "./expireTimeReducer";
 import passwordReducer from "./passwordReducer";
 import redirectionReducer from "./redirectionReducer";
 
-//reducers are responsible for set and get the local stored data
-
+/**
+ * @memberof module:Functions
+ * @class reducers are responsible for set and get the local stored data
+ */
 export const loginReducer = combineReducers({
     name:nameReducer,
     username:usernameReducer,

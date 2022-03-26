@@ -11,7 +11,7 @@ const SharingEquipmentItem = ({data}) => {
         const tree = {label: "All Hospitals", value: String(specialIndex)};
         specialIndex--;
 
-        if (input.length>0){
+        if (input.length > 0){
             equipment = input[0];
             hospital = equipment.hospitalId;
 

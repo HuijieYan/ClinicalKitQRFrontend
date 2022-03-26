@@ -1,8 +1,6 @@
 //using some of the code from example: https://mui.com/components/tree-view/
 import SvgIcon from '@mui/material/SvgIcon';
-
 import TreeView from '@mui/lab/TreeView';
-
 import { useEffect, useState } from 'react';
 import GetData from '../Functions/GetData';
 import SharingUsergroupItem from './SharingUsergroupItem';

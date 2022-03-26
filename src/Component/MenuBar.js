@@ -5,6 +5,11 @@ import { useState } from 'react';
 import { getLevel } from "../Functions/UserStatus";
 import { useHistory } from "react-router-dom";
 
+/**
+ * MenuBar is on the top of all web pages, it contains all web page's shortcut url
+ * @class MenuBar
+ * @memberof module:Router
+ */
 const MenuBar = () => {
     const [searchStr,setSearchStr] = useState("");
     const history = useHistory();

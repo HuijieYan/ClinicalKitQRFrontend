@@ -4,10 +4,53 @@ import {useRef, useState} from "react";
 import fileIcon from "../Picture/fileIcon.png";
 import MessageModal from "./MessageModal";
 
+/**
+ * Equipment editor is a text editor used in every equipment edit tab
+ * @class EquipmentEditor
+ * @memberof module:EditEquipment
+ * @param {number} index -the index of the tab
+ * @param {string} content -initial content of this tab, while editing equipment
+ * @param {Object} tabContents -This variable is used to save the tab content
+ * @constructor
+ */
+
 const EquipmentEditor = ({ index, content, tabContents }) => {
     const editorRef = useRef(null);
     const [progress, setProgress] = useState(0);
     const [showProgress, setShowProgress] = useState(false);
+
+    /**
+     * @property {Function} insert_audio_callback -called when user insert audio url or file
+     * @param {Object} data -Data is a editor api param, store user input and audio file information
+     * @return {string} return html tag for audio
+     */
+    function insert_audio_callback(data){
+        return '<audio style="width: 100%;" controls><source src="' + data.source + '"' + (data.sourcemime ? ' type="' + data.sourcemime + '"' : '') + ' />\n' + (data.altsource ? '<source src="' + data.altsource + '"' + (data.altsourcemime ? ' type="' + data.altsourcemime + '"' : '') + ' />\n' : '') + '</audio>';
+    }
+
+    /**
+     * @property {Function} upload_file -called when user upload image, video, audio or other files
+     * @param {Function} callback -callback is editor api, return download url and data to the editor
+     * @return {string} return backend file download url
+     */
+    function upload_file(callback){
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.onchange = function() {
+            const file = this.files;
+            const reader = new FileReader();
+            reader.readAsDataURL(this.files[0]);
+            reader.onload = function () {
+                setShowProgress(true);
+                return Uploader.uploadFiles(file, (event) => setProgress(Math.round((100 * event.loaded) / event.total))).then((response)=>{
+                    callback(response, {fileName: file[0].name});
+                    setShowProgress(false);
+                    setProgress(0);
+                });
+            };
+        };
+        input.click();
+    }
 
     return(
         <>
@@ -34,28 +77,9 @@ const EquipmentEditor = ({ index, content, tabContents }) => {
                     'undo redo | formatselect | fontselect | fontsizeselect | bold italic | alignleft aligncenter alignright | ' +
                     'bullist numlist outdent indent | table | link image media fileUploader | help',
 
-                audio_template_callback: function(data){
-                    return '<audio style="width: 100%;" controls><source src="' + data.source + '"' + (data.sourcemime ? ' type="' + data.sourcemime + '"' : '') + ' />\n' + (data.altsource ? '<source src="' + data.altsource + '"' + (data.altsourcemime ? ' type="' + data.altsourcemime + '"' : '') + ' />\n' : '') + '</audio>';
-                },
+                audio_template_callback: insert_audio_callback,
 
-                file_picker_callback: function(callback) {
-                    const input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.onchange = function() {
-                        const file = this.files;
-                        const reader = new FileReader();
-                        reader.readAsDataURL(this.files[0]);
-                        reader.onload = function () {
-                            setShowProgress(true);
-                            return Uploader.uploadFiles(file, (event) => setProgress(Math.round((100 * event.loaded) / event.total))).then((response)=>{
-                                callback(response, {fileName: file[0].name});
-                                setShowProgress(false);
-                                setProgress(0);
-                            });
-                        };
-                    };
-                    input.click();
-                },
+                file_picker_callback: upload_file,
 
                 setup: function (editor) {
                     editor.on('NodeChange', function(e) {

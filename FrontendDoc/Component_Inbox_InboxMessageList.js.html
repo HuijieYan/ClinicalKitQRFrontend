@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Component/Inbox/InboxMessageList.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Component/Inbox/InboxMessageList.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { memo, useCallback, useEffect } from "react";
+import InboxDetailedMessage from "./InboxDetailedMessage";
+import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import { Fragment, useState } from "react";
+import InboxNewSharingComponent from "./InboxNewSharingComponent";
+import { useSelector } from "react-redux";
+
+/**
+ * Show detailed received or sent shares as a list, and show detail sharing of user selected in the list
+ * @class InboxMessageList
+ * @memberof module:Inbox
+ * @constructor
+ * @param {number} selected -the selected button index
+ */
+
+const InboxMessageList = memo(({selected}) => {
+    const [displayMailList,setDisplayMailList] = useState([]);
+    const [vacant,setVacant] = useState(true);
+    const [currentMailId,setCurrentMailId] = useState(-1);
+    const [displayIndex,setDisplayIndex] = useState(-1);
+    const data = useSelector((state) => state);
+
+    /**
+     * @property {Function} handleOpenMail
+     * send the mail data to the display component,
+     * the display component will decide what to display based on the data received
+     */
+    const handleOpenMail = useCallback((id)=>{
+        setDisplayIndex(id);
+    },[data]);
+
+
+    useEffect(initializeShareList,[data, handleOpenMail]);
+
+    /**
+     * @property {Function} initializeShareList
+     * show the selected share by pushing share data to the component, called when data or selected share changed
+     */
+    function initializeShareList(){
+        function rendering(){
+            const rows = [];
+            if (data.length === 0){
+                rows.push(&lt;ListItem alignItems="flex-start" key={0}>&lt;Typography>No sharings received yet&lt;/Typography>&lt;/ListItem>);
+            }
+
+            for (let i = 0;i&lt;data.length;i++){
+                const mail = data[i][0];
+                const sender = data[i][1];
+                let senderinfo = "";
+                if(sender === null){
+                    senderinfo = "Deleted User";
+                }else{
+                    senderinfo = sender.name;
+                    if (sender.specialty !== ""){
+                        senderinfo = sender.name + "-"+sender.specialty;
+                    }
+                }
+
+                const descriptionSlice = String(mail.description).substring(0, 48);
+
+                rows.push(
+                    &lt;ListItem alignItems="flex-start" key={i}>
+                        &lt;ListItemButton key={i} onClick={()=>{handleOpenMail(i)}}>
+                            &lt;ListItemText
+                                primary={mail.title}
+                                secondary={
+                                    &lt;Fragment>
+                                        &lt;Typography
+                                            sx={{ display: 'inline' }}
+                                            component="span"
+                                            variant="body2"
+                                            color="text.primary"
+                                        >
+                                            {senderinfo}
+                                        &lt;/Typography>
+                                        {" — "+descriptionSlice+"…"}
+                                    &lt;/Fragment>
+                                }
+                            />
+                        &lt;/ListItemButton>
+                    &lt;/ListItem>
+                );
+                rows.push(&lt;Divider />);
+            }
+            setDisplayMailList(rows);
+        }
+
+        rendering();
+    }
+
+    useEffect(()=>{
+        function renderDetialedMessage(){
+            if (displayIndex === currentMailId){
+                setCurrentMailId(-1);
+                setVacant(true);
+                //the mail details disappears and this section becomes vacant
+            }else{      
+                setCurrentMailId(displayIndex);
+                setVacant(false);
+            }
+            setDisplayIndex(-1);
+            //set the display data back to empty in order to mark it as used
+        }
+        
+        if (displayIndex >= 0){
+            renderDetialedMessage();
+        }
+    },[displayIndex]);
+
+    useEffect(() => {
+        setCurrentMailId(-1);
+        setDisplayIndex(-1);
+        setVacant(true);
+        //when clicked a button on the side bar, hide the detailed message component
+    },[selected])
+    
+    return (
+        &lt;>
+            {selected > 0 &amp;&amp;
+            &lt;>
+                &lt;Box sx={{width: '20%', padding: '1%', overflow: 'auto', borderRight: 'solid', borderWidth: '1px',  minWidth: '200px'}}>
+                    &lt;List>
+                        {displayMailList}
+                    &lt;/List>
+                &lt;/Box>
+                &lt;InboxDetailedMessage index={currentMailId} vacant={vacant} option={selected}/>
+            &lt;/>
+            }
+
+            {selected === 0 &amp;&amp; &lt;InboxNewSharingComponent />}
+        &lt;/>
+     );
+})
+ 
+export default InboxMessageList;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

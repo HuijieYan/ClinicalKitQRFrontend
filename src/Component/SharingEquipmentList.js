@@ -1,8 +1,6 @@
 //using some of the code from example: https://mui.com/components/tree-view/
 import SvgIcon from '@mui/material/SvgIcon';
-
 import TreeView from '@mui/lab/TreeView';
-
 import { useEffect, useState } from 'react';
 import GetData from '../Functions/GetData';
 import { getHospitalId, getLevel, getTrustId } from '../Functions/UserStatus';
@@ -45,14 +43,9 @@ function CloseSquare(props) {
 
 const SharingEquipmentList = ()=>{
   const [data,setData] = useState([]);
-  const [show,setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleOpen = () => setShow(true);
 
   useEffect(()=>{
     const level = Number(getLevel());
-    console.log(level);
     if (level===2){
       GetData.getAllEquipmentByHospital(getHospitalId()).then((ls)=>{
           setData(ls);    
@@ -67,17 +60,17 @@ const SharingEquipmentList = ()=>{
 
   return (
     <SharingList title={"Select Sharing Equipment"} buttonText={"Add Equipment"} component={
-    <TreeView
-      aria-label="customized"
-      defaultExpanded={['1']}
-      defaultCollapseIcon={<MinusSquare />}
-      defaultExpandIcon={<PlusSquare />}
-      defaultEndIcon={<CloseSquare />}
-      sx={{ height: 264, flexGrow: 1, maxWidth: 1500, overflowY: 'auto' }}
-    >
-      <SharingEquipmentItem data={data}/>
-    </TreeView>
-    }
+        <TreeView
+          aria-label="customized"
+          defaultExpanded={['1']}
+          defaultCollapseIcon={<MinusSquare />}
+          defaultExpandIcon={<PlusSquare />}
+          defaultEndIcon={<CloseSquare />}
+          sx={{ height: 264, flexGrow: 1, maxWidth: 1500, overflowY: 'auto' }}
+        >
+          <SharingEquipmentItem data={data}/>
+        </TreeView>
+        }
     />
   );
 }

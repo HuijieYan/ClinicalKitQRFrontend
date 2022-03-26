@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/HospitalTable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/HospitalTable.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import MUIDataTable from "mui-datatables";
+import React, { useEffect, useState } from "react";
+import { ThemeProvider } from "@mui/styles";
+import { createTheme } from "@mui/material/styles";
+import GetData from "../Functions/GetData";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import { getLevel, getTrustId } from "../Functions/UserStatus";
+import {Button, Form, Modal} from "react-bootstrap";
+import DeleteData from "../Functions/DeleteData";
+import Uploader from "../Functions/Uploader";
+import MessageModal from "../Component/MessageModal";
+
+/**
+ * Hospital Table is a table contains hospital data and it's corresponding operations
+ * @module HospitalTable
+ * @constructor
+ */
+const HospitalTable = () => {
+    //rows of data
+    const [rows,setRows] = useState([]);
+    //array of indexes of selected rows
+    const [selected, setSelected] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
+    const [messageShow, setMessageShow] = useState(false);
+    const [selectedId, setSelectedId] = useState(-1);
+    const [placeHolder, setPlaceHolder] = useState("");
+    const [name, setName] = useState("");
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
+
+    useEffect(initializeHospitals,[]);
+
+    /**
+     * @property {Function} initializeHospitals
+     * renders only once, get all hospital from backend, and initialize table row data, only Trust Admin has permission
+     */
+    function initializeHospitals(){
+        if(parseInt(getLevel()) === 3){
+            GetData.getAllHospitalsByTrust(getTrustId()).then((data) => {
+                const rowsData = [];
+                for (let i = 0; i&lt;data.length; i++){
+                    const hospital = data[i];
+                    if (hospital.hospitalName!=="Trust Admin"){
+                        rowsData.push({
+                            hospital:hospital.hospitalName,
+                            operation: &lt;a
+                                href="#"
+                                style={{textDecoration: 'none'}}
+                                onClick={
+                                    (e) => {e.preventDefault();
+                                        setPlaceHolder(hospital.hospitalName);
+                                        setName(hospital.hospitalName);
+                                        setModalShow(true);
+                                        setSelectedId(hospital.hospitalId)}
+                                }>
+                                Edit&lt;/a>,
+                            hospitalId:hospital.hospitalId,
+                        });
+                    }
+
+                }
+                setRows(rowsData);
+            });
+        }
+    }
+
+    /**
+     * @property {Function} submitHospital
+     * Add a new hospital or edit a exit hospital name
+     */
+    function submitHospital(){
+        if(name === ""){
+            setShowMessage(true);
+            setMessage("Error: Hospital Name is empty");
+            return;
+        }
+
+        if(selectedId !== -1){
+            Uploader.updateHospital(selectedId,name);
+        }else {
+            Uploader.addNewHospital(getTrustId(),name);
+        }
+        window.location.reload();
+    }
+
+    const columns = [
+        {
+            name: "hospital",
+            label: "Hospital",
+            options: {
+                filterOptions: { fullWidth: true },
+            }
+        },
+
+        {
+            name: "operation",
+            label: "Edit",
+            options: {
+                viewColumns: false,
+                filter: false,
+                sort: false,
+            }
+        },
+
+        {
+            name: "hospitalId",
+            label: "Hospital ID",
+            options: {
+                filterOptions: { fullWidth: true },
+                filter: false,
+                display: false,
+                viewColumns: false
+            }
+        },
+    ]
+
+    const customToolbar = () => {
+        return(
+            &lt;>
+                &lt;Tooltip title={"Add Hospital"}>
+                    &lt;IconButton onClick={() => {setPlaceHolder(""); setModalShow(true); setSelectedId(-1)}}>
+                        &lt;AddBusinessIcon/>
+                    &lt;/IconButton>
+                &lt;/Tooltip>
+            &lt;/>
+        );
+    }
+
+    /**
+     * @property {Function} deleteHospitals- delete uer selected hospital(s)
+     */
+    function deleteHospitals(){
+        const rowLs = rows;
+        for (let i = 0; i &lt; selected.length; i++){
+            const index = selected[i] - i;
+            DeleteData.deleteHospital(rows[index].hospitalId);
+            rowLs.splice(index,1);
+        }
+        setRows(rowLs);
+        setSelected([]);
+    }
+
+    const options = {
+        filterType: "multiselect",
+        height: "100%",
+        jumpToPage: true,
+        onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
+            setSelected(rowsSelected);
+        },
+        onRowsDelete:function(){
+            setMessageShow(true);
+            return true;
+        },
+        customToolbar: customToolbar,
+    };
+
+    function handleClose(){
+        setModalShow(false);
+        setName("");
+    }
+
+    return (
+        &lt;ThemeProvider theme={createTheme()}>
+            &lt;MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
+            &lt;Modal
+                show={modalShow}
+                onHide={handleClose}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton/>
+                &lt;Modal.Body>
+                    &lt;h4>Hospital Name&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Hospital Name here"
+                        defaultValue={placeHolder}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={handleClose}>Close&lt;/Button>
+                    &lt;Button onClick={() => {submitHospital(); handleClose();}}>Submit&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Modal
+                show={messageShow}
+                onHide={() => setMessageShow(false)}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton/>
+                &lt;Modal.Body>
+                &lt;h4>Selected hospitals will be deleted permanently&lt;/h4>
+                    Once you delete these hospitals, they cannot be retrieved.
+                    Be careful, delete these hospitals mean all data in these hospitals will be lost.
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={() => {deleteHospitals(); setMessageShow(false)}}>Delete&lt;/Button>
+                    &lt;Button onClick={() => setMessageShow(false)}>Close&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+
+            &lt;MUIDataTable
+                title={"Hospitals"}
+                data={rows}
+                columns={columns}
+                options={options}
+            />
+        &lt;/ThemeProvider>
+    );
+}
+
+export default HospitalTable;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

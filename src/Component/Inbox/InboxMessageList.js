@@ -6,73 +6,88 @@ import { Fragment, useState } from "react";
 import InboxNewSharingComponent from "./InboxNewSharingComponent";
 import { useSelector } from "react-redux";
 
+/**
+ * Show detailed received or sent shares as a list, and show detail sharing of user selected in the list
+ * @class InboxMessageList
+ * @memberof module:Inbox
+ * @constructor
+ * @param {number} selected -the selected button index
+ */
+
 const InboxMessageList = memo(({selected}) => {
     const [displayMailList,setDisplayMailList] = useState([]);
     const [vacant,setVacant] = useState(true);
     const [currentMailId,setCurrentMailId] = useState(-1);
     const [displayIndex,setDisplayIndex] = useState(-1);
     const data = useSelector((state) => state);
-    
+
+    /**
+     * @property {Function} handleOpenMail
+     * send the mail data to the display component,
+     * the display component will decide what to display based on the data received
+     */
     const handleOpenMail = useCallback((id)=>{
         setDisplayIndex(id);
-        //send the mail data to the display component
-        //the display component will decide what to display based on the data received
     },[data]);
 
-    useEffect(()=>{
-        //setting the list of sharings
-       function rendering(){
-        const rows = [];
-        if (data.length === 0){
-            rows.push(<ListItem alignItems="flex-start" key={0}><Typography>No sharings received yet</Typography></ListItem>);
-        }
-        
-        for (let i = 0;i<data.length;i++){
-            const mail = data[i][0];
-            const sender = data[i][1];
-            let senderinfo = "";
-            if(sender === null){
-                senderinfo = "Deleted User";
-            }else{
-                senderinfo = sender.name;
-                if (sender.specialty !== ""){
-                    senderinfo = sender.name + "-"+sender.specialty;
-                }
+
+    useEffect(initializeShareList,[data, handleOpenMail]);
+
+    /**
+     * @property {Function} initializeShareList
+     * show the selected share by pushing share data to the component, called when data or selected share changed
+     */
+    function initializeShareList(){
+        function rendering(){
+            const rows = [];
+            if (data.length === 0){
+                rows.push(<ListItem alignItems="flex-start" key={0}><Typography>No sharings received yet</Typography></ListItem>);
             }
-            
-            const descriptionSlice = String(mail.description).substring(0, 48);
-           
-            rows.push(
-                <ListItem alignItems="flex-start" key={i}>
-                    <ListItemButton key={i} onClick={()=>{handleOpenMail(i)}}>
-                        <ListItemText
-                        primary={mail.title}
-                        secondary={
-                            <Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                {senderinfo}
-                            </Typography>
-                            {" — "+descriptionSlice+"…"}
-                            </Fragment>
-                        }
-                        />
-                    </ListItemButton>
-                </ListItem>
-            );
-            rows.push(<Divider />);
+
+            for (let i = 0;i<data.length;i++){
+                const mail = data[i][0];
+                const sender = data[i][1];
+                let senderinfo = "";
+                if(sender === null){
+                    senderinfo = "Deleted User";
+                }else{
+                    senderinfo = sender.name;
+                    if (sender.specialty !== ""){
+                        senderinfo = sender.name + "-"+sender.specialty;
+                    }
+                }
+
+                const descriptionSlice = String(mail.description).substring(0, 48);
+
+                rows.push(
+                    <ListItem alignItems="flex-start" key={i}>
+                        <ListItemButton key={i} onClick={()=>{handleOpenMail(i)}}>
+                            <ListItemText
+                                primary={mail.title}
+                                secondary={
+                                    <Fragment>
+                                        <Typography
+                                            sx={{ display: 'inline' }}
+                                            component="span"
+                                            variant="body2"
+                                            color="text.primary"
+                                        >
+                                            {senderinfo}
+                                        </Typography>
+                                        {" — "+descriptionSlice+"…"}
+                                    </Fragment>
+                                }
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                );
+                rows.push(<Divider />);
+            }
+            setDisplayMailList(rows);
         }
-        setDisplayMailList(rows);
-       }
-       
+
         rendering();
-        //console.log(data);
-        
-    },[data, handleOpenMail]);
+    }
 
     useEffect(()=>{
         function renderDetialedMessage(){
@@ -92,7 +107,6 @@ const InboxMessageList = memo(({selected}) => {
             renderDetialedMessage();
         }
     },[displayIndex]);
-
 
     useEffect(() => {
         setCurrentMailId(-1);

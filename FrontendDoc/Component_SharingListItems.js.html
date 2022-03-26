@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Component/SharingListItems.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Component/SharingListItems.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useEffect, useState } from "react";
+import { alpha, styled } from '@mui/material/styles';
+import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem';
+import { Checkbox, FormControlLabel } from '@mui/material';
+import { storeSelection } from "../Storage/Actions/actions";
+import { useDispatch, useSelector } from "react-redux";
+
+const StyledTreeItem = styled((props) => (
+    &lt;TreeItem {...props} />
+  ))(({ theme }) => ({
+    [`&amp; .${treeItemClasses.iconContainer}`]: {
+      '&amp; .close': {
+        opacity: 0.3,
+      },
+    },
+    [`&amp; .${treeItemClasses.group}`]: {
+      marginLeft: 15,
+      paddingLeft: 18,
+      borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
+    },
+  }));
+
+/**
+ * This is the items in the inbox sharing list
+ * Node is checked in following conditions:
+ * 1.if the node is an end node and it is selected
+ * 2.if the node has children, its children are either selected end nodes or nodes that have children
+ * (decided by the value of the node)
+ * @class SharingListItems
+ * @param {object} data list data
+ * @param {object} generateNodes data nodes
+ * @constructor
+ */
+
+const SharingListItems = ({data,generateNodes}) => {
+    const [selected,setSelected] = useState([]);
+    const [tree,setTree] = useState(null);
+    const dispatch = useDispatch();
+    const selection = useSelector((state) => state);
+    
+
+    const handleSelected = (id,isChecked)=>{
+        const ls = [...selected];
+        const node = findNode(id, tree);
+        const children = getAllChild(node);
+        //including the node self
+        for (let i=0;i&lt;children.length;i++){
+          const childId = children[i];
+          const idx = ls.indexOf(childId);
+          if (!isChecked){
+            if (idx!==-1||Number(childId)&lt;0){
+            }else{
+              ls.push(childId);
+              //select no-child children
+            }
+          }else{
+            if (idx!==-1){
+              ls.splice(idx,1);
+              //deselect selected no-child children
+            }
+          }
+        }
+      //console.log(ls);
+      dispatch(storeSelection(ls));
+      setSelected(ls);
+    };
+
+    function getAllChild(node){
+        let ls = [node.value];
+        if (node.children !== undefined){
+        for (let i=0;i&lt;node.children.length;i++){
+
+            const child = node.children[i];
+            //console.log(child);
+          ls= [...ls,...getAllChild(child)];
+        }
+      }
+
+      return ls;
+    }
+
+    function findNode(id,node){
+      if (node.value === id){
+        return node;
+      }
+      if (node.children === undefined){
+        return null;
+      }
+
+      const children = node.children;
+      for (let i=0;i&lt;children.length;i++){
+          const child = children[i];
+          const result = findNode(id, child);
+          if(result !==null){
+              return result;
+          }
+      }
+      return null;
+    }
+
+    function rendering(){
+      return renderItems(tree);
+    }
+
+    function renderItems(node){
+      const id = node.value;
+      const label = node.label;
+      const index = selected.indexOf(id);
+      const childrenLs = getAllChild(node);
+      childrenLs.splice(0,1);
+      
+      const children = childrenLs;
+      //delete the node itself from the list
+      const isChecked = (children.length===0&amp;&amp;index!==-1)||(children.length>0&amp;&amp;children.every((childId) => (Number(childId)&lt;0 || selected.indexOf(childId)!==-1)));
+      const isIndeterminate =
+      !isChecked &amp;&amp; children.some((childId) => selected.indexOf(childId)!==-1);
+      
+
+      return (
+          &lt;StyledTreeItem key={id} nodeId={id} label={&lt;FormControlLabel onClick={(e) => e.stopPropagation()} label={label} labelPlacement="start" control={&lt;Checkbox onClick={(e) => e.stopPropagation()} size="small" checked={isChecked} indeterminate={isIndeterminate} onChange={(e)=>{handleSelected(node.value,isChecked)}}/>}/>}>
+            {Array.isArray(node.children)?
+              node.children.map((nodes)=>{
+                return(renderItems(nodes));
+              }):null}
+          &lt;/StyledTreeItem>
+      );
+    }
+
+    useEffect(()=>{
+      if (data.length>0){
+        setTree(generateNodes(data));
+      }
+      setSelected(selection);
+    },[data,generateNodes]);
+
+    return (
+      &lt;>
+        {data.length > 0 &amp;&amp; tree !== null ? rendering() : null}
+      &lt;/>
+     );
+}
+
+ 
+export default SharingListItems;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

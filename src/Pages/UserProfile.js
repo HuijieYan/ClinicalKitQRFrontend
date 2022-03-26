@@ -9,8 +9,17 @@ import DeleteData from "../Functions/DeleteData";
 import MessageModal from "../Component/MessageModal";
 import LogOut from "../Component/LogOut";
 
-//User Profile is used for edit the user group information and trust information, only used by admins
+/**
+ * User Profile is used for view and edit the user group information,
+ * normal user can only view the information,
+ * hospital admins can edit the user group,
+ * Trust admin can add new Trust with a default trust admin
+ * @module UserProfile
+ */
 
+/**
+ * @constructor
+ */
 const UserProfile = () => {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
     const [showGroupDeletion, setShowGroupDeletion] = useState(false);
@@ -44,9 +53,13 @@ const UserProfile = () => {
     const history = useHistory();
     const level = parseInt(getLevel());
 
-    useEffect(()=>{
-        //getUserGroup by trustId and hospitalId and username and get trustName by Trust Id
-        
+    useEffect(initializeUserData,[]);
+
+    /**
+     * @property {Function} initializeUserData
+     * render only once, get user group data by hospital id and username
+     */
+    function initializeUserData(){
         GetData.getGroup(getHospitalId(),getUserName()).then((group)=>{
             const hospital = group.hospitalId;
             setCurrentData({
@@ -65,9 +78,12 @@ const UserProfile = () => {
                 specialty: group.specialty,
             });
         });
-        
-    },[]);
+    }
 
+    /**
+     * @property {Function} updateUsergroup
+     * update the user data and reset the edit modal
+     */
     function updateUsergroup(){
         const newName = updateData.name;
         const newPassword = updateData.password === "" ? currentData.password : updateData.password;
@@ -115,6 +131,10 @@ const UserProfile = () => {
         });
     }
 
+    /**
+     * @property {Function} addTrust
+     * add new Trust with a trust admin account, and reset the add trust modal
+     */
     function addTrust(){
         const newTrustName = newTrustData.trustName;
         const newTrustUsername = newTrustData.username;

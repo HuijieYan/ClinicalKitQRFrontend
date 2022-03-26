@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
+import IndexMain from "./Pages/IndexMain";
+import LoginPage from "./Pages/LoginPage";
+import EditUsergroup from "./Pages/EditUsergroup";
+import MenuBar from "./Component/MenuBar";
+import EquipmentQrCodePage from "./Pages/EquipmentQrCodePage";
+import UsergroupTable from "./Pages/UsergroupTable";
+import EquipmentTable from "./Pages/EquipmentTable";
+import IssueTable from "./Pages/IssueTable";
+import EditEquipment from "./Pages/EditEquipment";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./Storage/storeConfiguration";
+import ContactBook from "./Pages/ContactBook";
+import Inbox from "./Pages/Inbox";
+import GuardedRoute from "./Component/GuardedRoute";
+import SearchPage from "./Pages/SearchPage";
+import SearchResult from "./Pages/SearchResult";
+import ViewEquipment from "./Pages/ViewEquipment";
+import PreviewEquipment from "./Pages/PreviewEquipment";
+import Reports from "./Pages/Reports";
+import HospitalTable from "./Pages/HospitalTable";
+import UserProfile from "./Pages/UserProfile";
+import FAQ from "./Pages/FAQ";
+import "./_theme.scss";
+import {checkLogIn} from "./Functions/LoginFunctions";
+
+/**
+ * This page is responsible for matching path (url) with pages,
+ * authentication is verified by GuardedRoute, and log
+ * @module Router
+ */
+
+//This page is responsible for matching path with pages
+function App() {
+  return (
+    &lt;Provider store={store}>
+      &lt;PersistGate persistor={persistor}>
+        &lt;div className="App" id="app" style={{textAlign: "center"}}>
+          &lt;Router>
+            &lt;Switch>
+              &lt;Route exact path="/">
+                {checkLogIn() ? &lt;Redirect to="/login"/> : &lt;Redirect to="/home"/>}
+              &lt;/Route>
+                
+              &lt;Route exact path="/login">
+                &lt;LoginPage />
+              &lt;/Route>
+
+              &lt;div>
+                &lt;MenuBar />
+                &lt;Switch>
+                  &lt;GuardedRoute component={&lt;IndexMain />} path="/home" requireLevel={1} />
+
+                  &lt;GuardedRoute component={&lt;FAQ />} path="/faq" requireLevel={1} />
+
+                  &lt;GuardedRoute component={&lt;UserProfile />} path="/user" requireLevel={1} />
+
+                  &lt;GuardedRoute
+                    render={(props) => {
+                      return (
+                        &lt;EditUsergroup
+                          groupUsername={props.match.params.username}
+                          selectedHospitalId={props.match.params.hospitalId}
+                        />
+                      );
+                    }}
+                    path="/editUserGroup/username=:username/hospitalId=:hospitalId"
+                    component={null}
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    component={&lt;EditUsergroup />}
+                    path="/editUserGroup"
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    component={&lt;EquipmentTable />}
+                    path="/equipmentTable"
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    component={&lt;UsergroupTable />}
+                    path="/usergroupTable"
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    component={&lt;HospitalTable />}
+                    path="/hospitalTable"
+                    requireLevel={3}
+                  />
+
+                  &lt;GuardedRoute component={&lt;IssueTable />} path="/issueTable" requireLevel={2}/>
+
+                  &lt;GuardedRoute
+                    render={(props) => {
+                      return &lt;EditEquipment id={props.match.params.id} />;
+                    }}
+                    path="/editEquipment/id=:id"
+                    component={null}
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    component={&lt;EditEquipment />}
+                    path="/editEquipment"
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    component={&lt;ContactBook />}
+                    path="/contactBook"
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute component={&lt;Inbox />} path="/inbox" requireLevel={2}/>
+
+                  &lt;GuardedRoute component={&lt;Reports />} path="/reports" requireLevel={2}/>
+
+                  &lt;GuardedRoute
+                    render={(props) => {
+                      return &lt;EquipmentQrCodePage id={props.match.params.id} />;
+                    }}
+                    path="/equipment/qrcode/id=:id"
+                    component={null}
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute
+                    render={(props) => {
+                      return &lt;ViewEquipment id={props.match.params.id} />;
+                    }}
+                    path="/viewEquipment/id=:id"
+                    component={null}
+                    requireLevel={1}
+                  />
+
+                  &lt;GuardedRoute
+                    render={(props) => {
+                      return &lt;PreviewEquipment id={props.match.params.id} />;
+                    }}
+                    path="/previewEquipment/id=:id"
+                    component={null}
+                    requireLevel={2}
+                  />
+
+                  &lt;GuardedRoute component={&lt;SearchPage />} path="/search" requireLevel={1}/>
+
+                  &lt;GuardedRoute
+                    render={(props) => {
+                      return (
+                        &lt;SearchResult
+                          name={props.match.params.name}
+                          category={props.match.params.category}
+                          type={props.match.params.type}
+                          manufacturer={props.match.params.manufacturer}
+                          model={props.match.params.model}
+                        />
+                      );
+                    }}
+                    path={"/result/name=:name/category=:category/type=:type/manufacturer=:manufacturer/model=:model"}
+                    component={null}
+                    requireLevel={1}
+                  />
+                &lt;/Switch>
+              &lt;/div>
+            &lt;/Switch>
+          &lt;/Router>
+        &lt;/div>
+      &lt;/PersistGate>
+    &lt;/Provider>
+  );
+}
+
+export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

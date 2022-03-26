@@ -10,8 +10,14 @@ import IconButton from "@mui/material/IconButton";
 import { useHistory } from "react-router-dom";
 import DeleteData from "../Functions/DeleteData";
 
-//Equipment Table is a table contains equipments data and it's corresponding operations
+/**
+ * Equipment Table is a table contains equipments data and it's corresponding operations
+ * @module EquipmentTable
+ */
 
+/**
+ * @constructor
+ */
 const EquipmentTable = () => {
   const QRURL = process.env.REACT_APP_FRONTEND_URL + "equipment/qrcode/id=";
   const viewURL = process.env.REACT_APP_FRONTEND_URL + "viewEquipment/id=";
@@ -21,7 +27,14 @@ const EquipmentTable = () => {
   const [selected, setSelected] = useState([]);
   //array of indexes of selected rows
 
-  useEffect(() => {
+  useEffect(initializeEquipments, []);
+
+  /**
+   * @property {Function} initializeEquipments
+   * render only once, get all equipment data from backend of a hospital or all hospitals in a trust,
+   * also set the columns settings
+   */
+  function initializeEquipments(){
     const level = parseInt(getLevel());
     if (level === 2) {
       setColumns([
@@ -75,10 +88,12 @@ const EquipmentTable = () => {
         setRowData(data);
       });
     }
+  }
 
-  }, []);
-  //renders only once for fetching selection options
-
+  /**
+   * @property {Function} setRowData -initialize row data for every equipment
+   * @param {array<Object>} data -array of equipment
+   */
   function setRowData(data) {
     const rowsData = [];
     for (let i = 0; i < data.length; i++) {

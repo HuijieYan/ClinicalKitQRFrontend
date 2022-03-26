@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/EditEquipment.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/EditEquipment.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {Form, Container, Row, Col, Modal, Accordion, Card, useAccordionButton} from "react-bootstrap";
+import {useEffect, useState} from "react";
+import Uploader from "../Functions/Uploader";
+import "bootstrap/dist/css/bootstrap.min.css";
+import GetData from "../Functions/GetData";
+import {useHistory} from "react-router-dom";
+import Select from "react-select";
+import CreatableSelect from 'react-select/creatable';
+import MessageModal from "../Component/MessageModal";
+import EquipmentEditor from "../Component/EquipmentEditor";
+import {Button} from "@mui/material";
+import EquipmentViewRender from "../Component/EquipmentViewRender";
+
+/**
+ * This page is used for adding new equipment or edit exit equipment
+ * @module EditEquipment
+ */
+
+/**
+ * @param {number} id -The equipment id, null if adding new equipment
+ * @constructor
+ */
+const EditEquipment = ({id}) => {
+    const [name, setName] = useState("");
+
+    //the clinical system of an equipment
+    const [type,setType] = useState("");
+    const [types,setTypes] = useState([]);
+
+    //the patient demographic of an equipment
+    const [category,setCategory] = useState("");
+    const [categories,setCategories] = useState([]);
+
+    //the manufacturer of the equipment
+    const [manufacturer,setManufacturer] = useState("");
+    const [manufacturers,setManufacturers] = useState([]);
+    const [model,setModel] = useState("");
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const [tabNames, setTabNames] = useState( ["Announcement"]);
+    const [tabContents, setTabContents] = useState( ["&lt;p>Enter announcement here.&lt;/p>"]);
+
+    const [showPreview, setShowPreview] = useState(false);
+
+    const [showAddTab, setShowAddTab] = useState(false);
+    const [tabName, setTabName] = useState("");
+    const [currentTab, setCurrentTab] = useState("");
+
+    useEffect(initializeEquipmentData, []);
+
+    /**
+     * @property {Function} initializeEquipmentData
+     * render only once when initialize selections from backend,
+     * if the equipment id is not null, also get current equipment information from backend
+     */
+    function initializeEquipmentData(){
+        GetData.getTypes().then((types) => {
+            let typeOptions = [{ value: "", label: "Select Clinical System" }]
+            types.map((type) => {
+                typeOptions.push({ value: type, label: type })
+            })
+            setTypes(typeOptions)
+        });
+
+        GetData.getCategories().then((categories)=>{
+            let categoryOptions = [{ value: "", label: "Select Patient Demographic" }]
+            categories.map((category) => {
+                categoryOptions.push({ value: category, label: category })
+            })
+            setCategories(categoryOptions);
+        });
+
+        GetData.getAllManufacturers().then((manufacturers)=>{
+            let manufacturerOptions = [{ value: "", label: "Select Manufacturer" }]
+            manufacturers.map((manufacturer) => {
+                manufacturerOptions.push({ value: manufacturer, label: manufacturer })
+            })
+            setManufacturers(manufacturerOptions);
+        });
+
+        if(id != null){
+            GetData.getEquipmentById(id).then((data) => {
+                setName(data.name);
+                setType(data.type);
+                setCategory(data.category);
+
+                const tabs = JSON.parse(data.content);
+                setTabNames(Object.keys(tabs));
+                setTabContents(Object.values(tabs));
+
+                setModel(data.model.modelName);
+                setManufacturer(data.model.manufacturer.manufacturerName);
+            })
+        }
+    }
+
+    const history = useHistory();
+    /**
+     * @property {Function} saveEquipment -Called when user click save, if the user input data is valid,
+     * then add or update equipment, else pop up error message
+     */
+    function saveEquipment(){
+        if(category === ""){
+            setShowMessage(true);
+            setMessage("Error: Patient demographic not selected");
+            return;
+        }else if(type === ""){
+            setShowMessage(true);
+            setMessage("Error: Clinical system not selected");
+            return;
+        }else if(manufacturer === ""){
+            setShowMessage(true);
+            setMessage("Error: Manufacturer not selected");
+            return;
+        }else if(name === ""){
+            setShowMessage(true);
+            setMessage("Error: Equipment Name not selected");
+            return;
+        }
+
+        const saveName = name;
+        const saveType = type;
+        const saveCategory = category;
+        const saveDescription = JSON.stringify(descriptionToJSON());
+        const saveManufacturer = manufacturer;
+        const saveModel = model;
+
+        if (id == null){
+            Uploader.submitEquipmentData(saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
+                if(response === "Equipment Saved Successfully"){
+                    history.push("/equipmentTable");
+                }else{
+                    setShowMessage(true);
+                    setMessage(response.data);
+                }
+            });
+        }else{
+            Uploader.updateEquipmentData(id,saveName,saveDescription,saveCategory,saveType,saveManufacturer,saveModel).then((response) => {
+                if(response === "Equipment Updated Successfully"){
+                    history.push("/equipmentTable");
+                }else{
+                    setShowMessage(true);
+                    setMessage(response.data);
+                }
+            });
+        }
+    }
+
+    /**
+     * @property {Function} descriptionToJSON
+     * Used to zip two list to a json object for saving to backend
+     */
+    function descriptionToJSON(){
+        let saveDescription = {};
+        tabNames.map((key, index) => saveDescription[key] = tabContents[index]);
+        return saveDescription;
+    }
+
+    /**
+     * @property {Function} createManufacturer -Creating new Manufacturer
+     */
+    function createManufacturer(e){
+        if(e.__isNew__ === true){
+            setManufacturers([...manufacturers, { value: e.value, label: e.value }])
+        }
+        setManufacturer(e.value)
+    }
+
+    /**
+     * @property {Function} CustomAccordionBar
+     * Creating new tab for equipment description, every tab has unique name and a inside text editor
+     * @param {string} children -tab name
+     * @param {string} eventKey -tab index
+     */
+    function CustomAccordionBar({ children, eventKey }) {
+        const decoratedOnClick = useAccordionButton(eventKey);
+
+        return (
+            &lt;>
+                &lt;Form.Label style={{float: 'left'}}>{children}&lt;/Form.Label>
+                &lt;Form.Group style={{textAlign: 'right'}}>
+                    &lt;Button onClick={() => {setShowAddTab(true); setCurrentTab(children)}}>Rename&lt;/Button>
+                    &lt;Button onClick={() => deleteTab(children)}>Delete&lt;/Button>
+                    &lt;Button onClick={decoratedOnClick} >Open&lt;/Button>
+                &lt;/Form.Group>
+            &lt;/>
+        );
+    }
+
+    function resetTabModal(){
+        setShowAddTab(false);
+        setTabName("");
+        setCurrentTab("");
+    }
+
+    function deleteTab(tabName){
+        const index = tabNames.indexOf(tabName);
+        tabNames.splice(index, 1);
+        setTabNames([...tabNames])
+        tabContents.splice(index, 1);
+    }
+
+    /**
+     * @property {Function} addTab
+     * add new tab if no current tab selected, or edit current tab name
+     */
+    function addTab(){
+        if(tabName === ""){
+            setShowMessage(true);
+            setMessage("Error: tab name can not be empty");
+        }else{
+            if(tabNames.indexOf(tabName) !== -1){
+                setShowMessage(true);
+                setMessage("Error: tab name already exist");
+            }else {
+                if(currentTab === ""){
+                    setTabNames([...tabNames, tabName]);
+                    setTabContents([...tabContents, ""]);
+
+                }else {
+                    const index = tabNames.indexOf(currentTab);
+                    tabNames[index] = tabName;
+                }
+            }
+        }
+        resetTabModal();
+    }
+
+    /**
+     * @property {Function} PreviewWindow
+     * Show the preview of view equipment in a pop up window
+     */
+    function PreviewWindow() {
+        const saveDescription = descriptionToJSON();
+
+        return (
+            &lt;Modal
+                show={showPreview}
+                onHide={() => setShowPreview(false)}
+                size="lg"
+                scrollable={true}
+                centered
+            >
+                &lt;Modal.Header closeButton/>
+                &lt;Modal.Body>
+                    &lt;EquipmentViewRender
+                        name={name}
+                        type={type}
+                        category={category}
+                        manufacturer={manufacturer}
+                        model={model}
+                        description={saveDescription}
+                    />
+                &lt;/Modal.Body>
+            &lt;/Modal>
+        );
+    }
+
+    return (
+        &lt;Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
+            &lt;MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
+            &lt;PreviewWindow/>
+
+            &lt;Form style={{marginTop: '3%', marginBottom: '3%'}}>
+                &lt;Row style={{textAlign: 'left'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Equipment Name*:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="text"
+                            placeholder="Enter Equipment Name here"
+                            defaultValue={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Manufacturer*:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;CreatableSelect
+                            value={manufacturers.filter(option => option.value === manufacturer)}
+                            onChange={createManufacturer}
+                            options={manufacturers}
+                            menuPortalTarget={document.body}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Equipment Model Name:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="text"
+                            placeholder="Enter Equipment Model Name here"
+                            defaultValue={model}
+                            onChange={(e) => setModel(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Patient Demographic*:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Select value={categories.filter(option => option.value === category)}
+                                options={categories}
+                                onChange={(e) => setCategory(e.value)}
+                                menuPortalTarget={document.body}/>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{textAlign: 'left', marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Clinical System*:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Select value={types.filter(option => option.value === type)}
+                                options={types}
+                                onChange={(e) => setType(e.value)}
+                                menuPortalTarget={document.body}/>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Form>
+
+
+            &lt;Row  style={{textAlign: 'left', fontSize: 'x-large'}}>
+                &lt;Form.Group style={{textAlign: 'right'}}>
+                    &lt;Form.Label style={{color: 'gray', float: 'left'}}>Page Data:&lt;/Form.Label>
+                    &lt;Button variant="contained" onClick={() => setShowPreview(true)}>Preview&lt;/Button>
+                    &lt;Button style={{marginLeft: '2%'}} variant="contained" onClick={() => setShowAddTab(true)}>Add Tab&lt;/Button>
+                &lt;/Form.Group>
+            &lt;/Row>
+
+            &lt;Modal
+                show={showAddTab}
+                onHide={resetTabModal}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton/>
+                &lt;Modal.Body>
+                    &lt;Form.Group>
+                        &lt;Form.Label>Tab Name:&lt;/Form.Label>
+                        &lt;Form.Control
+                            placeholder="Enter the description here."
+                            onChange={(e) => setTabName(e.target.value)}
+                        />
+                    &lt;/Form.Group>
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={resetTabModal}>Close&lt;/Button>
+                    &lt;Button onClick={addTab}>Submit&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Accordion alwaysOpen>
+            {tabNames.map((key, index) => (
+                &lt;Card>
+                    &lt;Card.Header>
+                        &lt;CustomAccordionBar eventKey={index}>{key}&lt;/CustomAccordionBar>
+                    &lt;/Card.Header>
+                    &lt;Accordion.Collapse eventKey={index}>
+                        &lt;Card.Body>
+                            &lt;EquipmentEditor index={index} content={tabContents[index]} tabContents={tabContents}/>
+                        &lt;/Card.Body>
+                    &lt;/Accordion.Collapse>
+                &lt;/Card>
+            ))}
+            &lt;/Accordion>
+
+            &lt;Button style={{marginTop: "3%", marginBottom: "1%"}} variant="contained" onClick={saveEquipment}>Save&lt;/Button>
+        &lt;/Container>
+    );
+}
+
+export default EditEquipment;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

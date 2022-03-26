@@ -8,8 +8,14 @@ import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
 import {Button, Modal} from "react-bootstrap";
 
-//Issue Table is a table contains reported issues and it's corresponding operations
+/**
+ * Issue Table is a table contains reported issues and it's corresponding operations
+ * @module IssueTable
+ */
 
+/**
+ * @constructor
+ */
 const IssueTable = () => {
     //rows of data
     const [rows,setRows] = useState([]);
@@ -21,7 +27,14 @@ const IssueTable = () => {
     const [showIssue, setShowIssue] = useState(false);
     const [currentIssue, setCurrentIssue] = useState("");
 
-    useEffect(()=>{
+    useEffect(initializeIssues,[]);
+
+    /**
+     * @property {Function} initializeIssues
+     * renders only once, get all issues from backend of a hospital or all hospitals in a trust,
+     * also set the columns settings
+     */
+    function initializeIssues(){
         const level = parseInt(getLevel());
         if (level === 2){
             setColumns([
@@ -102,9 +115,12 @@ const IssueTable = () => {
         }else if(level === 3){
             GetData.getAllIssuesByTrust(getTrustId()).then((data) => initialiseRow(data));
         }
-    },[]);
-    //renders only once for fetching selection options
+    }
 
+    /**
+     * @property {Function} initialiseRow -initialize row data for every issue
+     * @param {array<Object>} data -array of issues
+     */
     function initialiseRow(data){
         const solved = [];
         const rowsData = [];
@@ -125,14 +141,18 @@ const IssueTable = () => {
                                   style={{ textDecoration: "none"}}>View Equipment</a>,
                 hospital: issue.userGroupName.hospitalId.hospitalName,
                 usergroup: issue.userGroupName.name,
-                solved: <Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{handleCheck(e)}} name={String(issue.issueId)}/>
+                solved: <Checkbox color="success" checked={solvedLs[i]} onChange={(e)=>{setIssueSolved(e)}} name={String(issue.issueId)}/>
             });
             //decoding issue's json
         }
         setRows(rowsData);
     }
 
-    function handleCheck(e){
+    /**
+     * @property {Function} setIssueSolved -set issue solved to backend
+     * @param {Object} e -checkbox click event
+     */
+    function setIssueSolved(e){
         GetData.setIssueSolved(e.target.name,e.target.checked);
     }
 

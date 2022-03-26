@@ -1,10 +1,12 @@
 import axios from "axios";
 import { getHospitalId, getUserName } from "./UserStatus";
 
-//responsible for posting data to update an exist entity or create a new one
-
 const URL = process.env.REACT_APP_BACKEND_URL;
 
+/**
+ * @memberof module:Functions
+ * @class Responsible for posting data to update an exist entity or create a new one
+ */
 class Uploader {
   uploadFiles(files, onUploadProgress) {
     const file = files[0];

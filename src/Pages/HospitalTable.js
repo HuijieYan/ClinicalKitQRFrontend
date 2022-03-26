@@ -12,11 +12,15 @@ import DeleteData from "../Functions/DeleteData";
 import Uploader from "../Functions/Uploader";
 import MessageModal from "../Component/MessageModal";
 
-//Hospital Table is a table contains hospital data and it's corresponding operations
-
+/**
+ * Hospital Table is a table contains hospital data and it's corresponding operations
+ * @module HospitalTable
+ * @constructor
+ */
 const HospitalTable = () => {
-    const [rows,setRows] = useState([]);
     //rows of data
+    const [rows,setRows] = useState([]);
+    //array of indexes of selected rows
     const [selected, setSelected] = useState([]);
     const [modalShow, setModalShow] = useState(false);
     const [messageShow, setMessageShow] = useState(false);
@@ -26,9 +30,14 @@ const HospitalTable = () => {
 
     const [showMessage, setShowMessage] = useState(false);
     const [message, setMessage] = useState("");
-    //array of indexes of selected rows
 
-    useEffect(()=>{
+    useEffect(initializeHospitals,[]);
+
+    /**
+     * @property {Function} initializeHospitals
+     * renders only once, get all hospital from backend, and initialize table row data, only Trust Admin has permission
+     */
+    function initializeHospitals(){
         if(parseInt(getLevel()) === 3){
             GetData.getAllHospitalsByTrust(getTrustId()).then((data) => {
                 const rowsData = [];
@@ -42,23 +51,26 @@ const HospitalTable = () => {
                                 style={{textDecoration: 'none'}}
                                 onClick={
                                     (e) => {e.preventDefault();
-                                    setPlaceHolder(hospital.hospitalName);
-                                    setName(hospital.hospitalName);
-                                    setModalShow(true);
-                                    setSelectedId(hospital.hospitalId)}
+                                        setPlaceHolder(hospital.hospitalName);
+                                        setName(hospital.hospitalName);
+                                        setModalShow(true);
+                                        setSelectedId(hospital.hospitalId)}
                                 }>
                                 Edit</a>,
                             hospitalId:hospital.hospitalId,
                         });
                     }
-                    
+
                 }
                 setRows(rowsData);
             });
         }
-    },[]);
-    //renders only once for fetching selection options
+    }
 
+    /**
+     * @property {Function} submitHospital
+     * Add a new hospital or edit a exit hospital name
+     */
     function submitHospital(){
         if(name === ""){
             setShowMessage(true);
@@ -117,7 +129,10 @@ const HospitalTable = () => {
         );
     }
 
-    function deleting(){
+    /**
+     * @property {Function} deleteHospitals- delete uer selected hospital(s)
+     */
+    function deleteHospitals(){
         const rowLs = rows;
         for (let i = 0; i < selected.length; i++){
             const index = selected[i] - i;
@@ -150,6 +165,7 @@ const HospitalTable = () => {
     return (
         <ThemeProvider theme={createTheme()}>
             <MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
             <Modal
                 show={modalShow}
                 onHide={handleClose}
@@ -185,7 +201,7 @@ const HospitalTable = () => {
                     Be careful, delete these hospitals mean all data in these hospitals will be lost.
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {deleting(); setMessageShow(false)}}>Delete</Button>
+                    <Button onClick={() => {deleteHospitals(); setMessageShow(false)}}>Delete</Button>
                     <Button onClick={() => setMessageShow(false)}>Close</Button>
                 </Modal.Footer>
             </Modal>

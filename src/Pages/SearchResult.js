@@ -7,28 +7,47 @@ import GetData from "../Functions/GetData";
 import SearchPage from "./SearchPage";
 import {Container} from "react-bootstrap";
 
-//Search Results append to the search page
-
-const SearchResult = ({name,category,type,manufacturer,model}) => {
+/**
+ * Search result page for equipment, append below the search bar
+ * @memberof module:SearchPage
+ * @class SearchResult
+ * @param {string} name -name of equipment
+ * @param {string} type -type of equipment
+ * @param {string} category -category of equipment
+ * @param {string} manufacturer -manufacturer of equipment
+ * @param {string} model -model name of equipment
+ * @constructor
+ */
+const SearchResult = ({ name, category, type, manufacturer, model }) => {
     const [results,setResults] = useState([]);
     const history = useHistory();
 
-    const handleOpen=(id)=>{
+    /**
+     * @property {Function} handleOpen - redirect user to the equipment viewing page of selected equipment
+     * @param {number} id -equipment id
+     */
+    const handleOpen= (id) => {
         history.push("/viewEquipment/id="+id);
     }
 
-    useEffect(()=>{
+    useEffect(getSearchResult,[name,category,type,manufacturer,model]);
+
+    /**
+     * @property {Function} getSearchResult
+     * get search result from backend
+     */
+    function getSearchResult(){
         GetData.search(name,category,type,manufacturer,model).then((response)=>{
             setResults(response);
         });
-    },[name,category,type,manufacturer,model]);
+    }
 
-    return ( 
+    return(
         <Container>
             <SearchPage />
             <List>
-                    {results.length>0?
-                        results.map((equipment)=>{
+                {results.length > 0 ?
+                    results.map((equipment) => {
                         return(
                             <ListItem key={equipment.id} onClick={()=> {handleOpen(equipment.equipmentId)}} disablePadding>
                                 <ListItemButton>
@@ -39,10 +58,10 @@ const SearchResult = ({name,category,type,manufacturer,model}) => {
                                 </ListItemButton>
                             </ListItem>
                         );
-                    }):"Unable to find matching equipments"}
+                    }) : "Unable to find matching equipments"}
             </List>
         </Container>
-     );
+    );
 }
  
 export default SearchResult;

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/UsergroupTable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/UsergroupTable.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import MUIDataTable from "mui-datatables";
+import { useEffect, useState } from "react";
+import { ThemeProvider } from "@mui/styles";
+import { createTheme } from "@mui/material/styles";
+import GetData from "../Functions/GetData";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import { useHistory } from "react-router-dom";
+import { getHospitalId, getLevel, getTrustId, getUserName } from "../Functions/UserStatus";
+import DeleteData from "../Functions/DeleteData";
+
+/**
+ * User Group table display information about user, and corresponding operations
+ * @module UsergroupTable
+ */
+
+/**
+ * @constructor
+ */
+const UsergroupTable = () => {
+  //rows of data
+  const [rows, setRows] = useState([]);
+  //array of indexes of selected rows
+  const [selected, setSelected] = useState([]);
+  const editURL = process.env.REACT_APP_FRONTEND_URL + "editUserGroup/username=";
+
+  useEffect(initializeUsergroups, []);
+
+  /**
+   * @property {Function} initializeUsergroups
+   * render only once, get all user groups of a hospital or all hospitals in a trust from backend,
+   * also set the columns settings
+   */
+  function initializeUsergroups(){
+    const level = parseInt(getLevel());
+    if (level === 2) {
+      setColumns([
+        {
+          name: "name",
+          label: "Group Name",
+          options: {
+            filterOptions: { fullWidth: true },
+          },
+        },
+        {
+          name: "username",
+          label: "Username",
+          options: {
+            filterOptions: { fullWidth: true },
+          },
+        },
+        {
+          name: "role",
+          label: "Role",
+          options: {
+            filterOptions: { fullWidth: true },
+          },
+        },
+        {
+          name: "hospital",
+          label: "Hospital",
+          options: {
+            filter: false,
+            display: false,
+            viewColumns: false,
+          },
+        },
+        {
+          name: "operation",
+          label: "Edit",
+          options: {
+            viewColumns: false,
+            filter: false,
+            sort: false,
+          },
+        },
+        {
+          name: "hospitalId",
+          label: "Hospital ID",
+          options: {
+            filter: false,
+            display: false,
+            viewColumns: false,
+          },
+        },
+      ]);
+
+      GetData.getAllGroupsByHospital(getHospitalId()).then((data) => {
+        setRowData(data);
+      });
+    } else if (level === 3) {
+      GetData.getAllGroupsByTrust(getTrustId()).then((data) => {
+        setRowData(data);
+      });
+    }
+  }
+
+  /**
+   * @property {Function} setRowData -initialize row data for every user group as table row
+   * @param {array&lt;Object>} data -array of user group
+   */
+  function setRowData(data) {
+    const rowsData = [];
+    for (let i = 0; i &lt; data.length; i++) {
+      const group = data[i];
+      if(group[1]!==getUserName()||group[4]!==getHospitalId()){
+        rowsData.push({
+          name: group[0],
+          username: group[1],
+          role: group[2],
+          hospital: group[3],
+          operation: (
+            &lt;a
+              href={editURL + group[1] + "/hospitalId=" + group[4]}
+              style={{ textDecoration: "none" }}
+            >
+              Edit
+            &lt;/a>
+          ),
+          hospitalId: group[4],
+        });
+      }
+    }
+    setRows(rowsData);
+  }
+
+  const [columns, setColumns] = useState([
+    {
+      name: "name",
+      label: "Group Name",
+      options: {
+        filterOptions: { fullWidth: true },
+      },
+    },
+    {
+      name: "username",
+      label: "Username",
+      options: {
+        filterOptions: { fullWidth: true },
+      },
+    },
+    {
+      name: "role",
+      label: "Role",
+      options: {
+        filterOptions: { fullWidth: true },
+      },
+    },
+    {
+      name: "hospital",
+      label: "Hospital",
+      options: {
+        filterOptions: { fullWidth: true },
+      },
+    },
+    {
+      name: "operation",
+      label: "Edit",
+      options: {
+        viewColumns: false,
+        filter: false,
+        sort: false,
+      },
+    },
+    {
+      name: "hospitalId",
+      label: "Hospital ID",
+      options: {
+        filter: false,
+        display: false,
+        viewColumns: false,
+      },
+    },
+  ]);
+
+  const history = useHistory();
+  const addUserGroup = () => {
+    history.push("/editUserGroup");
+  };
+
+  const customToolbar = () => {
+    return (
+      &lt;>
+        &lt;Tooltip title={"Add User Group"}>
+          &lt;IconButton onClick={addUserGroup}>
+            &lt;AddIcon />
+          &lt;/IconButton>
+        &lt;/Tooltip>
+      &lt;/>
+    );
+  };
+
+  const options = {
+    filterType: "multiselect",
+    height: "100%",
+    jumpToPage: true,
+    onRowSelectionChange: function (
+      currentRowsSelected,
+      allRowsSelected,
+      rowsSelected
+    ) {
+      setSelected(rowsSelected);
+    },
+    onRowsDelete: function () {
+      const rowLs = rows;
+      for (let i = 0; i &lt; selected.length; i++) {
+        const index = selected[i] - i;
+        DeleteData.deleteUsergroup(rowLs[index].hospitalId, rowLs[index].username);
+        rowLs.splice(index, 1);
+      }
+      setRows(rowLs);
+      setSelected([]);
+      return true;
+    },
+    customToolbar: customToolbar,
+  };
+
+  return (
+    &lt;ThemeProvider theme={createTheme()}>
+      &lt;MUIDataTable
+        title={"User Groups"}
+        data={rows}
+        columns={columns}
+        options={options}
+      />
+    &lt;/ThemeProvider>
+  );
+};
+
+export default UsergroupTable;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

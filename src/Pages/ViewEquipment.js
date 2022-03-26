@@ -5,8 +5,15 @@ import EquipmentViewRender from "../Component/EquipmentViewRender";
 import Uploader from "../Functions/Uploader";
 import MessageModal from "../Component/MessageModal";
 
-//This is equipment display page for user, and it contains the corresponding report modal
+/**
+ * This is equipment display page for user, and it contains the corresponding report modal
+ * @module ViewEquipment
+ */
 
+/**
+ * @param {number} id -unique equipment id used to get equipment data from backend
+ * @constructor
+ */
 const ViewEquipment = ({id}) => {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
@@ -22,8 +29,14 @@ const ViewEquipment = ({id}) => {
 
     const [authenticated, setAuthenticated] = useState(false);
 
-    useEffect(() => {
-        if(id !== null){
+    useEffect(initializeEquipment, []);
+
+    /**
+     * @property {Function} initializeEquipment
+     * render only once, get equipment by id and check if the user has the permission
+     */
+    function initializeEquipment(){
+        if(id != null){
             GetData.getEquipmentById(id).then((data)=>{
                 if(data === ""){
                     setShowMessage(true);
@@ -39,8 +52,11 @@ const ViewEquipment = ({id}) => {
                 }
             });
         }
-    }, []);
+    }
 
+    /**
+     * @property {Function} submitIssue -Submit a issue to backend and reset the issue modal
+     */
     function submitIssue() {
         if(issue === ""){
             setModalShow(false);

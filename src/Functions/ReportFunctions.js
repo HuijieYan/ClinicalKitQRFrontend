@@ -1,5 +1,7 @@
-//helper function used for report graph
-
+/**
+ * @memberof module:Functions
+ * @class Helper function used for report graph
+ */
 export function createGraphData(equipmentName, data) {
   const graphData = {
     datasets: [{ data: [], label: "", backgroundColor: [] }],

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/LoginPage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/LoginPage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useHistory } from "react-router-dom";
+import "./LoginPage.css";
+import {
+  Button,
+  Form,
+  FloatingLabel,
+  Container,
+  Row,
+  Col,
+} from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  setLevel,
+  setTrustID,
+  setHospitalID,
+  setUserName,
+  setName,
+  setPassword,
+  setExpireTime,
+  getRedirection,
+  setRedirection,
+} from "../Functions/UserStatus";
+import GetData from "../Functions/GetData";
+
+/**
+ * Login page get trust and group from backend and save the user data for 3 hours if login successfully
+ * @module LoginPage
+ */
+
+/**
+ * @constructor
+ */
+const LoginPage = () => {
+  const history = useHistory();
+  const [trusts, setFormTrusts] = useState([]);
+  const [trustId, setFormTrustID] = useState("-1");
+  const [hospitalId, setFormHospitalID] = useState("-1");
+  const [hospitals, setFormHospitals] = useState([]);
+  const [username, setFormUserName] = useState("");
+  const [password, setFormPassword] = useState("");
+  const [failMessage, setMessage] = useState("");
+
+  useEffect(initializeTrustsAndHospitals, [trustId]);
+  /**
+   * @property {Function} initializeTrustsAndHospitals -renders for fetching selection options
+   */
+  function initializeTrustsAndHospitals(){
+    GetData.getAllTrusts().then((data) => {
+      setFormTrusts(data);
+    });
+    //set trusts' selection option
+    GetData.getAllHospitalsByTrust(trustId).then((data) => {
+      setFormHospitals(data);
+    });
+  }
+
+  /**
+   * @property {Function} login -called when click login button, save the user data for 3 hours if login successfully
+   */
+  async function login(e) {
+    e.preventDefault();
+    if (trustId === "-1" || hospitalId === "-1" || username === "" || password === ""){
+      return;
+    }
+
+    GetData.login(hospitalId, username, password).then((resultArray) => {
+      if (resultArray.length > 0) {
+        const expireTime = new Date().setUTCHours(new Date().getUTCHours() + 3);
+        //3 hours session
+        setLevel(resultArray[0]);
+        setHospitalID(resultArray[1]);
+        setTrustID(resultArray[2]);
+        setUserName(username);
+        setName(resultArray[3]);
+        setExpireTime(expireTime.valueOf());
+        setPassword(password);
+
+        const path = getRedirection();
+        if(path === ""){
+          history.push("/home");
+        }else{
+          setRedirection("");
+          history.push(path);
+        }
+      } else {
+        setMessage("Wrong Username or Password");
+        setFormUserName("");
+        setFormPassword("");
+      }
+    });
+  }
+
+  return (
+    &lt;div className="contents p-5">
+      &lt;Container fluid="md">
+        &lt;Row className="mb-3 justify-content-center">
+          &lt;Col md="8">
+            &lt;div className="d-grid">
+              &lt;h1>Log In to Clinical QR Kit&lt;/h1>
+              &lt;Form onSubmit={(e) => login(e)}>
+                &lt;FloatingLabel controlId="floatingSelect" label="Trust">
+                  &lt;Form.Select
+                    className="mt-3 mb-3"
+                    aria-label="Select Trust"
+                    value={trustId}
+                    onChange={(e) => setFormTrustID(e.target.value)}
+                  >
+                    &lt;option value="-1" disabled>
+                      Select Trust
+                    &lt;/option>
+                    {trusts.map((trust) => (
+                      &lt;option
+                        key={trust.trustId}
+                        value={trust.trustId}
+                        label={trust.trustName}
+                      >{trust.trustName}&lt;/option>
+                    ))}
+                  &lt;/Form.Select>
+                &lt;/FloatingLabel>
+                &lt;FloatingLabel
+                  controlId="floatingSelectHospital"
+                  label="Hospital"
+                >
+                  &lt;Form.Select
+                    className="mt-3 mb-3"
+                    aria-label="Select Hospital"
+                    value={hospitalId}
+                    onChange={(e) => setFormHospitalID(e.target.value)}
+                  >
+                    &lt;option value="-1" disabled>
+                      Select Hospital
+                    &lt;/option>
+                    {hospitals.map((hospital) => (
+                      &lt;option
+                        key={hospital.hospitalId}
+                        value={hospital.hospitalId}
+                        label={hospital.hospitalName}
+                      >{hospital.hospitalName}&lt;/option>
+                    ))}
+                  &lt;/Form.Select>
+                &lt;/FloatingLabel>
+
+                &lt;Form.Group as={Col} id="username" className="mt-3 mb-3">
+                  &lt;FloatingLabel controlId="floatingUsername" label="Username">
+                    &lt;Form.Control
+                      type="username"
+                      placeholder="Enter Departmental Username"
+                      value={username}
+                      onChange={(e) => setFormUserName(e.target.value)}
+                      onInput={() => setMessage("")}
+                    />
+                  &lt;/FloatingLabel>
+                &lt;/Form.Group>
+
+                &lt;Form.Group as={Col} id="password" className="mt-3 mb-3">
+                  &lt;FloatingLabel controlId="floatingPassword" label="Password">
+                    &lt;Form.Control
+                      type="password"
+                      placeholder="Department Password"
+                      value={password}
+                      onChange={(e) => setFormPassword(e.target.value)}
+                      onInput={() => setMessage("")}
+                    />
+                  &lt;/FloatingLabel>
+                &lt;/Form.Group>
+
+                &lt;div className="d-grid gap-2">
+                  &lt;Button className="mt-3 mb-3" id="loginButton" type="submit">
+                    Log in
+                  &lt;/Button>
+                &lt;/div>
+                &lt;Form.Label>{failMessage}&lt;/Form.Label>
+              &lt;/Form>
+            &lt;/div>
+          &lt;/Col>
+        &lt;/Row>
+      &lt;/Container>
+    &lt;/div>
+  );
+};
+
+export default LoginPage;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

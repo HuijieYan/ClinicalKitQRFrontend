@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/UserProfile.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/UserProfile.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
+import {getUserName, getName, getLevel, getTrustId, getHospitalId, getPassword} from "../Functions/UserStatus";
+import React, {useEffect, useState} from "react";
+import {useHistory} from "react-router-dom";
+import {logout} from "../Functions/LoginFunctions";
+import GetData from "../Functions/GetData";
+import Uploader from "../Functions/Uploader";
+import DeleteData from "../Functions/DeleteData";
+import MessageModal from "../Component/MessageModal";
+import LogOut from "../Component/LogOut";
+
+/**
+ * User Profile is used for view and edit the user group information,
+ * normal user can only view the information,
+ * hospital admins can edit the user group,
+ * Trust admin can add new Trust with a default trust admin
+ * @module UserProfile
+ */
+
+/**
+ * @constructor
+ */
+const UserProfile = () => {
+    const [showGroupEditor, setShowGroupEditor] = useState(false);
+    const [showGroupDeletion, setShowGroupDeletion] = useState(false);
+    const [showTrustEditor, setShowTrustEditor] = useState(false);
+    const [showDeleteTrust, setShowDeleteTrust] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
+    const [currentData,setCurrentData] = useState({
+        trust: "",
+        hospital: "",
+        username: "",
+        name: "",
+        password: "",
+        email: "",
+        specialty: "",
+    });
+    const [updateData, setUpdateData] = useState({
+        name: "",
+        password: "",
+        email: "",
+        specialty: "",
+    });
+    const [newTrustData, setNewTrustData] = useState({
+        trustName: "",
+        username: "",
+        name: "",
+        password: "",
+        email: "",
+        specialty: "",
+    });
+    const history = useHistory();
+    const level = parseInt(getLevel());
+
+    useEffect(initializeUserData,[]);
+
+    /**
+     * @property {Function} initializeUserData
+     * render only once, get user group data by hospital id and username
+     */
+    function initializeUserData(){
+        GetData.getGroup(getHospitalId(),getUserName()).then((group)=>{
+            const hospital = group.hospitalId;
+            setCurrentData({
+                trust: hospital.trust.trustName,
+                hospital: hospital.hospitalName,
+                username: getUserName(),
+                name: getName(),
+                password: getPassword(),
+                email: group.email,
+                specialty: group.specialty,
+            });
+            setUpdateData({
+                name: getName(),
+                password: "",
+                email: group.email,
+                specialty: group.specialty,
+            });
+        });
+    }
+
+    /**
+     * @property {Function} updateUsergroup
+     * update the user data and reset the edit modal
+     */
+    function updateUsergroup(){
+        const newName = updateData.name;
+        const newPassword = updateData.password === "" ? currentData.password : updateData.password;
+        const newEmail = updateData.email;
+        const newSpecialty = updateData.specialty;
+
+        setShowMessage(true);
+        if(newName === ""){
+            resetUsergroup();
+            setMessage("Error: group name can not be empty!");
+        }else {
+            Uploader.updateUsergroup(getHospitalId(),getUserName(), newName, newPassword, newEmail, newSpecialty).then((response)=>{
+                if(response === ""){
+                    setShowGroupEditor(false);
+                    setCurrentData(prevState => ({
+                        ...prevState,
+                        name: newName,
+                        password: newPassword,
+                        email: newEmail,
+                        specialty: newSpecialty,
+                    }));
+                    setMessage("User Group updated!");
+                }else{
+                    resetUsergroup();
+                    setMessage(response.data);
+                }
+            });
+        }
+    }
+
+    function resetUsergroup(){
+        setShowGroupEditor(false);
+        setUpdateData({
+            name: currentData.name,
+            password: "",
+            email: currentData.email,
+            specialty: currentData.specialty,
+        })
+    }
+
+    function deleteUsergroup(){
+        DeleteData.deleteUsergroup(getHospitalId(), getUserName()).then((response)=>{
+            logout();
+            history.push("/login");
+        });
+    }
+
+    /**
+     * @property {Function} addTrust
+     * add new Trust with a trust admin account, and reset the add trust modal
+     */
+    function addTrust(){
+        const newTrustName = newTrustData.trustName;
+        const newTrustUsername = newTrustData.username;
+        const newTrustGroupName = newTrustData.name;
+        const newTrustPassword = newTrustData.password;
+        const newTrustEmail = newTrustData.email;
+        const newTrustSpecialty = newTrustData.specialty;
+
+        setShowMessage(true);
+        if(newTrustName === "" || newTrustUsername === "" || newTrustGroupName === "" || newTrustPassword === ""){
+            setMessage("Error: Please fill in all the required sections.");
+        }else {
+            //post newTrustData
+            Uploader.addNewTrust(newTrustName,getHospitalId(),newTrustUsername,newTrustGroupName,newTrustPassword,newTrustEmail,newTrustSpecialty).then((response)=>{
+                if(response === ""){
+                    setMessage("New Trust added!");
+                }else {
+                    setMessage(response.data);
+                }
+            });
+        }
+
+        resetNewTrust();
+    }
+
+    function resetNewTrust(){
+        setShowTrustEditor(false);
+        setNewTrustData({
+            trustName: "",
+            username: "",
+            name: "",
+            password: "",
+            email: "",
+            specialty: "",
+        });
+    }
+
+    function deleteTrust(){
+        //delete trust by id
+        DeleteData.deleteTrust(getTrustId()).then((response)=>{
+            if (response === ""){
+                logout();
+                history.push("/login");
+            }else{
+                setShowMessage(true);
+                setMessage(response.data);
+            }
+        });
+    }
+
+    function handleUpdateUsergroup(e){
+        const { name, value } = e.target;
+        setUpdateData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    function handleAddTrust(e){
+        const { name, value } = e.target;
+        setNewTrustData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    return(
+        &lt;Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
+            &lt;MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
+            &lt;Modal
+                show={showGroupEditor}
+                onHide={resetUsergroup}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title id="contained-modal-title-vcenter">
+                        {currentData.username}
+                    &lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;h4>Group Name:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Group Name Here:"
+                        defaultValue={currentData.name}
+                        onChange={handleUpdateUsergroup}
+                        name="name"
+                    />
+
+                    &lt;h4>Enter Password (Use old password if empty):&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Password Here:"
+                        onChange={handleUpdateUsergroup}
+                        name="password"
+                    />
+
+                    &lt;h4>Email (Optional):&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Email Here:"
+                        defaultValue={currentData.email}
+                        onChange={handleUpdateUsergroup}
+                        name="email"
+                    />
+
+                    &lt;h4>Specialty (Optional):&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Specialty Here:"
+                        defaultValue={currentData.specialty}
+                        onChange={handleUpdateUsergroup}
+                        name="specialty"
+                    />
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={resetUsergroup}>Close&lt;/Button>
+                    &lt;Button onClick={updateUsergroup}>Submit&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Modal
+                show={showGroupDeletion}
+                onHide={() => setShowGroupDeletion(false)}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title id="contained-modal-title-vcenter">
+                        Delete Your Group
+                    &lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;h4>Your Group: {currentData.name} will be closed permanently&lt;/h4>
+                    Once you delete your Group, your Group can not be retrieved.
+                    Be careful, if you are the only Trust Admin, once you delete your Group, your Trust will not be able to add a new trust admin.
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={() => setShowGroupDeletion(false)}>Cancel&lt;/Button>
+                    &lt;Button onClick={() => {deleteUsergroup();setShowGroupDeletion(false)}}>Delete&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Modal
+                show={showTrustEditor}
+                onHide={resetNewTrust}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title id="contained-modal-title-vcenter">Add New Trust&lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;h4>Trust Name:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Trust Name Here:"
+                        onChange={handleAddTrust}
+                        name="trustName"
+                    />
+
+                    &lt;h4>Trust Admin username:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Trust Admin username Here:"
+                        onChange={handleAddTrust}
+                        name="username"
+                    />
+
+                    &lt;h4>Trust Admin Group name:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Trust Admin Group name Here:"
+                        onChange={handleAddTrust}
+                        name="name"
+                    />
+
+                    &lt;h4>Trust Admin Password:&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Trust Admin Password Here:"
+                        onChange={handleAddTrust}
+                        name="password"
+                    />
+
+                    &lt;h4>Trust Admin Email (Optional):&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Trust Admin Email Here:"
+                        onChange={handleAddTrust}
+                        name="email"
+                    />
+
+                    &lt;h4>Trust Admin Specialty (Optional):&lt;/h4>
+                    &lt;Form.Control
+                        as="input"
+                        placeholder="Enter Trust Admin Specialty Here:"
+                        onChange={handleAddTrust}
+                        name="specialty"
+                    />
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={resetNewTrust}>Close&lt;/Button>
+                    &lt;Button onClick={addTrust}>Submit&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Modal
+                show={showDeleteTrust}
+                onHide={() => setShowDeleteTrust(false)}
+                size="lg"
+                centered
+            >
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title id="contained-modal-title-vcenter">
+                        Delete Your Trust
+                    &lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;h4>Your Trust: {currentData.trust} will be closed permanently&lt;/h4>
+                    Once you delete your Trust, your Trust can not be retrieved.
+                    Be careful, delete your Trust means all data in this trust will be lost.
+                &lt;/Modal.Body>
+                &lt;Modal.Footer>
+                    &lt;Button onClick={() => setShowDeleteTrust(false)}>Cancel&lt;/Button>
+                    &lt;Button onClick={() => {deleteTrust();setShowDeleteTrust(false)}}>Delete&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+
+            &lt;Container style={{marginTop: '3%', marginBottom: '3%', textAlign: 'left', fontSize: 'x-large'}}>
+                &lt;Row>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label style={{color: 'gray'}}>Trust:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label>{currentData.trust}&lt;/Form.Label>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{marginTop: '3%'}}>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label style={{color: 'gray'}}>Hospital:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label>{currentData.hospital}&lt;/Form.Label>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{marginTop: '3%'}}>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label style={{color: 'gray'}}>Username:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label>{currentData.username}&lt;/Form.Label>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{marginTop: '3%'}}>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label style={{color: 'gray'}}>Group Name:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label>{currentData.name}&lt;/Form.Label>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{marginTop: '3%'}}>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label style={{color: 'gray'}}>Email:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label>{currentData.email}&lt;/Form.Label>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{marginTop: '3%'}}>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label style={{color: 'gray'}}>Specialty:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={2}>
+                        &lt;Form.Label>{currentData.specialty}&lt;/Form.Label>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row  style={{marginTop: '3%'}}>
+                    &lt;Col style={{textAlign: "right"}}>
+                        {level >= 2 &amp;&amp;
+                            &lt;Button onClick={() => setShowGroupEditor(true)}>Edit&lt;/Button>
+                        }
+                    &lt;/Col>
+
+                    &lt;Col style={{textAlign: "left"}}>
+                        {level >= 2 &amp;&amp;
+                            &lt;Button onClick={() => setShowGroupDeletion(true)}>Delete Group&lt;/Button>
+                        }
+                    &lt;/Col>
+
+                    &lt;Col style={{textAlign: 'center'}}>
+                        &lt;LogOut/>
+                    &lt;/Col>
+
+                    &lt;Col style={{textAlign: "right"}}>
+                        {level === 3 &amp;&amp;
+                            &lt;Button onClick={() => setShowTrustEditor(true)}>Add New Trust&lt;/Button>
+                        }
+                    &lt;/Col>
+
+                    &lt;Col style={{textAlign: "left"}}>
+                        {level === 3 &amp;&amp;
+                            &lt;Button onClick={() => setShowDeleteTrust(true)}>Delete Trust&lt;/Button>
+                        }
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Container>
+        &lt;/Container>
+    );
+}
+
+export default UserProfile;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

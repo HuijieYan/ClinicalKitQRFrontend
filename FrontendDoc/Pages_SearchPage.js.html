@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/SearchPage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/SearchPage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useEffect, useState } from "react";
+import {Button, Form, Row, Col, Container} from "react-bootstrap";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import GetData from "../Functions/GetData";
+import Select from 'react-select'
+
+/**
+ * Search page for equipment, search equipment by it's attr
+ * @module SearchPage
+ */
+
+/**
+ * @constructor
+ */
+const SearchPage = () => {
+    const [types,setTypes] = useState([]);
+    const [categories,setCategories] = useState([]);
+    const [selectedType,setSelectedType] = useState("all");
+    const [selectedCategory,setSelectedCategory] = useState("all");
+    const [selectedManufacturer,setSelectedManufacturer] = useState("all");
+    const [manufacturers,setManufacturers] = useState([]);
+    const [selectedModel,setSelectedModel] = useState("all");
+    const [models,setModels] = useState([]);
+    const [name,setName] = useState("");
+    const history = useHistory();
+    
+    const search = () => {
+        let searchName = " ";
+        if(name !== ""){
+            searchName = name;
+        }
+        history.push("/result/name="+searchName+"/category="+selectedCategory+"/type="+selectedType+"/manufacturer="+selectedManufacturer+"/model="+selectedModel);
+    };
+
+    useEffect(initializeAttributeOptions,[]);
+
+    /**
+     * @property {Function} initializeAttributeOptions
+     * render only once, get all equipment options of type, category, manufacturer
+     */
+    function initializeAttributeOptions(){
+        GetData.getTypes().then((types)=>{
+            let typeOptions = [{ value: "all", label: "All" }]
+            types.map((type) => {
+                typeOptions.push({ value: type, label: type })
+            })
+            setTypes(typeOptions)
+        });
+
+        GetData.getCategories().then((categories)=>{
+            let categoriesOptions = [{ value: "all", label: "All" }]
+            categories.map((category) => {
+                categoriesOptions.push({ value: category, label: category })
+            })
+            setCategories(categoriesOptions)
+        });
+
+        GetData.getAllManufacturers().then((manufacturers)=>{
+            let manufacturerList = [{ value: "all", label: "All" }]
+            manufacturers.map((manufacturer) => {
+                manufacturerList.push({ value: manufacturer, label: manufacturer })
+            })
+            setManufacturers(manufacturerList)
+        });
+    }
+
+    useEffect(setModelOptions,[selectedManufacturer]);
+
+    /**
+     * @property {Function} setModelOptions
+     * get equipment models depends on the selected Manufacturer
+     */
+    function setModelOptions(){
+        if(selectedManufacturer === "all"){
+            GetData.getAllModelsByUser().then((models)=>{
+                let modelList = [{ value: "all", label: "All" }]
+                models.map((model) => {
+                    modelList.push({ value: model, label: model })
+                })
+                setModels(modelList)
+            });
+        }else{
+            GetData.getAllModelsByManufacturer(selectedManufacturer).then((models)=>{
+                let modelList = [{ value: "all", label: "All" }]
+                models.map((model) => {
+                    modelList.push({ value: model, label: model })
+                })
+                setModels(modelList)
+            });
+        }
+        setSelectedModel("all");
+    }
+
+    return ( 
+        &lt;Container>
+            &lt;Form onSubmit={search}>
+                &lt;Row className="mb-3">
+                    &lt;Col>
+                        &lt;Form.Label>Patient Demographic&lt;/Form.Label>
+                        &lt;Select value={categories.filter(option => option.value === selectedCategory)}
+                                options={categories}
+                                onChange={(e)=>setSelectedCategory(e.value)}/>
+                    &lt;/Col>
+
+
+                    &lt;Col>
+                        &lt;Form.Label>Clinical System&lt;/Form.Label>
+                        &lt;Select value={types.filter(option => option.value === selectedType)}
+                                options={types}
+                                onChange={(e)=>setSelectedType(e.value)}/>
+                    &lt;/Col>
+
+                    &lt;Col>
+                        &lt;Form.Label>Manufacturer&lt;/Form.Label>
+                        &lt;Select value={manufacturers.filter(option => option.value === selectedManufacturer)}
+                                options={manufacturers}
+                                onChange={(e)=>setSelectedManufacturer(e.value)}/>
+                    &lt;/Col>
+
+                    &lt;Col>
+                        &lt;Form.Label>Model&lt;/Form.Label>
+                        &lt;Select value={models.filter(option => option.value === selectedModel)}
+                                options={models}
+                                onChange={(e)=>setSelectedModel(e.value)}/>
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row className="mb-3 justify-content-center">
+                    &lt;Col>
+                        &lt;Form.Control type="searchbar"
+                                      placeholder="Enter Equipment Name or 9-Digit Code"
+                                      value={name}
+                                      onChange={(e)=>setName(e.target.value)}/>
+                    &lt;/Col>
+                    &lt;Col xs="auto">
+                        &lt;Button type="submit">Search&lt;/Button>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Form>
+        &lt;/Container>
+     );
+}
+ 
+export default SearchPage;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

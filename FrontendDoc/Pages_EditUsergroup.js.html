@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Pages/EditUsergroup.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Pages/EditUsergroup.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Checkbox, FormControlLabel } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import { getHospitalId, getLevel, getTrustId } from "../Functions/UserStatus";
+import GetData from "../Functions/GetData";
+import Uploader from "../Functions/Uploader";
+import MessageModal from "../Component/MessageModal";
+import { useHistory } from "react-router-dom";
+import Select from "react-select";
+
+/**
+ * This page is used for adding new user group or edit exit user group
+ * @module EditUsergroup
+ */
+
+/**
+ * @param {string} groupUsername -The username of user group, null if adding new user group
+ * @param {number} selectedHospitalId -The hospital id of user group, null if adding new user group
+ * @constructor
+ */
+const EditUsergroup = ({ groupUsername, selectedHospitalId }) => {
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [hospitalId, setHospitalId] = useState("-1");
+    const [hospitals, setHospitals] = useState([]);
+    const [email, setEmail] = useState("");
+    const [specialty, setSpecialty] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [trustHospitalId, setTrustHospitalId] = useState("");
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const history = useHistory();
+
+    useEffect(initializeUsergroupEditPage, []);
+
+    /**
+     * @property {Function} initializeUsergroupEditPage
+     * render only once for initialization hospital select options, and get current usergroup data if not adding new usergroup
+     */
+    function initializeUsergroupEditPage(){
+        const level = parseInt(getLevel());
+        if (level === 3) {
+            GetData.getAllHospitalsByTrust(getTrustId()).then((data) => initializeHospitals(data));
+            setTrustHospitalId(getHospitalId());
+        } else if (level === 2) {
+            GetData.getHospitalById(getHospitalId()).then((data) => initializeHospitals([data.data]));
+        }
+
+
+        if (groupUsername !== undefined) {
+            setUsername(groupUsername);
+            //get usergroup information by username and hospitalId and trustId
+            //so we could get the placeholder while editing
+            setHospitalId(selectedHospitalId);
+
+            GetData.getGroup(selectedHospitalId, groupUsername).then((data) => {
+                setIsAdmin(data.isAdmin);
+                setName(data.name);
+                setEmail(data.email);
+                setSpecialty(data.specialty);
+            });
+        }
+    }
+
+    /**
+     * @property {Function} initializeHospitals
+     * initialization hospital select options
+     */
+    function initializeHospitals(hospitals){
+        let hospitalList = [{ value: "-1", label: "Select Hospital" }]
+        hospitals.map((hospital) => {
+            hospitalList.push({ value: hospital.hospitalId.toString(), label: hospital.hospitalName })
+        })
+        setHospitals(hospitalList);
+    }
+
+    /**
+     * @property {Function} submit
+     * Called when user click save, if the user input data is valid, then add or update usergroup, else pop up error message
+     */
+    async function submit() {
+        if (groupUsername === undefined) {
+            //add new usergroup
+            if(username==="" || parseInt(hospitalId)===-1 || name==="" || password===""){
+                setMessage("Required fields are empty");
+                setShowMessage(true);
+                return;
+            }
+
+            Uploader.addUserGroup(
+                hospitalId,
+                username,
+                name,
+                password,
+                email,
+                specialty,
+                isAdmin
+            ).then((response) => {
+                if(response === ""){
+                    history.push("/usergroupTable");
+                }else{
+                    setShowMessage(true);
+                    setMessage(response);
+                }
+            });
+        } else {
+            //we do update here
+            if(name===""){
+                setMessage("Required fields are empty");
+                setShowMessage(true);
+                return;
+            }
+
+            Uploader.updateUsergroup(
+                hospitalId,
+                groupUsername,
+                name,
+                password,
+                email,
+                specialty,
+                isAdmin
+            ).then((response) => {
+                if(response === ""){
+                    history.push("/usergroupTable");
+                }else{
+                    setShowMessage(true);
+                    setMessage(response);
+                }
+            });
+        }
+    }
+
+    /**
+     * @property {Function} detectTrustHospital
+     * A listener of hospitals, if user select Trust Admin hospital, usergroup can only be admin
+     */
+    function detectTrustHospital(e) {
+        if (e.value === trustHospitalId) {
+            setIsAdmin(true);
+        }
+        setHospitalId(e.value);
+    }
+
+    return (
+        &lt;Container style={{borderStyle: "solid", marginTop: "1%", marginBottom: "1%", borderColor: "grey"}}>
+            &lt;MessageModal show={showMessage} message={message} handleClose={() => setShowMessage(false)}/>
+
+            &lt;Form style={{textAlign: 'left'}}>
+                {hospitals.length > 1 &amp;&amp; (
+                    &lt;Row style={{marginTop: '3%'}}>
+                        &lt;Col xl={3}>
+                            &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Hospital:&lt;/Form.Label>
+                        &lt;/Col>
+                        &lt;Col xl={3}>
+                            &lt;Select
+                                isDisabled={groupUsername !== undefined}
+                                value={hospitals.filter(option => option.value === hospitalId)}
+                                options={hospitals}
+                                onChange={(e) => detectTrustHospital(e)}
+                                menuPortalTarget={document.body}/>
+                        &lt;/Col>
+                    &lt;/Row>
+                )}
+
+                &lt;Row style={{marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Departmental Username*:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="groupUsername"
+                            placeholder="Enter Departmental Username"
+                            defaultValue={username}
+                            disabled={groupUsername !== undefined}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row style={{marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Group Name*:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="groupName"
+                            placeholder="Enter Usergroup's name"
+                            defaultValue={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row style={{marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>
+                            {groupUsername===undefined?"Password*":"New Password (Optional)"}:
+                        &lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="password"
+                            placeholder="Enter Password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row style={{marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Email Address (optional):&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="email"
+                            placeholder="Enter Email Address"
+                            defaultValue={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row style={{marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Speciality (optional):&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;Form.Control
+                            type="specialty"
+                            placeholder="Enter specialty"
+                            defaultValue={specialty}
+                            onChange={(e) => setSpecialty(e.target.value)}
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+
+                &lt;Row style={{marginTop: '3%'}}>
+                    &lt;Col xl={3}>
+                        &lt;Form.Label style={{color: 'gray', fontSize: 'x-large'}}>Is Administrator:&lt;/Form.Label>
+                    &lt;/Col>
+                    &lt;Col xl={3}>
+                        &lt;FormControlLabel
+                            control={
+                                &lt;Checkbox
+                                    checked={isAdmin}
+                                    onChange={(e) => setIsAdmin(e.target.checked)}
+                                />
+                            }
+                            disabled={hospitalId === trustHospitalId}
+                            label="Administrator/User"
+                        />
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Form>
+
+            &lt;Container style={{marginTop: "3%", marginBottom: "1%"}}>
+                &lt;Button style={{marginRight: '2%'}} onClick={() => history.push("/usergroupTable")}>Back&lt;/Button>
+                &lt;Button onClick={() => submit()}>Submit&lt;/Button>
+            &lt;/Container>
+        &lt;/Container>
+    );
+};
+
+export default EditUsergroup;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentReports.html">EquipmentReports</a></li><li><a href="module-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ.html">FAQ</a></li><li><a href="module-Functions.html">Functions</a></li><li><a href="module-Inbox.html">Inbox</a></li><li><a href="module-IndexMain.html">IndexMain</a></li><li><a href="module-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage.html">LoginPage</a></li><li><a href="module-Router.html">Router</a></li><li><a href="module-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.html">ViewEquipment</a></li></ul><h3>Classes</h3><ul><li><a href="HospitalTable.html">HospitalTable</a></li><li><a href="MessageModal.html">MessageModal</a></li><li><a href="module-ContactBook-ContactBook.html">ContactBook</a></li><li><a href="module-EditEquipment.EquipmentEditor.html">EquipmentEditor</a></li><li><a href="module-EditEquipment-EditEquipment.html">EditEquipment</a></li><li><a href="module-EditUsergroup-EditUsergroup.html">EditUsergroup</a></li><li><a href="module-EquipmentQrCodePage-EquipmentQrCodePage.html">EquipmentQrCodePage</a></li><li><a href="module-EquipmentTable-EquipmentTable.html">EquipmentTable</a></li><li><a href="module-FAQ-FAQ.html">FAQ</a></li><li><a href="module-Functions.exports.checkLogIn.html">exports.checkLogIn</a></li><li><a href="module-Functions.exports.createGraphData.html">exports.createGraphData</a></li><li><a href="module-Functions.exports.loginReducer.html">exports.loginReducer</a></li><li><a href="module-Functions.exports.setUserName.html">exports.setUserName</a></li><li><a href="module-Functions.exports.storeUsername.html">exports.storeUsername</a></li><li><a href="module-Functions.GetData.html">GetData</a></li><li><a href="module-Functions.Uploader.html">Uploader</a></li><li><a href="module-Functions-DeleteData.html">DeleteData</a></li><li><a href="module-Inbox.InboxMessage.html">InboxMessage</a></li><li><a href="module-Inbox.InboxMessageList.html">InboxMessageList</a></li><li><a href="module-Inbox.InboxSideBar.html">InboxSideBar</a></li><li><a href="module-IndexMain.ButtonList.html">ButtonList</a></li><li><a href="module-IndexMain.LogOut.html">LogOut</a></li><li><a href="module-IssueTable-IssueTable.html">IssueTable</a></li><li><a href="module-LoginPage-LoginPage.html">LoginPage</a></li><li><a href="module-Router.GuardedRoute.html">GuardedRoute</a></li><li><a href="module-Router.MenuBar.html">MenuBar</a></li><li><a href="module-SearchPage.SearchResult.html">SearchResult</a></li><li><a href="module-SearchPage-SearchPage.html">SearchPage</a></li><li><a href="module-UsergroupTable-UsergroupTable.html">UsergroupTable</a></li><li><a href="module-UserProfile-UserProfile.html">UserProfile</a></li><li><a href="module-ViewEquipment.EquipmentViewRender.html">EquipmentViewRender</a></li><li><a href="module-ViewEquipment.PreviewEquipment.html">PreviewEquipment</a></li><li><a href="module-ViewEquipment-ViewEquipment.html">ViewEquipment</a></li><li><a href="PreviewEquipment.html">PreviewEquipment</a></li><li><a href="SharingListItems.html">SharingListItems</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Mar 26 2022 23:29:21 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

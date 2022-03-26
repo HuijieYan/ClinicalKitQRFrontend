@@ -5,15 +5,24 @@ import { createTheme } from "@mui/material/styles";
 import GetData from "../Functions/GetData";
 import { getUserName } from "../Functions/UserStatus";
 
-//ContactBook is a table contains some of user's data for contacting user
+/**
+ * ContactBook is a table contains some of user group's data for contacting user
+ * @module ContactBook
+ */
 
+/**
+ * @constructor
+ */
 const ContactBook = () => {
     //rows of data
     const [rows,setRows] = useState([]);
-    const [selected, setSelected] = useState([]);
-    //array of indexes of selected rows
 
-    useEffect(()=>{
+    useEffect(initializeRowData,[]);
+
+    /**
+     * @property {Function} initializeRowData -render only once, get table row data from backend
+     */
+    function initializeRowData(){
         GetData.getAllAdmins().then((data)=>{
             const rowsData = [];
             const username = getUserName();
@@ -31,9 +40,11 @@ const ContactBook = () => {
             }
             setRows(rowsData);
         });
-    },[]);
-    //renders only once for fetching selection options
+    }
 
+    /**
+     * @property {Object} columns -This variable contains every column settings in table
+     */
     const columns = [
         {
             name: "name",

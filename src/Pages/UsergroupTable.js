@@ -10,16 +10,29 @@ import { useHistory } from "react-router-dom";
 import { getHospitalId, getLevel, getTrustId, getUserName } from "../Functions/UserStatus";
 import DeleteData from "../Functions/DeleteData";
 
-//User Group table display information about user, and corresponding operations
+/**
+ * User Group table display information about user, and corresponding operations
+ * @module UsergroupTable
+ */
 
+/**
+ * @constructor
+ */
 const UsergroupTable = () => {
   //rows of data
   const [rows, setRows] = useState([]);
+  //array of indexes of selected rows
   const [selected, setSelected] = useState([]);
   const editURL = process.env.REACT_APP_FRONTEND_URL + "editUserGroup/username=";
-  //array of indexes of selected rows
 
-  useEffect(() => {
+  useEffect(initializeUsergroups, []);
+
+  /**
+   * @property {Function} initializeUsergroups
+   * render only once, get all user groups of a hospital or all hospitals in a trust from backend,
+   * also set the columns settings
+   */
+  function initializeUsergroups(){
     const level = parseInt(getLevel());
     if (level === 2) {
       setColumns([
@@ -81,9 +94,12 @@ const UsergroupTable = () => {
         setRowData(data);
       });
     }
-  }, []);
-  //renders only once for fetching selection options
+  }
 
+  /**
+   * @property {Function} setRowData -initialize row data for every user group as table row
+   * @param {array<Object>} data -array of user group
+   */
   function setRowData(data) {
     const rowsData = [];
     for (let i = 0; i < data.length; i++) {

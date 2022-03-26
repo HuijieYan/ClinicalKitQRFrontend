@@ -1,10 +1,12 @@
 import axios from "axios";
 import { getHospitalId, getUserName, getLevel, getTrustId } from "./UserStatus";
 
-//responsible for get data from backend
-
 const URL = process.env.REACT_APP_BACKEND_URL;
 
+/**
+ * @memberof module:Functions
+ * @class Responsible for getting any data from backend
+ */
 class GetData {
   async getAllTrusts() {
     const url = URL + "trusts/all";
