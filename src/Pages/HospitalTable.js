@@ -90,30 +90,18 @@ const HospitalTable = () => {
         {
             name: "hospital",
             label: "Hospital",
-            options: {
-                filterOptions: { fullWidth: true },
-            }
         },
 
         {
             name: "operation",
             label: "Edit",
-            options: {
-                viewColumns: false,
-                filter: false,
-                sort: false,
-            }
+            options: {sort: false}
         },
 
         {
             name: "hospitalId",
             label: "Hospital ID",
-            options: {
-                filterOptions: { fullWidth: true },
-                filter: false,
-                display: false,
-                viewColumns: false
-            }
+            options: {display: false}
         },
     ]
 
@@ -147,6 +135,8 @@ const HospitalTable = () => {
         filterType: "multiselect",
         height: "100%",
         jumpToPage: true,
+        viewColumns: false,
+        filter: false,
         onRowSelectionChange:function(currentRowsSelected, allRowsSelected, rowsSelected){
             setSelected(rowsSelected);
         },

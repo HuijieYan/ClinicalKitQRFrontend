@@ -31,7 +31,6 @@ const PreviewEquipment = ({id}) => {
     function initializeEquipment(){
         if(id != null){
             GetData.getSentEquipmentById(id).then((data)=>{
-                console.log(data)
                 setName(data.name);
                 setType(data.type);
                 setCategory(data.category);

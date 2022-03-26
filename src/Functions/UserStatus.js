@@ -18,12 +18,10 @@ export function setLevel(level){
 }
 
 export function setTrustID(id){
-    console.log(id);
     store.dispatch(storeTrustId(id));
 }
 
 export function setHospitalID(id){
-    console.log(id);
     store.dispatch(storeHospitalId(id));
 }
 
