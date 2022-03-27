@@ -35,7 +35,7 @@ const InboxDetailedMessage = ({option, index, vacant}) => {
         history.push("/previewEquipment/id="+id);
     }
 
-    const handleSelected = (id,saved) => () =>{
+    const handleSelected = (id, saved) => () =>{
         if (saved){
         //if the equipment has already been saved, do nothing
             return;

@@ -1,7 +1,5 @@
-//QR code image, get by id
-
 /**
- * This page is used for showing equipment QR code, a picture downloaded from backend
+ * This page is used for showing equipment QR code, a picture downloaded from backend, get by equipment id
  * @module EquipmentQrCodePage
  */
 

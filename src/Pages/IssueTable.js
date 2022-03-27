@@ -1,5 +1,5 @@
 import MUIDataTable from "mui-datatables";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 import GetData from "../Functions/GetData";

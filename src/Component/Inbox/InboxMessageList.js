@@ -44,7 +44,7 @@ const InboxMessageList = memo(({selected}) => {
                 rows.push(<ListItem alignItems="flex-start" key={0}><Typography>No sharings received yet</Typography></ListItem>);
             }
 
-            for (let i = 0;i<data.length;i++){
+            for (let i = 0; i < data.length; i++){
                 const mail = data[i][0];
                 const sender = data[i][1];
                 let senderinfo = "";
@@ -81,8 +81,9 @@ const InboxMessageList = memo(({selected}) => {
                         </ListItemButton>
                     </ListItem>
                 );
-                rows.push(<Divider />);
+                rows.push(<Divider key={i + data.length} />);
             }
+
             setDisplayMailList(rows);
         }
 

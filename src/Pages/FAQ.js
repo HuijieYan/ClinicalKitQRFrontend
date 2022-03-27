@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import GetData from "../Functions/GetData";
 import Uploader from "../Functions/Uploader";
 import {getLevel} from "../Functions/UserStatus";

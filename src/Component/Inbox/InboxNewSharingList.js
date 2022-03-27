@@ -16,11 +16,11 @@ const InboxNewSharingList = ({getDisplayName}) => {
 
     return ( 
         <div>
-        {[...selections].map((selection)=>{
+        {[...selections].map((selection, index)=>{
             const name = getDisplayName(selection);
 
             return(
-                    <ListItem>
+                    <ListItem key={index}>
                         <ListItemButton>
                             <ListItemIcon>
                                 <ArticleIcon/>

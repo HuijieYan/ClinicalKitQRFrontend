@@ -1,6 +1,6 @@
 import {Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
 import {getUserName, getName, getLevel, getTrustId, getHospitalId, getPassword} from "../Functions/UserStatus";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {logout} from "../Functions/LoginFunctions";
 import GetData from "../Functions/GetData";
