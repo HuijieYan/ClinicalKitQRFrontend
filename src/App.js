@@ -24,6 +24,7 @@ import UserProfile from "./Pages/UserProfile";
 import FAQ from "./Pages/FAQ";
 import "./_theme.scss";
 import {checkLogIn} from "./Functions/LoginFunctions";
+import React from "react";
 
 /**
  * This page is responsible for matching path (url) with pages,
@@ -47,7 +48,8 @@ function App() {
                 <LoginPage />
               </Route>
 
-              <div>
+              <React.Fragment>
+              <div id="pageBody">
                 <MenuBar />
                 <Switch>
                   <GuardedRoute component={<IndexMain />} path="/home" requireLevel={1} />
@@ -166,10 +168,17 @@ function App() {
                     component={null}
                     requireLevel={1}
                   />
+
                 </Switch>
+
               </div>
+
+              </React.Fragment>
+
             </Switch>
+
           </Router>
+
         </div>
       </PersistGate>
     </Provider>

@@ -47,18 +47,16 @@ const SearchResult = ({ name, category, type, manufacturer, model }) => {
             <SearchPage />
             <List>
                 {results.length > 0 ?
-                    results.map((equipment) => {
-                        return(
-                            <ListItem key={equipment.id} onClick={()=> {handleOpen(equipment.equipmentId)}} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <ArticleIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary={equipment.name}/>
-                                </ListItemButton>
-                            </ListItem>
-                        );
-                    }) : "Unable to find matching equipments"}
+                    results.map((equipment, index) => (
+                        <ListItem key={index} onClick={()=> {handleOpen(equipment.equipmentId)}} disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <ArticleIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary={equipment.name}/>
+                            </ListItemButton>
+                        </ListItem>
+                    )) : "Unable to find matching equipments"}
             </List>
         </Container>
     );

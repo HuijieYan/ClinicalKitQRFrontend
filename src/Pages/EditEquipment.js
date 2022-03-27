@@ -58,25 +58,19 @@ const EditEquipment = ({id}) => {
     function initializeEquipmentData(){
         GetData.getTypes().then((types) => {
             let typeOptions = [{ value: "", label: "Select Clinical System" }]
-            types.map((type) => {
-                typeOptions.push({ value: type, label: type })
-            })
+            types.map((type) => typeOptions.push({ value: type, label: type }))
             setTypes(typeOptions)
         });
 
         GetData.getCategories().then((categories)=>{
             let categoryOptions = [{ value: "", label: "Select Patient Demographic" }]
-            categories.map((category) => {
-                categoryOptions.push({ value: category, label: category })
-            })
+            categories.map((category) => categoryOptions.push({ value: category, label: category }))
             setCategories(categoryOptions);
         });
 
         GetData.getAllManufacturers().then((manufacturers)=>{
             let manufacturerOptions = [{ value: "", label: "Select Manufacturer" }]
-            manufacturers.map((manufacturer) => {
-                manufacturerOptions.push({ value: manufacturer, label: manufacturer })
-            })
+            manufacturers.map((manufacturer) => manufacturerOptions.push({ value: manufacturer, label: manufacturer }))
             setManufacturers(manufacturerOptions);
         });
 
@@ -365,16 +359,16 @@ const EditEquipment = ({id}) => {
 
             <Accordion alwaysOpen>
             {tabNames.map((key, index) => (
-                <Card>
-                    <Card.Header>
-                        <CustomAccordionBar eventKey={index}>{key}</CustomAccordionBar>
-                    </Card.Header>
-                    <Accordion.Collapse eventKey={index}>
-                        <Card.Body>
-                            <EquipmentEditor index={index} content={tabContents[index]} tabContents={tabContents}/>
-                        </Card.Body>
-                    </Accordion.Collapse>
-                </Card>
+                    <Card key={index}>
+                        <Card.Header>
+                            <CustomAccordionBar eventKey={index}>{key}</CustomAccordionBar>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey={index}>
+                            <Card.Body>
+                                <EquipmentEditor index={index} content={tabContents[index]} tabContents={tabContents}/>
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
             ))}
             </Accordion>
 

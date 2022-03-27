@@ -40,7 +40,7 @@ const EquipmentViewRender = ({name, type, category, manufacturer, model, descrip
 
             <Accordion alwaysOpen style={{marginBottom: '2%', marginTop: '2%'}}>
             {Object.keys(description).map((key, index) => (
-                <Accordion.Item eventKey={index}>
+                <Accordion.Item eventKey={index} key={index}>
                     <Accordion.Header>{key}</Accordion.Header>
                     <Accordion.Body>
                         {Parser(description[key])}

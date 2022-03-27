@@ -25,7 +25,7 @@ const GuardedRoute = ({path, component, render, requireLevel}) => {
     const level = parseInt(getLevel());
 
     if (checkLogIn()){
-        if(level<requireLevel){
+        if(level < requireLevel){
             return(<Redirect to="/home"/>);
         }
         if (component === null){
