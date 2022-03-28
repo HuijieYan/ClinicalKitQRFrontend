@@ -22,7 +22,7 @@ export function checkLogIn() {
   const username = getUserName();
   const password = getPassword();
 
-  if (GetData.login(hospitalId, username, password).length === 0) {
+  if (hospitalId===-1||username===""||password==="") {
     return false;
   } else if(new Date().valueOf() > getExpireTime()){
     logout();
