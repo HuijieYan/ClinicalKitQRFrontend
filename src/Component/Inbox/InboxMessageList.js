@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect } from "react";
-import InboxDetailedMessage from "./InboxDetailedMessage";
+import InboxMessageContent from "./InboxMessageContent";
 import { Divider, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment, useState } from "react";
@@ -125,7 +125,7 @@ const InboxMessageList = memo(({selected}) => {
                         {displayMailList}
                     </List>
                 </Box>
-                <InboxDetailedMessage index={currentMailId} vacant={vacant} option={selected}/>
+                <InboxMessageContent index={currentMailId} vacant={vacant} option={selected}/>
             </>
             }
 
